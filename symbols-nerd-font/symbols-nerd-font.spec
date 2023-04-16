@@ -5,7 +5,7 @@ Name:           symbols-nerd-font
 Version:        %{vtag}
 Release:        %autorelease
 Packager:       Loi Chyan <loichyan@foxmail.com>
-License:        MIT AND OFL
+License:        MIT and OFL
 URL:            https://www.nerdfonts.com
 Summary:        Just the Nerd Font Icons. I.e Symbol font only.
 Requires:       fontpackages-filesystem
