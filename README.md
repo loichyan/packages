@@ -7,18 +7,20 @@ You can find the RPM packages in the DNF repository at
 
 ## 📊 Status
 
-| Package           | Status                                                                 |
-| ----------------- | ---------------------------------------------------------------------- |
-| wezterm           | [![Copr build status][wezterm_badge]][wezterm_url]                     |
-| symbols-nerd-font | [![Copr build status][symbols_nerd_font_badge]][symbols_nerd_font_url] |
+| Package             | Status                                              |
+| ------------------- | --------------------------------------------------- |
+| [wezterm]           | [![wezterm-badge]][wezterm-pkg]                     |
+| [symbols-nerd-font] | [![symbols-nerd-font-badge]][symbols-nerd-font-pkg] |
 
-[wezterm_url]:
+[wezterm]: https://wezfurlong.org/wezterm
+[wezterm-pkg]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/wezterm/
-[wezterm_badge]:
+[wezterm-badge]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/wezterm/status_image/last_build.png
-[symbols_nerd_font_url]:
+[symbols-nerd-font]: https://www.nerdfonts.com
+[symbols-nerd-font-pkg]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-font/
-[symbols_nerd_font_badge]:
+[symbols-nerd-font-badge]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-font/status_image/last_build.png
 
 ## ⚙️ Installation
