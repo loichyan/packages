@@ -5,6 +5,8 @@ My personal packages used on Fedora.
 You can find the RPM packages in the DNF repository at
 <https://copr.fedorainfracloud.org/coprs/loichyan/packages/>.
 
+## 📊 Status
+
 | Package           | Status                                                                 |
 | ----------------- | ---------------------------------------------------------------------- |
 | wezterm           | [![Copr build status][wezterm_badge]][wezterm_url]                     |
