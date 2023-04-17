@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:          wezterm
-Version:       %(cut -d '-' -f 1 <<< %{vtag})
+Version:       %(sed 's/^\([[:digit:]]\+\).*$/\1/' <<< %{vtag})
 Release:       %autorelease -b 2
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
