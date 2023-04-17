@@ -1,0 +1,43 @@
+name: copr-ci
+on:
+  workflow_call:
+    inputs:
+      package: { required: true, type: string }
+    secrets:
+      COPR_USER_ID: { required: true }
+      COPR_PROJECT_UUID: { required: true }
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Pacakge to build
+        required: true
+        type: string
+
+jobs:
+  trigger-rebuild:
+    name: Trigger rebuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+
+      - name: Cache Python environment
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
+
+      - name: Install requirements
+        run: |
+          pip install --upgrade -r requirements.txt
+
+      - name: Run Python script
+        env:
+          COPR_USER_ID: ${{ secrets.COPR_USER_ID }}
+          COPR_PROJECT_UUID: ${{ secrets.COPR_PROJECT_UUID }}
+        run: python ci/copr-ci.py ${{ inputs.package }}

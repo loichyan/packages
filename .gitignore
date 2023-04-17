@@ -1,3 +1,6 @@
 # Common files
 foo.*
 *.log
+
+# Env files
+.direnv
