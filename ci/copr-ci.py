@@ -82,6 +82,7 @@ class Package:
     @property
     def latest_tag(self) -> str:
         if not hasattr(self, "_latest_tag"):
+            logging.info(f"Fetch the latest tag of package {self.name}")
             resp = requests.get(
                 f"https://api.github.com/repos/{self.repo}/releases/latest"
             ).json()
@@ -95,33 +96,26 @@ class Package:
             self._latest_version = v
         return self._latest_version
 
-    def update(self):
+    def update(self) -> bool:
         """
-        Trigger Copr to rebuild a package if a new version is found.
+        Updates package. returns whether is latest.
         """
-        if not args.no_check:
-            if self.check():
-                logging.info(f"Skip latest package {self.name}")
-                return
-        if args.no_trigger:
-            return
-        self.trigger_rebuild()
+        if self.is_latest():
+            logging.info(f"Skip latest package {self.name}")
+            return True
+        logging.info(
+            f"Update package {self.name} from {self.spec_tag} to {self.latest_tag}"
+        )
+        self._update_spec()
+        self._update_changelog()
+        self._commit_changes()
+        return False
 
-    def check(self) -> bool:
+    def is_latest(self) -> bool:
         """
-        Return whether this package is latest.
+        Returns whether this package is latest.
         """
-
-        logging.info(f"Check update of package {self.name}")
-        if self.spec_tag != self.latest_tag:
-            logging.info(
-                f"Update version of package {self.name} from {self.spec_tag} to {self.latest_tag}"
-            )
-            self._update_spec()
-            self._update_changelog()
-            self._commit_changes()
-            return False
-        return True
+        return self.spec_tag == self.latest_tag
 
     def _update_spec(self):
         path = f"{self.name}/{self.name}.spec"
@@ -164,9 +158,11 @@ class Package:
                 f"chore({self.name}): bump version to {self.latest_version}",
             ]
         )
-        if not args.no_push:
-            logging.info(f"Push commits of {self.name}")
-            subprocess.run(["git", "push"])
+
+    @staticmethod
+    def push_commits():
+        logging.info(f"Push commits")
+        subprocess.run(["git", "push"])
 
     def trigger_rebuild(self):
         logging.info(f"Trigger rebuild of package {self.name}")
@@ -183,15 +179,30 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 try:
     pkgs = set(args.packages)
+    # Collect packages to update
+    pkgs_to_update: list[Package] = []
     if len(pkgs) == 0:
-        for pkg in packages.values():
-            pkg.update()
+        pkgs_to_update.extend(packages.values())
     else:
         for name in pkgs:
             pkg = packages.get(name)
-            if not pkg:
+            if pkg is None:
                 raise Exception(f"Package {name} is undefined")
-            pkg.update()
+            pkgs_to_update.append(pkg)
+    pkgs_updated: list[Package] = (
+        # Rebuild all packages if skip check
+        pkgs_to_update
+        if args.no_check
+        # Else collect all updated packages
+        else [pkg for pkg in pkgs_to_update if pkg.update()]
+    )
+    # Push commits if any
+    if not args.no_push and not args.no_check and len(pkgs_updated) > 0:
+        Package.push_commits()
+    # Trigger rebuild
+    if not args.no_trigger:
+        for pkg in pkgs_updated:
+            pkg.trigger_rebuild()
 except Exception as e:
     logging.error(f"Error: {e}")
     raise (e)
