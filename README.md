@@ -28,8 +28,8 @@ You can find the RPM packages in the DNF repository at
 ```sh
 sudo dnf copr enable loichyan/packages
 # Or download manually
-source /etc/os-release && \
-  curl "https://copr.fedorainfracloud.org/coprs/loichyan/packages/repo/$ID-$VERSION_ID/dnf.repo" | \
+source /etc/os-release &&
+  curl "https://copr.fedorainfracloud.org/coprs/loichyan/packages/repo/$ID-$VERSION_ID/dnf.repo" |
   sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:loichyan:packages.repo
 ```
 
