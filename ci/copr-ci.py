@@ -26,7 +26,7 @@ class Args:
 
 
 USER = "github-actions"
-EMAIL = "41898282+github-actions[bot]@users.noreply.github.com"
+EMAIL = "github-actions@github.com"
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
