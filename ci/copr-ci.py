@@ -6,7 +6,24 @@ import os
 import re
 import requests
 import subprocess
+from functools import cached_property
 from datetime import datetime
+
+
+class Args:
+    def __init__(self, envargs: dict[str, str] = {}) -> None:
+        object.__setattr__(self, "$envargs", envargs)
+
+    def __getattribute__(self, arg: str):
+        envarg = object.__getattribute__(self, "$envargs").get(arg)
+        val = object.__getattribute__(self, arg)
+        if envarg is not None and val is None:
+            val = os.environ.get(envarg)
+            if val is None:
+                raise Exception(f"Argument {arg.upper()} is not supplied")
+            object.__setattr__(self, arg, val)
+        return val
+
 
 USER = "github-actions"
 EMAIL = "41898282+github-actions[bot]@users.noreply.github.com"
@@ -37,21 +54,14 @@ parser.add_argument(
     nargs="*",
     metavar="PACKAGES",
 )
-args = parser.parse_args()
-
-
-def arg_or_env(arg: str, env: str):
-    def getter():
-        val = getattr(args, arg) or os.environ.get(env)
-        if val is None:
-            raise Exception(f"Argument {arg.upper()} is not supplied")
-        return val
-
-    return getter
-
-
-user_id = arg_or_env("user_id", "COPR_USER_UD")
-project_uuid = arg_or_env("project_uuid", "COPR_PROJECT_UUID")
+args = parser.parse_args(
+    namespace=Args(
+        {
+            "user_id": "COPR_USER_ID",
+            "project_uuid": "COPR_PROJECT_UUID",
+        }
+    )
+)
 
 
 class Package:
@@ -64,37 +74,28 @@ class Package:
         self.repo = repo
         self._version = version
 
-    @property
+    @cached_property
     def spec(self) -> str:
-        if not hasattr(self, "_spec"):
-            with open(f"{self.name}/{self.name}.spec") as f:
-                self._spec = f.read()
-        return self._spec
+        with open(f"{self.name}/{self.name}.spec") as f:
+            return f.read()
 
-    @property
-    def spec_tag(self):
-        if not hasattr(self, "_spec_tag"):
-            res = re.search(r"%global vtag (.+)$", self.spec, re.M)
-            assert res, self.spec
-            self._spec_tag = res.group(1)
-        return self._spec_tag
+    @cached_property
+    def spec_tag(self) -> str:
+        res = re.search(r"%global vtag (.+)$", self.spec, re.M)
+        assert res, f"Cannot find vtag in package {self.name}"
+        return res.group(1)
 
-    @property
+    @cached_property
     def latest_tag(self) -> str:
-        if not hasattr(self, "_latest_tag"):
-            logging.info(f"Fetch the latest tag of package {self.name}")
-            resp = requests.get(
-                f"https://api.github.com/repos/{self.repo}/releases/latest"
-            ).json()
-            self._latest_tag = resp["tag_name"]
-        return self._latest_tag
+        logging.info(f"Fetch the latest tag of package {self.name}")
+        resp = requests.get(
+            f"https://api.github.com/repos/{self.repo}/releases/latest"
+        ).json()
+        return resp["tag_name"]
 
-    @property
+    @cached_property
     def latest_version(self) -> str:
-        if not hasattr(self, "_latest_version"):
-            v = re.sub(self._version, r"\1", self.latest_tag)
-            self._latest_version = v
-        return self._latest_version
+        return re.sub(self._version, r"\1", self.latest_tag)
 
     def update(self) -> bool:
         """
@@ -167,7 +168,7 @@ class Package:
     def trigger_rebuild(self):
         logging.info(f"Trigger rebuild of package {self.name}")
         requests.post(
-            f"https://copr.fedorainfracloud.org/webhooks/custom/{user_id()}/{project_uuid()}/{self.name}/"
+            f"https://copr.fedorainfracloud.org/webhooks/custom/{args.user_id}/{args.project_uuid}/{self.name}/"
         )
 
 
@@ -178,6 +179,8 @@ packages = {
 logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 try:
+    assert args.user_id
+    assert args.project_uuid
     pkgs = set(args.packages)
     # Collect packages to update
     pkgs_to_update: list[Package] = []
