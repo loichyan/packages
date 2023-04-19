@@ -10,6 +10,23 @@ from functools import cached_property
 from datetime import datetime
 
 
+USER = "github-actions"
+EMAIL = "github-actions@github.com"
+
+
+def git(*args: str):
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            f"user.name={USER}",
+            "-c",
+            f"user.email={EMAIL}",
+            *args,
+        ]
+    ).check_returncode()
+
+
 class Args:
     def __init__(self, envargs: dict[str, str] = {}) -> None:
         object.__setattr__(self, "$envargs", envargs)
@@ -24,9 +41,6 @@ class Args:
             object.__setattr__(self, arg, val)
         return val
 
-
-USER = "github-actions"
-EMAIL = "github-actions@github.com"
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -146,30 +160,25 @@ class Package:
 
     def _commit_changes(self):
         logging.info(f"Commit changes of {self.name}")
-        subprocess.run(
-            [
-                "git",
-                "-c",
-                f"user.name={USER}",
-                "-c",
-                f"user.email={EMAIL}",
-                "commit",
-                "--all",
-                "-m",
-                f"chore({self.name}): bump version to {self.latest_version}",
-            ]
+        git(
+            "commit",
+            "--all",
+            "-m",
+            f"chore({self.name}): bump version to {self.latest_version}",
         )
 
     @staticmethod
     def push_commits():
         logging.info(f"Push commits")
-        subprocess.run(["git", "push"])
+        git("push")
 
     def trigger_rebuild(self):
         logging.info(f"Trigger rebuild of package {self.name}")
-        requests.post(
+        resp = requests.post(
             f"https://copr.fedorainfracloud.org/webhooks/custom/{args.user_id}/{args.project_uuid}/{self.name}/"
         )
+        if resp.status_code != 200:
+            raise RuntimeError(f"Cannot rebuild package {self.name}: {resp.text}")
 
 
 packages = {
