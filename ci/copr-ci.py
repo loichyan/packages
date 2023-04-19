@@ -99,18 +99,18 @@ class Package:
 
     def update(self) -> bool:
         """
-        Updates package. returns whether is latest.
+        Updates package, returns whether is updated.
         """
         if self.is_latest():
             logging.info(f"Skip latest package {self.name}")
-            return True
+            return False
         logging.info(
             f"Update package {self.name} from {self.spec_tag} to {self.latest_tag}"
         )
         self._update_spec()
         self._update_changelog()
         self._commit_changes()
-        return False
+        return True
 
     def is_latest(self) -> bool:
         """
