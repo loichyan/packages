@@ -10,8 +10,8 @@ from functools import cached_property
 from datetime import datetime
 
 
-USER = "github-actions"
-EMAIL = "github-actions@github.com"
+COMMIT_USERNAME = "github-actions[bot]"
+COMMIT_EMAIL = "github-actions[bot]@users.noreply.github.com"
 
 
 def git(*args: str):
@@ -19,9 +19,9 @@ def git(*args: str):
         [
             "git",
             "-c",
-            f"user.name={USER}",
+            f"user.name={COMMIT_USERNAME}",
             "-c",
-            f"user.email={EMAIL}",
+            f"user.email={COMMIT_EMAIL}",
             *args,
         ]
     ).check_returncode()
@@ -150,7 +150,7 @@ class Package:
         logging.info(f"Update {path}")
         now = datetime.now().strftime("%c")
         changelog = (
-            f"* {now} {USER} <{EMAIL}> - {self.latest_version}-1\n"
+            f"* {now} {COMMIT_USERNAME} <{COMMIT_EMAIL}> - {self.latest_version}-1\n"
             f"- Bump version tag to {self.latest_tag}\n"
         )
         with open(path, "r") as f:
