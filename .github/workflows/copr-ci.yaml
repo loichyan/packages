@@ -1,5 +1,8 @@
 name: copr-ci
 
+permissions:
+  contents: write
+
 on:
   schedule:
     # Runs at 00:00AM UTC
