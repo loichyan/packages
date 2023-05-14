@@ -1,4 +1,4 @@
-%global vtag v3.0.0
+%global vtag v3.0.1
 %global fontconf 10-symbols-nerd-font.conf
 
 Name:           symbols-nerd-font
