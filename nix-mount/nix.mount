@@ -12,3 +12,6 @@ What=/var/nix
 Where=/nix
 Options=bind
 Type=none
+
+[Install]
+WantedBy=multi-user.target
