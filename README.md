@@ -11,6 +11,7 @@ You can find the RPM packages in the DNF repository at
 | ------------------- | --------------------------------------------------- |
 | [wezterm]           | [![wezterm-badge]][wezterm-pkg]                     |
 | [symbols-nerd-font] | [![symbols-nerd-font-badge]][symbols-nerd-font-pkg] |
+| [nix-mount] | [![nix-mount-badge]][nix-mount-pkg] |
 
 [wezterm]: https://wezfurlong.org/wezterm
 [wezterm-pkg]:
@@ -22,6 +23,11 @@ You can find the RPM packages in the DNF repository at
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-font/
 [symbols-nerd-font-badge]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-font/status_image/last_build.png
+[nix-mount]: nix-mount
+[nix-mount-pkg]:
+  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/nix-mount/
+[nix-mount-badge]:
+  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/nix-mount/status_image/last_build.png
 
 ## ⚙️ Installation
 
