@@ -8,6 +8,7 @@ import requests
 import subprocess
 from functools import cached_property
 from datetime import datetime
+import typing as T
 
 
 COMMIT_USERNAME = "github-actions[bot]"
@@ -28,7 +29,7 @@ def git(*args: str):
 
 
 class Args:
-    def __init__(self, envargs: dict[str, str] = {}) -> None:
+    def __init__(self, envargs: T.Dict[str, str] = {}) -> None:
         object.__setattr__(self, "$envargs", envargs)
 
     def __getattribute__(self, arg: str):
@@ -79,11 +80,9 @@ args = parser.parse_args(
 
 
 class Package:
-    name: str
-    repo: str
-    _version: str
-
-    def __init__(self, name: str, repo: str, *, version: str = r"^v(.+)$"):
+    def __init__(
+        self, name: str, repo: T.Optional[str] = None, *, version: str = r"^v(.+)$"
+    ):
         self.name = name
         self.repo = repo
         self._version = version
@@ -115,6 +114,8 @@ class Package:
         """
         Updates package, returns whether is updated.
         """
+        if self.repo is None:
+            return False
         if self.is_latest():
             logging.info(f"Skip latest package {self.name}")
             return False
@@ -184,6 +185,7 @@ class Package:
 packages = {
     "wezterm": Package("wezterm", "wez/wezterm", version=r"^(\d+).*$"),
     "symbols-nerd-font": Package("symbols-nerd-font", "ryanoasis/nerd-fonts"),
+    "nix-mount": Package("nix-mount"),
 }
 logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
@@ -192,7 +194,7 @@ try:
     assert args.project_uuid
     pkgs = set(args.packages)
     # Collect packages to update
-    pkgs_to_update: list[Package] = []
+    pkgs_to_update: T.List[Package] = []
     if len(pkgs) == 0:
         pkgs_to_update.extend(packages.values())
     else:
@@ -201,7 +203,7 @@ try:
             if pkg is None:
                 raise Exception(f"Package {name} is undefined")
             pkgs_to_update.append(pkg)
-    pkgs_updated: list[Package] = (
+    pkgs_updated: T.List[Package] = (
         # Rebuild all packages if skip check
         pkgs_to_update
         if args.no_check
