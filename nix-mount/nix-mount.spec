@@ -1,5 +1,5 @@
 Name:          nix-mount
-Version:       0.1.0
+Version:       0.1.1
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT OR Apache-2.0
