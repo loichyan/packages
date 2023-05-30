@@ -1,19 +1,19 @@
 %global vtag v3.0.1
 %global fontconf 10-symbols-nerd-font.conf
 
-Name:           symbols-nerd-font
-Version:        %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
-Release:        %autorelease
-Packager:       Loi Chyan <loichyan@foxmail.com>
-License:        MIT and OFL
-URL:            https://www.nerdfonts.com
-Summary:        Just the Nerd Font Icons. I.e Symbol font only.
-Requires:       fontpackages-filesystem
-BuildArch:      noarch
-BuildRequires:  fontpackages-devel
-Source0:        https://github.com/ryanoasis/nerd-fonts/releases/download/%{vtag}/NerdFontsSymbolsOnly.zip
-Source1:        https://raw.githubusercontent.com/ryanoasis/nerd-fonts/%{vtag}/10-nerd-font-symbols.conf
-Source2:        %{name}.metainfo.xml
+Name:          symbols-nerd-font
+Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
+Release:       %autorelease
+Packager:      Loi Chyan <loichyan@foxmail.com>
+License:       MIT AND OFL
+URL:           https://www.nerdfonts.com
+Summary:       Just the Nerd Font Icons. I.e Symbol font only.
+Requires:      fontpackages-filesystem
+BuildArch:     noarch
+BuildRequires: fontpackages-devel
+Source0:       https://github.com/ryanoasis/nerd-fonts/releases/download/%{vtag}/NerdFontsSymbolsOnly.zip
+Source1:       https://raw.githubusercontent.com/ryanoasis/nerd-fonts/%{vtag}/10-nerd-font-symbols.conf
+Source2:       %{name}.metainfo.xml
 
 %description
 Nerd Fonts is a project that patches developer targeted fonts with a high number
