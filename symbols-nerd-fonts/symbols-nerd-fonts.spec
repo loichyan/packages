@@ -4,7 +4,7 @@
 
 Name:          %{fontname}
 Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
-Release:       %autorelease -b 2
+Release:       %autorelease -b 3
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT AND OFL
 URL:           https://www.nerdfonts.com
