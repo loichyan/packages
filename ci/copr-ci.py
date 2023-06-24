@@ -186,6 +186,7 @@ packages = {
     "wezterm": Package("wezterm", "wez/wezterm", version=r"^(\d+).*$"),
     "symbols-nerd-font": Package("symbols-nerd-font", "ryanoasis/nerd-fonts"),
     "nix-mount": Package("nix-mount"),
+    "sarasa-gothic-fonts": Package("sarasa-gothic-fonts", "be5invis/Sarasa-Gothic"),
 }
 logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 

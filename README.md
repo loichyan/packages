@@ -7,11 +7,12 @@ You can find the RPM packages in the DNF repository at
 
 ## 📊 Status
 
-| Package             | Status                                              |
-| ------------------- | --------------------------------------------------- |
-| [wezterm]           | [![wezterm-badge]][wezterm-pkg]                     |
-| [symbols-nerd-font] | [![symbols-nerd-font-badge]][symbols-nerd-font-pkg] |
-| [nix-mount] | [![nix-mount-badge]][nix-mount-pkg] |
+| Package               | Status                                                  |
+| --------------------- | ------------------------------------------------------- |
+| [wezterm]             | [![wezterm-badge]][wezterm-pkg]                         |
+| [symbols-nerd-font]   | [![symbols-nerd-font-badge]][symbols-nerd-font-pkg]     |
+| [nix-mount]           | [![nix-mount-badge]][nix-mount-pkg]                     |
+| [sarasa-gothic-fonts] | [![sarasa-gothic-fonts-badge]][sarasa-gothic-fonts-pkg] |
 
 [wezterm]: https://wezfurlong.org/wezterm
 [wezterm-pkg]:
@@ -28,6 +29,11 @@ You can find the RPM packages in the DNF repository at
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/nix-mount/
 [nix-mount-badge]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/nix-mount/status_image/last_build.png
+[sarasa-gothic-fonts]: https://github.com/be5invis/Sarasa-Gothic
+[sarasa-gothic-fonts-pkg]:
+  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/sarasa-gothic-fonts/
+[sarasa-gothic-fonts-badge]:
+  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/sarasa-gothic-fonts/status_image/last_build.png
 
 ## ⚙️ Installation
 
