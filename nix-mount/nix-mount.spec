@@ -13,6 +13,10 @@ Source2:       nix.mount
 %description
 Mount /nix for single user nix installation.
 
+%files
+%{_unitdir}/nix-mount.service
+%{_unitdir}/nix.mount
+
 %prep
 
 %build
@@ -21,10 +25,6 @@ Mount /nix for single user nix installation.
 install -dm755 %{buildroot}%{_unitdir}
 install -m644 %{SOURCE1} %{buildroot}%{_unitdir}
 install -m644 %{SOURCE2} %{buildroot}%{_unitdir}
-
-%files
-%{_unitdir}/nix-mount.service
-%{_unitdir}/nix.mount
 
 %changelog
 %autochangelog
