@@ -3,7 +3,7 @@
 
 Name:          %{fontname}-fonts
 Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
-Release:       %autorelease -2
+Release:       %autorelease -b 2
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       OFL-1.1
 URL:           https://github.com/be5invis/Sarasa-Gothic
