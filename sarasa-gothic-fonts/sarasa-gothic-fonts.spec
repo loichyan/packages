@@ -3,7 +3,7 @@
 
 Name:          %{fontname}-fonts
 Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
-Release:       %autorelease
+Release:       %autorelease -2
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       OFL-1.1
 URL:           https://github.com/be5invis/Sarasa-Gothic
@@ -29,7 +29,7 @@ A CJK programming font based on Iosevka and Source Han Sans.
 install -Dm644 *.ttc -t %{buildroot}%{_fontdir}
 install -Dm644 %{SOURCE1} -t %{buildroot}%{_defaultlicensedir}/%{name}
 install -Dm644 %{SOURCE2} -t %{buildroot}%{_defaultdocdir}/%{name}
-install -Dm644 %{SOURCE2} %{buildroot}%{_datadir}/metainfo/%{name}.metainfo.xml
+install -Dm644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/%{name}.metainfo.xml
 
 %files
 %doc README.md
