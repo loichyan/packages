@@ -10,7 +10,7 @@ You can find the RPM packages in the DNF repository at
 | Package               | Status                                                  |
 | --------------------- | ------------------------------------------------------- |
 | [wezterm]             | [![wezterm-badge]][wezterm-pkg]                         |
-| [symbols-nerd-font]   | [![symbols-nerd-font-badge]][symbols-nerd-font-pkg]     |
+| [symbols-nerd-fonts]  | [![symbols-nerd-fonts-badge]][symbols-nerd-fonts-pkg]   |
 | [nix-mount]           | [![nix-mount-badge]][nix-mount-pkg]                     |
 | [sarasa-gothic-fonts] | [![sarasa-gothic-fonts-badge]][sarasa-gothic-fonts-pkg] |
 
@@ -19,11 +19,11 @@ You can find the RPM packages in the DNF repository at
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/wezterm/
 [wezterm-badge]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/wezterm/status_image/last_build.png
-[symbols-nerd-font]: https://www.nerdfonts.com
-[symbols-nerd-font-pkg]:
-  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-font/
-[symbols-nerd-font-badge]:
-  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-font/status_image/last_build.png
+[symbols-nerd-fonts]: https://www.nerdfonts.com
+[symbols-nerd-fonts-pkg]:
+  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-fonts/
+[symbols-nerd-fonts-badge]:
+  https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/symbols-nerd-fonts/status_image/last_build.png
 [nix-mount]: nix-mount
 [nix-mount-pkg]:
   https://copr.fedorainfracloud.org/coprs/loichyan/packages/package/nix-mount/
