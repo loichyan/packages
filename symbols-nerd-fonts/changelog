@@ -1,3 +1,6 @@
+* Sat 24 Jun 06:35:00 2023 Loi Chyan <loichyan@foxmail.com> - 3.0.2-3
+- Fix copying license/doc after `%autosetup`
+
 * Sat 24 Jun 06:12:30 2023 Loi Chyan <loichyan@foxmail.com> - 3.0.2-2
 - Add license and doc files
 

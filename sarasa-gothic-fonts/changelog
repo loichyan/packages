@@ -1,3 +1,6 @@
+* Sat 24 Jun 06:34:12 2023 Loi Chyan <loichyan@foxmail.com> - 0.41.2-3
+- Fix copying license/doc after `%autosetup`
+
 * Sat 24 Jun 06:11:54 2023 Loi Chyan <loichyan@foxmail.com> - 0.41.2-2
 - Fix wrong metainfo file
 
