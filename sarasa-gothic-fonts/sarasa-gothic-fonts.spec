@@ -27,9 +27,9 @@ A CJK programming font based on Iosevka and Source Han Sans.
 %{_datadir}/metainfo/%{name}.metainfo.xml
 
 %prep
+%autosetup -c
 cp %{SOURCE1} .
 cp %{SOURCE2} .
-%autosetup -c
 
 %build
 

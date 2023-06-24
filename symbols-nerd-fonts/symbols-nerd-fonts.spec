@@ -32,9 +32,9 @@ of glyphs (icons). Specifically to add a high number of extra glyphs from popula
 %{_datadir}/metainfo/%{name}.metainfo.xml
 
 %prep
+%autosetup -c
 cp %{SOURCE2} .
 cp %{SOURCE3} .
-%autosetup -c
 
 %build
 
