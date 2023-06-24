@@ -20,22 +20,22 @@ Source3:       %{name}.metainfo.xml
 %description
 A CJK programming font based on Iosevka and Source Han Sans.
 
+%files
+%license LICENSE
+%doc README.md
+%{_fontdir}/*
+%{_datadir}/metainfo/%{name}.metainfo.xml
+
 %prep
+cp %{SOURCE1} .
+cp %{SOURCE2} .
 %autosetup -c
 
 %build
 
 %install
 install -Dm644 *.ttc -t %{buildroot}%{_fontdir}
-install -Dm644 %{SOURCE1} -t %{buildroot}%{_defaultlicensedir}/%{name}
-install -Dm644 %{SOURCE2} -t %{buildroot}%{_defaultdocdir}/%{name}
 install -Dm644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/%{name}.metainfo.xml
-
-%files
-%doc README.md
-%license LICENSE
-%{_fontdir}/*
-%{_datadir}/metainfo/%{name}.metainfo.xml
 
 %changelog
 %autochangelog
