@@ -1,15 +1,16 @@
 %global vtag v3.0.2
-%global fontconf 10-symbols-nerd-font.conf
+%global fontname symbols-nerd-fonts
+%global fontconf 10-symbols-nerd-fonts.conf
 
-Name:          symbols-nerd-font
+Name:          %{fontname}
 Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT AND OFL
 URL:           https://www.nerdfonts.com
 Summary:       Just the Nerd Font Icons. I.e Symbol font only.
-Requires:      fontpackages-filesystem
 BuildArch:     noarch
+Requires:      fontpackages-filesystem
 BuildRequires: fontpackages-devel
 Source0:       https://github.com/ryanoasis/nerd-fonts/releases/download/%{vtag}/NerdFontsSymbolsOnly.zip
 Source1:       https://raw.githubusercontent.com/ryanoasis/nerd-fonts/%{vtag}/10-nerd-font-symbols.conf

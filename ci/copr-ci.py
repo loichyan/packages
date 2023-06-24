@@ -184,7 +184,7 @@ class Package:
 
 packages = {
     "wezterm": Package("wezterm", "wez/wezterm", version=r"^(\d+).*$"),
-    "symbols-nerd-font": Package("symbols-nerd-font", "ryanoasis/nerd-fonts"),
+    "symbols-nerd-fonts": Package("symbols-nerd-fonts", "ryanoasis/nerd-fonts"),
     "nix-mount": Package("nix-mount"),
     "sarasa-gothic-fonts": Package("sarasa-gothic-fonts", "be5invis/Sarasa-Gothic"),
 }
