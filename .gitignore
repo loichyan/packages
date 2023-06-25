@@ -1,6 +1,26 @@
-# Common files
-foo.*
+## File system
+.DS_Store
+desktop.ini
+
+## Editor
+*.iml
+*.swo
+*.swp
+.cproject
+.favorites.json
+.idea
+.project
+.settings
+.vs
+.vscode
+Session.vim
+
+## Evn files
+.direnv
+.envrc
+
+## Logs
 *.log
 
-# Env files
-.direnv
+## Misc
+foo.*
