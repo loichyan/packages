@@ -24,3 +24,10 @@ Session.vim
 
 ## Misc
 foo.*
+
+## Private keys
+akmods-keys/*.der
+akmods-keys/*.priv
+
+## RPMs
+*.rpm
