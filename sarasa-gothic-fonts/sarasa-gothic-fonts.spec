@@ -1,9 +1,9 @@
-%global vtag v0.41.2
+%global vtag v0.41.3
 %global fontname sarasa-gothic
 
 Name:          %{fontname}-fonts
 Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
-Release:       %autorelease -b 3
+Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       OFL-1.1
 URL:           https://github.com/be5invis/Sarasa-Gothic
