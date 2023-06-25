@@ -3,7 +3,7 @@ Version:       0.1.1
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT OR Apache-2.0
-URL:           https://www.nerdfonts.com
+URL:           https://github.com/dnkmmr69420/nix-installer-scripts
 Summary:       Mount /nix.
 BuildArch:     noarch
 BuildRequires: systemd-rpm-macros
