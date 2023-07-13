@@ -1,9 +1,9 @@
-%global vtag 20230408-112425-69ae8472
+%global vtag 20230712-072601-f4abf8fd
 %global debug_package %{nil}
 
 Name:          wezterm
 Version:       %(sed 's/^\([[:digit:]]\+\).*$/\1/' <<< %{vtag})
-Release:       %autorelease -b 2
+Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/%{name}
