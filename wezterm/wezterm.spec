@@ -1,9 +1,9 @@
-%global vtag 20230712-072601-f4abf8fd
-%global debug_package %{nil}
+%define vtag 20230712-072601-f4abf8fd
+%define debug_package %{nil}
 
 Name:          wezterm
 Version:       %(sed 's/^\([[:digit:]]\+\).*$/\1/' <<< %{vtag})
-Release:       %autorelease
+Release:       %autorelease -b 2
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/%{name}
@@ -16,7 +16,7 @@ BuildRequires: fontconfig-devel, openssl-devel, libxcb-devel, libxkbcommon-devel
 BuildRequires: mesa-libEGL-devel, xcb-util-devel, xcb-util-keysyms-devel, xcb-util-image-devel, xcb-util-wm-devel
 Source:        https://github.com/wez/wezterm/releases/download/%{vtag}/%{name}-%{vtag}-src.tar.gz
 
-%global _description %{expand:
+%define _description %{expand:
 wezterm is a terminal emulator with support for modern features
 such as fonts with ligatures, hyperlinks, tabs and multiple
 windows.}

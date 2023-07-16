@@ -1,9 +1,10 @@
-%global vtag v3.0.2
-%global fontname symbols-nerd-fonts
-%global fontconf 10-symbols-nerd-fonts.conf
+%define vtag v3.0.2
+%define version 3.0.2
+%define fontname symbols-nerd-fonts
+%define fontconf 10-symbols-nerd-fonts.conf
 
 Name:          %{fontname}
-Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
+Version:       %{version}
 Release:       %autorelease -b 3
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT AND OFL
@@ -23,14 +24,6 @@ Nerd Fonts is a project that patches developer targeted fonts with a high number
 of glyphs (icons). Specifically to add a high number of extra glyphs from popular
 'iconic fonts' such as Font Awesome, Devicons, Octicons, and others.
 
-%files
-%license LICENSE
-%doc readme.md
-%{_fontdir}/*
-%{_fontconfig_templatedir}/%{fontconf}
-%{_fontconfig_confdir}/%{fontconf}
-%{_datadir}/metainfo/%{name}.metainfo.xml
-
 %prep
 %autosetup -c
 cp %{SOURCE2} .
@@ -46,5 +39,12 @@ install -dm755 %{buildroot}%{_fontconfig_confdir}
 ln -s %{_fontconfig_templatedir}/%{fontconf} %{buildroot}%{_fontconfig_confdir}/%{fontconf}
 install -Dm644 %{SOURCE4} %{buildroot}%{_datadir}/metainfo/%{name}.metainfo.xml
 
+%files
+%license LICENSE
+%doc readme.md
+%{_fontdir}/*
+%{_fontconfig_templatedir}/%{fontconf}
+%{_fontconfig_confdir}/%{fontconf}
+%{_datadir}/metainfo/%{name}.metainfo.xml
+
 %changelog
-%autochangelog
