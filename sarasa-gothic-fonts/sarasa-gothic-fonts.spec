@@ -10,6 +10,7 @@ License:       OFL-1.1
 URL:           https://github.com/be5invis/Sarasa-Gothic
 Summary:       Sarasa Gothic / 更纱黑体 / 更紗黑體 / 更紗ゴシック / 사라사 고딕
 BuildArch:     noarch
+BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 Requires:      fontpackages-filesystem
 BuildRequires: p7zip
 BuildRequires: fontpackages-devel

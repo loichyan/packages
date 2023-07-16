@@ -9,6 +9,7 @@ License:       MIT OR Apache-2.0
 URL:           https://github.com/dnkmmr69420/nix-installer-scripts
 Summary:       Mount /nix.
 BuildArch:     noarch
+BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 BuildRequires: systemd-rpm-macros
 Source1:       nix-mount.service
 Source2:       nix.mount

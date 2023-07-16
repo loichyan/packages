@@ -8,6 +8,7 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/%{name}
 Summary:       Wez's Terminal Emulator.
+BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 Requires:      %{name}-terminfo = %{version}-%{release}
 Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11, libwayland-client
 Requires:      libwayland-egl, libwayland-cursor, mesa-libEGL, xcb-util, xcb-util-keysyms, xcb-util-image, xcb-util-wm
