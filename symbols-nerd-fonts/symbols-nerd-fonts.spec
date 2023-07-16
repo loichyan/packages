@@ -11,6 +11,7 @@ License:       MIT AND OFL
 URL:           https://www.nerdfonts.com
 Summary:       Just the Nerd Font Icons. I.e Symbol font only.
 BuildArch:     noarch
+BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 Requires:      fontpackages-filesystem
 BuildRequires: fontpackages-devel
 Source0:       https://github.com/ryanoasis/nerd-fonts/releases/download/%{vtag}/NerdFontsSymbolsOnly.zip
