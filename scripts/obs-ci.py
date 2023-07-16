@@ -147,22 +147,18 @@ class Package:
         service = dedent(
             f"""\
             <services>
-            <service name="obs_scm">
-                <param name="scm">git</param>
-                <param name="url">https://github.com/loichyan/packages</param>
-                <param name="revision">main</param>
-                <param name="subdir">{self.name}</param>
-                <param name="filename">source</param>
-                <param name="without-version">true</param>
-            </service>
-            <service name="extract_file">
-                <param name="archive">_service:tar_scm:source.tar</param>
-                <param name="files">source/*</param>
-            </service>
-            <service name="recompress">
-                <param name="file">_service:tar_scm:source.tar</param>
-                <param name="compression">gz</param>
-            </service>
+                <service name="obs_scm">
+                    <param name="scm">git</param>
+                    <param name="url">https://github.com/loichyan/packages</param>
+                    <param name="revision">main</param>
+                    <param name="subdir">{self.name}</param>
+                    <param name="filename">source</param>
+                    <param name="without-version">true</param>
+                </service>
+                <service name="extract_file">
+                    <param name="archive">_service:obs_scm:source.obscpio</param>
+                    <param name="files">source/*</param>
+                </service>
             </services>\
             """
         )
