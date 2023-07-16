@@ -1,7 +1,8 @@
-%global vtag 0.1.0
+%define vtag 0.1.0
+%define version 0.1.0
 
 Name:        akmods-keys
-Version:     %vtag
+Version:     %version
 Release:     %autorelease
 Packager:    Loi Chyan <loichyan@foxmail.com>
 License:     MIT
@@ -31,4 +32,3 @@ install -Dm640 %{SOURCE3} -t %{buildroot}%{_sysconfdir}/pki/%{name}/certs/
 %attr(0644,root,root) %{_sysconfdir}/rpm/macros.kmodtool
 
 %changelog
-%autochangelog
