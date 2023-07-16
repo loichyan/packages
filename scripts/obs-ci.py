@@ -215,7 +215,8 @@ class Package:
         """
         Fetches the new %vtag if no avaiable `None` should be returned.
         """
-        raise RuntimeError(f"<{self.name}> cannot be updated")
+        L.warn(f"<{self.name}> cannot be updated")
+        return None
 
 
 class GhPackage(Package):
