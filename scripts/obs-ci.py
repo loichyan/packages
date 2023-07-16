@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from argparse import ArgumentParser
+from datetime import datetime
 from functools import cached_property
 from xml.etree import ElementTree as ET
 import logging as L
@@ -49,6 +50,17 @@ class Global:
     def OBS_HOST(self):
         return os.environ.get("OBS_HOST") or "api.opensuse.org"
 
+    @cached_property
+    def COMMIT_USERNAME(self):
+        return os.environ.get("COMMIT_USERNAME") or "github-actions[bot]"
+
+    @cached_property
+    def COMMIT_EMAIL(self):
+        return (
+            os.environ.get("COMMIT_EMAIL")
+            or "github-actions[bot]@users.noreply.github.com"
+        )
+
 
 G = Global()
 
@@ -84,6 +96,10 @@ class Package:
         return f"{self.name}/{self.name}.spec"
 
     @cached_property
+    def _changelog_path(self) -> str:
+        return f"{self.name}/{self.name}.changes"
+
+    @cached_property
     def _spec(self) -> str:
         with open(self._spec_path) as f:
             return f.read()
@@ -108,6 +124,16 @@ class Package:
         new_spec = G.PAT_SPEC_VERSION.sub(f"%define version {new_version}", new_spec)
         with open(self._spec_path, "w") as f:
             f.write(new_spec)
+        L.info(f"Updating changelog of <{self.name}>")
+        now = datetime.now().strftime("%c")
+        changelog = (
+            f"* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1\n"
+            f"- Bump version tag to {new_vtag}\n"
+        )
+        with open(self._changelog_path, "r") as f:
+            changelog = changelog + "\n" + f.read()
+        with open(self._changelog_path, "w") as f:
+            f.write(changelog)
         return new_vtag
 
     def rebuild(self):
