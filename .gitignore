@@ -17,6 +17,7 @@ Session.vim
 
 ## Evn files
 .direnv
+.env
 .envrc
 
 ## Logs
