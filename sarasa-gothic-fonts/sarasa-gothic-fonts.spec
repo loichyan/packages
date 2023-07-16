@@ -1,8 +1,9 @@
-%global vtag v0.41.3
-%global fontname sarasa-gothic
+%define vtag v0.41.3
+%define version 0.41.3
+%define fontname sarasa-gothic
 
 Name:          %{fontname}-fonts
-Version:       %(sed 's/^v\(.\+\)$/\1/' <<< %{vtag})
+Version:       %{version}
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       OFL-1.1
@@ -20,12 +21,6 @@ Source3:       %{name}.metainfo.xml
 %description
 A CJK programming font based on Iosevka and Source Han Sans.
 
-%files
-%license LICENSE
-%doc README.md
-%{_fontdir}/*
-%{_datadir}/metainfo/%{name}.metainfo.xml
-
 %prep
 %autosetup -c
 cp %{SOURCE1} .
@@ -37,5 +32,10 @@ cp %{SOURCE2} .
 install -Dm644 *.ttc -t %{buildroot}%{_fontdir}
 install -Dm644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/%{name}.metainfo.xml
 
+%files
+%license LICENSE
+%doc README.md
+%{_fontdir}/*
+%{_datadir}/metainfo/%{name}.metainfo.xml
+
 %changelog
-%autochangelog
