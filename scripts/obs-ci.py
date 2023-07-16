@@ -137,7 +137,7 @@ class Package:
         self._obs_api(
             f"trigger/runservice",
             method="POST",
-            authorization="token",
+            auth="token",
             params={"project": G.OBS_PROJECT, "package": self.name},
         )
 
@@ -215,7 +215,7 @@ class Package:
         """
         Fetches the new %vtag if no avaiable `None` should be returned.
         """
-        L.warn(f"<{self.name}> cannot be updated")
+        L.warning(f"<{self.name}> cannot be updated")
         return None
 
 
@@ -274,7 +274,7 @@ def gh_output(key: str, value: str):
 
 def cli():
     parser = ArgumentParser()
-    parser.add_argument("-p", "--package", action="append")
+    parser.add_argument("-p", "--package", action="append", default=[])
     parser.add_argument("-a", "--all", action="store_true")
     parser.add_argument("--ci", action="store_true")
     parser.add_argument("--update-service", action="store_true")
