@@ -12,6 +12,12 @@ import requests as R
 import typing as T
 
 
+def require_env(key: str, default: T.Optional[str] = None):
+    val = os.environ.get(key) or default
+    assert val is not None, f"${key} must be specified"
+    return val
+
+
 class Global:
     @cached_property
     def PAT_SPEC_VTAG(self):
@@ -35,42 +41,37 @@ class Global:
 
     @cached_property
     def GH_TOKEN(self):
-        val = os.environ.get("GH_TOKEN")
-        assert val is not None, "$GH_TOKEN must be specified"
-        return val
+        return require_env("GH_TOKEN")
 
     @cached_property
     def OBS_TOKEN(self):
-        val = os.environ.get("OBS_TOKEN")
-        assert val is not None, "$OBS_TOKEN must be specified"
-        return val
+        return require_env("OBS_TOKEN")
 
     @cached_property
     def OBS_LOGIN(self):
-        val = os.environ.get("OBS_LOGIN")
-        assert val is not None, "$OBS_LOGIN must be specified"
-        return val
+        return require_env("OBS_LOGIN")
 
     @cached_property
     def OBS_PROJECT(self):
-        val = os.environ.get("OBS_PROJECT")
-        assert val is not None, "$OBS_PROJECT must be specified"
-        return val
+        return require_env("OBS_PROJECT")
 
     @cached_property
     def OBS_HOST(self):
-        return os.environ.get("OBS_HOST") or "api.opensuse.org"
+        return require_env("OBS_HOST", "api.opensuse.org")
 
     @cached_property
     def COMMIT_USERNAME(self):
-        return os.environ.get("COMMIT_USERNAME") or "github-actions[bot]"
+        return require_env("COMMIT_USERNAME", "github-actions[bot]")
 
     @cached_property
     def COMMIT_EMAIL(self):
-        return (
-            os.environ.get("COMMIT_EMAIL")
-            or "github-actions[bot]@users.noreply.github.com"
+        return require_env(
+            "COMMIT_EMAIL", "github-actions[bot]@users.noreply.github.com"
         )
+
+    @cached_property
+    def GITHUB_OUTPUT(self):
+        return require_env("GITHUB_OUTPUT")
 
 
 G = Global()
@@ -126,7 +127,7 @@ class Package:
                 """
             )
             f.write(changes + changelog)
-        return new_vtag
+        return new_version
 
     def rebuild(self):
         """
@@ -265,10 +266,16 @@ PACKAGES: T.Dict[str, Package] = {
 }
 
 
+def gh_output(key: str, value: str):
+    with open(G.GITHUB_OUTPUT, "a") as f:
+        f.write(f"{key}={value}")
+
+
 def cli():
     parser = ArgumentParser()
     parser.add_argument("-p", "--package", action="append")
     parser.add_argument("-a", "--all", action="store_true")
+    parser.add_argument("--ci", action="store_true")
     parser.add_argument("--update-service", action="store_true")
     parser.add_argument("--update", action="store_true")
     parser.add_argument("--rebuild", action="store_true")
@@ -285,10 +292,13 @@ def main():
             package.update_service()
         updated = None
         if args.update:
-            if package.update() is not None:
+            new_version = package.update()
+            if new_version is None:
                 updated = False
             else:
                 updated = True
+                if args.ci:
+                    gh_output("new_version", new_version)
         if updated != False and args.rebuild:
             package.rebuild()
 
