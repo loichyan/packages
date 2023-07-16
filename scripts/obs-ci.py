@@ -46,6 +46,12 @@ class Global:
         return val
 
     @cached_property
+    def OBS_LOGIN(self):
+        val = os.environ.get("OBS_LOGIN")
+        assert val is not None, "$OBS_LOGIN must be specified"
+        return val
+
+    @cached_property
     def OBS_PROJECT(self):
         val = os.environ.get("OBS_PROJECT")
         assert val is not None, "$OBS_PROJECT must be specified"
@@ -68,28 +74,6 @@ class Global:
 
 
 G = Global()
-
-
-class Response:
-    def __init__(self, text: str):
-        self.text = text
-
-    @cached_property
-    def tree(self) -> ET.Element:
-        return ET.fromstring(self.text)
-
-    @cached_property
-    def status_code(self) -> str:
-        code = self.tree.get("code")
-        assert code is not None, "Cannot parse status.code from the response"
-        return code
-
-    @cached_property
-    def status_summary(self) -> str:
-        summary = self.tree.find("./summary")
-        summary = summary.text if summary is not None else None
-        assert summary is not None, "Cannot parse status.summary from the response"
-        return summary
 
 
 class Package:
@@ -149,21 +133,78 @@ class Package:
         Rebuilds this package.
         """
         L.info(f"Rebuilding <{self.name}>")
-        resp = R.post(
-            f"https://{G.OBS_HOST}/trigger/runservice",
-            params={
-                "project": G.OBS_PROJECT,
-                "package": self.name,
-            },
-            headers={
-                "Authorization": f"Token {G.OBS_TOKEN}",
-                "Accept": "application/xml; charset=utf-8",
-                "Content-Type": "application/json",
-            },
+        self._obs_api(
+            f"trigger/runservice",
+            method="POST",
+            authorization="token",
+            params={"project": G.OBS_PROJECT, "package": self.name},
         )
-        resp = Response(resp.text)
-        if resp.status_code != "ok":
-            raise RuntimeError(f"Cannot rebuild '{self.name}': {resp.status_summary}")
+
+    def update_service(self):
+        """
+        Updates services of this package.
+        """
+        service = dedent(
+            f"""\
+            <services>
+            <service name="obs_scm">
+                <param name="scm">git</param>
+                <param name="url">https://github.com/loichyan/packages</param>
+                <param name="revision">main</param>
+                <param name="subdir">{self.name}</param>
+                <param name="filename">source</param>
+                <param name="without-version">true</param>
+            </service>
+            <service name="extract_file">
+                <param name="archive">_service:tar_scm:source.tar</param>
+                <param name="files">source/*</param>
+            </service>
+            <service name="recompress">
+                <param name="file">_service:tar_scm:source.tar</param>
+                <param name="compression">gz</param>
+            </service>
+            </services>\
+            """
+        )
+        self._obs_api(
+            f"source/{G.OBS_PROJECT}/{self.name}/_service",
+            method="PUT",
+            headers={"Content-Type": "application/xml"},
+            params="Update _service",
+            data=service,
+        )
+
+    def _obs_api(
+        self,
+        path: str,
+        method: T.Optional[str] = None,
+        auth: T.Optional[T.Literal["login", "token"]] = None,
+        **kwargs,
+    ) -> ET.Element:
+        url = f"{G.OBS_HOST}/{path}"
+        L.info(f"Calling OBS API: {url}")
+        if auth == None or auth == "login":
+            authorization = f"Basic {G.OBS_LOGIN}"
+        elif auth == "token":
+            authorization = f"Token {G.OBS_TOKEN}"
+        else:
+            raise ValueError(f"Unsupported authorization method: '{auth}'")
+        kwargs.update(
+            dict(
+                headers={
+                    "Accept": "application/xml; charset=utf-8",
+                    "Authorization": authorization,
+                    **(kwargs.get("headers") or {}),
+                },
+            )
+        )
+        resp = R.request(method or "GET", f"https://{url}", **kwargs)
+        tree = ET.fromstring(resp.text)
+        if resp.status_code != 200:
+            summary = tree.find("./status/summary")
+            summary = summary.text if summary is not None else None
+            raise RuntimeError(f"Cannot rebuild '{self.name}': {summary or resp.text}")
+        return tree
 
     def _parse_version(self, vtag: str) -> T.Optional[str]:
         """
@@ -173,7 +214,7 @@ class Package:
         if mat is not None:
             return mat[2]
 
-    def _update_vtag(self, vtag: str) -> T.Optional[str]:
+    def _update_vtag(self, _: str) -> T.Optional[str]:
         """
         Fetches the new %vtag if no avaiable `None` should be returned.
         """
@@ -192,17 +233,25 @@ class GhPackage(Package):
 
     def _update_vtag(self, vtag: str) -> T.Optional[str]:
         L.info(f"Fetching the latest release of {self.repo}")
-        resp = R.get(
-            f"https://api.github.com/repos/{self.repo}/releases/latest",
-            headers={
-                "Authorization": f"Bearer {G.GH_TOKEN}",
-                "Content-Type": "application/json",
-            },
-        )
-        json = resp.json()
-        latest_vtag = json["tag_name"]
+        resp = self._gh_api(f"https://api.github.com/repos/{self.repo}/releases/latest")
+        latest_vtag = resp["tag_name"]
         if latest_vtag != vtag:
             return latest_vtag
+
+    def _gh_api(self, url: str, method: T.Optional[str] = None, **kwargs) -> T.Any:
+        resp = R.request(
+            method or "GET",
+            url,
+            **{
+                "headers": {
+                    "Authorization": f"Bearer {G.GH_TOKEN}",
+                    "Content-Type": "application/json",
+                    **(kwargs.get("params") or {}),
+                },
+                **kwargs,
+            },
+        )
+        return resp.json()
 
 
 class Wezterm(GhPackage):
@@ -223,6 +272,8 @@ PACKAGES: T.Dict[str, Package] = {
 def cli():
     parser = ArgumentParser()
     parser.add_argument("-p", "--package", action="append")
+    parser.add_argument("-a", "--all", action="store_true")
+    parser.add_argument("--update-service", action="store_true")
     parser.add_argument("--update", action="store_true")
     parser.add_argument("--rebuild", action="store_true")
     return parser.parse_args()
@@ -231,9 +282,11 @@ def cli():
 def main():
     L.basicConfig(level=L.INFO)
     args = cli()
-    for pname in args.package:
+    for pname in PACKAGES.keys() if args.all else args.package:
         package = PACKAGES.get(pname)
         assert package is not None, f"<{pname}> is not defined"
+        if args.update_service:
+            package.update_service()
         updated = None
         if args.update:
             if package.update() is not None:
