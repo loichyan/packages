@@ -1,0 +1,53 @@
+name: build
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # Runs at 00:00AM UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Pacakge to build
+        required: false
+        type: string
+
+jobs:
+  update-packages:
+    strategy:
+      matrix:
+        package: [nix-mount, sarasa-gothic-fonts, symbols-nerd-fonts, wezterm]
+    name: Update packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+
+      - id: run-obs-ci
+        name: Run obs-ci.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
+          OBS_PROJECT: home:loichyan
+        run: |
+          python scripts/obs-ci.py --ci --update --rebuild --package ${{ matrix.package }}
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: |
+            chore(${{ matrix.package }}): update to ${{ steps.run-obs-ci.new_version }}
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
