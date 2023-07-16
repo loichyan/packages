@@ -14,11 +14,15 @@ import typing as T
 class Global:
     @cached_property
     def PAT_SPEC_VTAG(self):
-        return re.compile(r"^%define vtag (.+)$", flags=re.M)
+        return re.compile(r"^(%define vtag )(.+)$", flags=re.M)
 
     @cached_property
     def PAT_SPEC_VERSION(self):
-        return re.compile(r"^%define version (.+)$", flags=re.M)
+        return re.compile(r"^(%define version )(.+)$", flags=re.M)
+
+    @cached_property
+    def PAT_SPEC_AUTORELEASE(self):
+        return re.compile(r"^(Release: +%autorelease)(.*)$", flags=re.M)
 
     @cached_property
     def PAT_VERSION(self):
@@ -108,7 +112,7 @@ class Package:
     def vtag(self) -> str:
         mat = G.PAT_SPEC_VTAG.match(self._spec)
         assert mat is not None, "Cannot parse %vtag from the spec"
-        return mat[1]
+        return mat[2]
 
     def update(self) -> T.Optional[str]:
         """
@@ -120,8 +124,9 @@ class Package:
         L.info(f"Updating <{self.name}> to {new_vtag}")
         new_version = self._parse_version(new_vtag)
         new_spec = self._spec
-        new_spec = G.PAT_SPEC_VTAG.sub(f"%define vtag {new_vtag}", new_spec)
-        new_spec = G.PAT_SPEC_VERSION.sub(f"%define version {new_version}", new_spec)
+        new_spec = G.PAT_SPEC_VTAG.sub(f"$1{new_vtag}", new_spec)
+        new_spec = G.PAT_SPEC_VERSION.sub(f"$1{new_version}", new_spec)
+        new_spec = G.PAT_SPEC_AUTORELEASE.sub("$1", new_spec)
         with open(self._spec_path, "w") as f:
             f.write(new_spec)
         L.info(f"Updating changelog of <{self.name}>")
@@ -163,7 +168,7 @@ class Package:
         """
         mat = G.PAT_VERSION.match(vtag)
         if mat is not None:
-            return mat[1]
+            return mat[2]
 
     def _update_vtag(self, vtag: str) -> T.Optional[str]:
         """
