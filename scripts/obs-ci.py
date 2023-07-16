@@ -3,6 +3,7 @@
 from argparse import ArgumentParser
 from datetime import datetime
 from functools import cached_property
+from textwrap import dedent
 from xml.etree import ElementTree as ET
 import logging as L
 import os
@@ -14,11 +15,11 @@ import typing as T
 class Global:
     @cached_property
     def PAT_SPEC_VTAG(self):
-        return re.compile(r"^(%define vtag )(.+)$", flags=re.M)
+        return re.compile(r"^(%define vtag) (.+)$", flags=re.M)
 
     @cached_property
     def PAT_SPEC_VERSION(self):
-        return re.compile(r"^(%define version )(.+)$", flags=re.M)
+        return re.compile(r"^(%define version) (.+)$", flags=re.M)
 
     @cached_property
     def PAT_SPEC_AUTORELEASE(self):
@@ -124,21 +125,23 @@ class Package:
         L.info(f"Updating <{self.name}> to {new_vtag}")
         new_version = self._parse_version(new_vtag)
         new_spec = self._spec
-        new_spec = G.PAT_SPEC_VTAG.sub(f"$1{new_vtag}", new_spec)
-        new_spec = G.PAT_SPEC_VERSION.sub(f"$1{new_version}", new_spec)
-        new_spec = G.PAT_SPEC_AUTORELEASE.sub("$1", new_spec)
+        new_spec = G.PAT_SPEC_VTAG.sub(rf"\1 {new_vtag}", new_spec)
+        new_spec = G.PAT_SPEC_VERSION.sub(rf"\1 {new_version}", new_spec)
+        new_spec = G.PAT_SPEC_AUTORELEASE.sub(r"\1", new_spec)
         with open(self._spec_path, "w") as f:
             f.write(new_spec)
         L.info(f"Updating changelog of <{self.name}>")
         now = datetime.now().strftime("%c")
-        changelog = (
-            f"* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1\n"
-            f"- Bump version tag to {new_vtag}\n"
-        )
         with open(self._changelog_path, "r") as f:
-            changelog = changelog + "\n" + f.read()
+            changelog = f.read()
         with open(self._changelog_path, "w") as f:
-            f.write(changelog)
+            changes = dedent(
+                f"""\
+                * {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1\n
+                - Bump version tag to {new_vtag}\n
+                """
+            )
+            f.write(changes + changelog)
         return new_vtag
 
     def rebuild(self):
@@ -188,8 +191,9 @@ class GhPackage(Package):
             return mat[1]
 
     def _update_vtag(self, vtag: str) -> T.Optional[str]:
+        L.info(f"Fetching the latest release of {self.repo}")
         resp = R.get(
-            f"https://api.github.com/repos/{self.repo}/latest",
+            f"https://api.github.com/repos/{self.repo}/releases/latest",
             headers={
                 "Authorization": f"Bearer {G.GH_TOKEN}",
                 "Content-Type": "application/json",
@@ -225,12 +229,13 @@ def cli():
 
 
 def main():
+    L.basicConfig(level=L.INFO)
     args = cli()
     for pname in args.package:
         package = PACKAGES.get(pname)
         assert package is not None, f"<{pname}> is not defined"
         updated = None
-        if args.update and package.update() is not None:
+        if args.update:
             if package.update() is not None:
                 updated = False
             else:
