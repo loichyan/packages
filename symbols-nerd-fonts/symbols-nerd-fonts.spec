@@ -1,7 +1,8 @@
 %define vtag v3.0.2
 %define version 3.0.2
 %define fontname symbols-nerd-fonts
-%define fontconf 10-symbols-nerd-fonts.conf
+%define fontconf 10-%{fontname}.conf
+%define metainfo %{fontname}.metainfo.xml
 
 Name:          %{fontname}
 Version:       %{version}
@@ -11,14 +12,9 @@ License:       MIT AND OFL
 URL:           https://www.nerdfonts.com
 Summary:       Just the Nerd Font Icons. I.e Symbol font only.
 BuildArch:     noarch
-BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 Requires:      fontpackages-filesystem
 BuildRequires: fontpackages-devel
-Source0:       https://github.com/ryanoasis/nerd-fonts/releases/download/%{vtag}/NerdFontsSymbolsOnly.zip
-Source1:       https://raw.githubusercontent.com/ryanoasis/nerd-fonts/%{vtag}/10-nerd-font-symbols.conf
-Source2:       https://raw.githubusercontent.com/ryanoasis/nerd-fonts/%{vtag}/LICENSE
-Source3:       https://raw.githubusercontent.com/ryanoasis/nerd-fonts/%{vtag}/readme.md
-Source4:       %{name}.metainfo.xml
+Source:        %{name}-%{vtag}-source.tar.gz
 
 %description
 Nerd Fonts is a project that patches developer targeted fonts with a high number
@@ -27,25 +23,23 @@ of glyphs (icons). Specifically to add a high number of extra glyphs from popula
 
 %prep
 %autosetup -c
-cp %{SOURCE2} .
-cp %{SOURCE3} .
 
 %build
 
 %install
-rm -f *Windows\ Compatible.ttf
-install -Dm644 *.ttf -t %{buildroot}%{_fontdir}
-install -Dm644 %{SOURCE1} %{buildroot}%{_fontconfig_templatedir}/%{fontconf}
+rm -f fonts/*"Windows Compatible.ttf"
+install -Dm644 fonts/*.ttf -t %{buildroot}%{_fontdir}
+install -Dm644 %{fontconf} %{buildroot}%{_fontconfig_templatedir}/%{fontconf}
 install -dm755 %{buildroot}%{_fontconfig_confdir}
 ln -s %{_fontconfig_templatedir}/%{fontconf} %{buildroot}%{_fontconfig_confdir}/%{fontconf}
-install -Dm644 %{SOURCE4} %{buildroot}%{_datadir}/metainfo/%{name}.metainfo.xml
+install -Dm644 %{metainfo} %{buildroot}%{_datadir}/metainfo/%{metainfo}
 
 %files
 %license LICENSE
-%doc readme.md
+%doc README.md
 %{_fontdir}/*
 %{_fontconfig_templatedir}/%{fontconf}
 %{_fontconfig_confdir}/%{fontconf}
-%{_datadir}/metainfo/%{name}.metainfo.xml
+%{_datadir}/metainfo/%{metainfo}
 
 %changelog

@@ -1,21 +1,21 @@
 %define vtag 20230712-072601-f4abf8fd
+%define version 20230712
 %define debug_package %{nil}
 
 Name:          wezterm
-Version:       %(sed 's/^\([[:digit:]]\+\).*$/\1/' <<< %{vtag})
+Version:       %{version}
 Release:       %autorelease -b 2
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/%{name}
 Summary:       Wez's Terminal Emulator.
-BuildRoot:     %{_tmppath}/%{name}-%{version}-build
 Requires:      %{name}-terminfo = %{version}-%{release}
 Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11, libwayland-client
 Requires:      libwayland-egl, libwayland-cursor, mesa-libEGL, xcb-util, xcb-util-keysyms, xcb-util-image, xcb-util-wm
 BuildRequires: cargo, make, gcc, gcc-c++, ncurses
 BuildRequires: fontconfig-devel, openssl-devel, libxcb-devel, libxkbcommon-devel, libxkbcommon-x11-devel, wayland-devel
 BuildRequires: mesa-libEGL-devel, xcb-util-devel, xcb-util-keysyms-devel, xcb-util-image-devel, xcb-util-wm-devel
-Source:        https://github.com/wez/wezterm/releases/download/%{vtag}/%{name}-%{vtag}-src.tar.gz
+Source:        %{name}-%{vtag}-source.tar.gz
 
 %define _description %{expand:
 wezterm is a terminal emulator with support for modern features
@@ -25,22 +25,6 @@ windows.}
 %description
 %{_description}
 
-%files
-%license LICENSE.md
-%doc README.md
-%{_bindir}/wezterm
-%{_bindir}/wezterm-gui
-%{_bindir}/wezterm-mux-server
-%{_bindir}/strip-ansi-escapes
-%{_bindir}/open-wezterm-here
-%{_datadir}/zsh/site-functions/_wezterm
-%{_sysconfdir}/bash_completion.d/wezterm
-%{_datadir}/icons/hicolor/128x128/apps/org.wezfurlong.wezterm.png
-%{_datadir}/applications/org.wezfurlong.wezterm.desktop
-%{_datadir}/metainfo/org.wezfurlong.wezterm.appdata.xml
-%{_datadir}/nautilus-python/extensions/wezterm-nautilus.py*
-%{_sysconfdir}/profile.d/*
-
 %package terminfo
 Summary:   The terminfo file for wezterm.
 BuildArch: noarch
@@ -49,14 +33,8 @@ Requires:  ncurses-base
 %description terminfo
 %{_description}
 
-The terminfo file for wezterm.
-
-%files terminfo
-%license LICENSE.md
-%{_datadir}/terminfo
-
 %prep
-%autosetup -n %{name}-%{vtag} -p1
+%autosetup -p1
 
 %build
 cargo build --all --release
@@ -79,5 +57,26 @@ install -Dm644 assets/wezterm-nautilus.py %{buildroot}%{_datadir}/nautilus-pytho
 install -dm755 %{buildroot}%{_datadir}/terminfo
 tic -x -o %{buildroot}%{_datadir}/terminfo termwiz/data/wezterm.terminfo
 
+The terminfo file for wezterm.
+
+%files
+%license LICENSE.md
+%doc README.md
+%{_bindir}/wezterm
+%{_bindir}/wezterm-gui
+%{_bindir}/wezterm-mux-server
+%{_bindir}/strip-ansi-escapes
+%{_bindir}/open-wezterm-here
+%{_datadir}/zsh/site-functions/_wezterm
+%{_sysconfdir}/bash_completion.d/wezterm
+%{_datadir}/icons/hicolor/128x128/apps/org.wezfurlong.wezterm.png
+%{_datadir}/applications/org.wezfurlong.wezterm.desktop
+%{_datadir}/metainfo/org.wezfurlong.wezterm.appdata.xml
+%{_datadir}/nautilus-python/extensions/wezterm-nautilus.py*
+%{_sysconfdir}/profile.d/*
+
+%files terminfo
+%license LICENSE.md
+%{_datadir}/terminfo
+
 %changelog
-%autochangelog

@@ -1,4 +1,4 @@
-name: build
+name: obs-ci
 
 permissions:
   contents: write
@@ -29,19 +29,14 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - id: run-obs-ci
-        name: Run obs-ci.py
+      - name: Update ${{ matrix.package }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
           OBS_PROJECT: home:loichyan
         run: |
-          python scripts/obs-ci.py --ci --update --rebuild --package ${{ matrix.package }}
-
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: |
-            chore(${{ matrix.package }}): update to ${{ steps.run-obs-ci.new_version }}
-          commit_user_name: github-actions[bot]
-          commit_user_email: github-actions[bot]@users.noreply.github.com
+          ./scripts/obs-ci.py \
+            --update \
+            --commit \
+            --release \
+            -p ${{ matrix.package }}

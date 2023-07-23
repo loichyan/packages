@@ -41,6 +41,115 @@ source /etc/os-release &&
   sudo tee /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:loichyan:packages.repo
 ```
 
+## 📦 Packaging process
+
+A package is checked locally (via manually running or GitHub Actions):
+
+<!--
+// https://arthursonzogni.com/Diagon/#Flowchart
+
+"START"
+
+if ("Is %vtag the latest?")
+  noop
+else {
+  "Update SPEC files (obs-ci.py --update"
+  "Archive source.tgz (mksource -o source.tgz)"
+  "Commit changes (git commit)"
+  "Release source.tgz (gh release)"
+  "Trigger rebuild (obs-ci.py --rebuild)"
+}
+
+"END"
+-->
+
+```text
+          ┌─────┐
+          │START│
+          └──┬──┘
+    _________▽__________
+   ╱                    ╲
+  ╱ Is %vtag the latest? ╲___
+  ╲                      ╱yes│
+   ╲____________________╱    │
+             │no             │
+   ┌─────────▽─────────┐     │
+   │Update SPEC files  │     │
+   │(obs-ci.py --update│     │
+   └─────────┬─────────┘     │
+┌────────────▽───────────┐   │
+│Archive source.tgz      │   │
+│(mksource -o source.tgz)│   │
+└────────────┬───────────┘   │
+     ┌───────▽──────┐        │
+     │Commit changes│        │
+     │(git commit)  │        │
+     └───────┬──────┘        │
+   ┌─────────▽────────┐      │
+   │Release source.tgz│      │
+   │(gh release)      │      │
+   └─────────┬────────┘      │
+  ┌──────────▽──────────┐    │
+  │Trigger rebuild      │    │
+  │(obs-ci.py --rebuild)│    │
+  └──────────┬──────────┘    │
+             └───┬───────────┘
+               ┌─▽─┐
+               │END│
+               └───┘
+```
+
+When the OBS instance receive the rebuild request:
+
+<!--
+// https://arthursonzogni.com/Diagon/#Flowchart
+
+"START"
+
+if ("Is %vtag the latest?")
+  noop
+else {
+  "Update SPEC files (obs-ci --update)"
+  "Update sources (obs-ci--update-soure)"
+  "Release updates (obs-ci --release)"
+  "Trigger rebuild (obs-ci --rebuild)"
+}
+
+"END"
+-->
+
+```text
+         ┌─────┐
+         │START│
+         └──┬──┘
+   _________▽__________
+  ╱                    ╲
+ ╱ Is %vtag the latest? ╲___
+ ╲                      ╱yes│
+  ╲____________________╱    │
+            │no             │
+   ┌────────▽────────┐      │
+   │Update SPEC files│      │
+   │(obs-ci --update)│      │
+   └────────┬────────┘      │
+┌───────────▽────────────┐  │
+│Update sources          │  │
+│(obs-ci --update-source)│  │
+└───────────┬────────────┘  │
+  ┌─────────▽────────┐      │
+  │Release updates   │      │
+  │(obs-ci --release)│      │
+  └─────────┬────────┘      │
+  ┌─────────▽────────┐      │
+  │Trigger rebuild   │      │
+  │(obs-ci --rebuild)│      │
+  └─────────┬────────┘      │
+            └───┬───────────┘
+              ┌─▽─┐
+              │END│
+              └───┘
+```
+
 ## ⚖️ License
 
 Licensed under either of
