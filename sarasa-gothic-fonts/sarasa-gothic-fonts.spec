@@ -35,3 +35,4 @@ install -Dm644 %{metainfo} %{buildroot}%{_datadir}/metainfo/%{metainfo}
 %{_datadir}/metainfo/%{metainfo}
 
 %changelog
+%autochangelog

@@ -32,3 +32,4 @@ install -Dm640 %{SOURCE3} -t %{buildroot}%{_sysconfdir}/pki/%{name}/certs/
 %attr(0644,root,root) %{_sysconfdir}/rpm/macros.kmodtool
 
 %changelog
+%autochangelog

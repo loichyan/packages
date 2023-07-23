@@ -30,3 +30,4 @@ install -m644 %{SOURCE2} %{buildroot}%{_unitdir}
 %{_unitdir}/nix.mount
 
 %changelog
+%autochangelog

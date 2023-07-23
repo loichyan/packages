@@ -80,3 +80,4 @@ The terminfo file for wezterm.
 %{_datadir}/terminfo
 
 %changelog
+%autochangelog
