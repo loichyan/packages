@@ -183,7 +183,7 @@ class Package:
                 </service>
                 <service name="extract_file">
                     <param name="archive">_service:obs_scm:source.obscpio</param>
-                    <param name="files">source/*</param>
+                    <param name="files">sources {self.name}.changes {self.name}.spec</param>
                 </service>
             </services>\
             """
