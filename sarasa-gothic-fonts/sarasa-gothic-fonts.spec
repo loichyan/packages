@@ -14,19 +14,24 @@ BuildArch:     noarch
 Requires:      fontpackages-filesystem
 BuildRequires: p7zip
 BuildRequires: fontpackages-devel
-Source:        %{name}-%{vtag}-source.tar.gz
+Source0:       sarasa-gothic-ttc-%{version}.7z
+Source1:       LICENSE
+Source2:       README.md
+Source3:       %{metainfo}
 
 %description
 A CJK programming font based on Iosevka and Source Han Sans.
 
 %prep
 %autosetup -c
+cp %{SOURCE1} LICENSE
+cp %{SOURCE2} README.md
 
 %build
 
 %install
-install -Dm644 fonts/*.ttc -t %{buildroot}%{_fontdir}
-install -Dm644 %{metainfo} %{buildroot}%{_datadir}/metainfo/%{metainfo}
+install -Dm644 *.ttc -t %{buildroot}%{_fontdir}
+install -Dm644 %{SOURCE3} %{buildroot}%{_datadir}/metainfo/%{metainfo}
 
 %files
 %license LICENSE

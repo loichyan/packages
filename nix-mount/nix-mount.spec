@@ -10,20 +10,18 @@ URL:           https://github.com/dnkmmr69420/nix-installer-scripts
 Summary:       Mount /nix.
 BuildArch:     noarch
 BuildRequires: systemd-rpm-macros
-Source:        %{name}-%{vtag}-source.tar.gz
+Source1:       nix-mount.service
+Source2:       nix.mount
 
 %description
 Mount /nix for single user nix installation.
 
 %prep
-%autosetup -c
 
 %build
 
 %install
-install -dm755 %{buildroot}%{_unitdir}
-install -m644 %{SOURCE1} %{buildroot}%{_unitdir}
-install -m644 %{SOURCE2} %{buildroot}%{_unitdir}
+install -Dm644 %{SOURCE1} %{SOURCE2} -t %{buildroot}%{_unitdir}
 
 %files
 %{_unitdir}/nix-mount.service

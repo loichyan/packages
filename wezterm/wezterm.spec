@@ -34,7 +34,7 @@ Requires:  ncurses-base
 %{_description}
 
 %prep
-%autosetup -p1
+%autosetup -n %{name}-%{vtag}
 
 %build
 cargo build --all --release

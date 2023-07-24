@@ -14,7 +14,11 @@ Summary:       Just the Nerd Font Icons. I.e Symbol font only.
 BuildArch:     noarch
 Requires:      fontpackages-filesystem
 BuildRequires: fontpackages-devel
-Source:        %{name}-%{vtag}-source.tar.gz
+Source0:       NerdFontsSymbolsOnly.zip
+Source1:       LICENSE
+Source2:       readme.md
+Source3:       10-nerd-font-symbols.conf
+Source4:       %{metainfo}
 
 %description
 Nerd Fonts is a project that patches developer targeted fonts with a high number
@@ -23,16 +27,18 @@ of glyphs (icons). Specifically to add a high number of extra glyphs from popula
 
 %prep
 %autosetup -c
+cp %{SOURCE1} LICENSE
+cp %{SOURCE2} README.md
 
 %build
 
 %install
-rm -f fonts/*"Windows Compatible.ttf"
-install -Dm644 fonts/*.ttf -t %{buildroot}%{_fontdir}
-install -Dm644 %{fontconf} %{buildroot}%{_fontconfig_templatedir}/%{fontconf}
+rm -f *Windows\ Compatible.ttf
+install -Dm644 *.ttf -t %{buildroot}%{_fontdir}
+install -Dm644 %{SOURCE3} %{buildroot}%{_fontconfig_templatedir}/%{fontconf}
 install -dm755 %{buildroot}%{_fontconfig_confdir}
 ln -s %{_fontconfig_templatedir}/%{fontconf} %{buildroot}%{_fontconfig_confdir}/%{fontconf}
-install -Dm644 %{metainfo} %{buildroot}%{_datadir}/metainfo/%{metainfo}
+install -Dm644 %{SOURCE4} %{buildroot}%{_datadir}/metainfo/%{metainfo}
 
 %files
 %license LICENSE

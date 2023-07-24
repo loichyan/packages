@@ -1,0 +1,59 @@
+name: update
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # Runs at 00:00AM UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      packages:
+        type: string
+        required: false
+        description: --package
+      update:
+        type: boolean
+        required: false
+        description: --update
+      release:
+        type: boolean
+        required: false
+        description: --release
+      rebuild:
+        type: boolean
+        required: false
+        description: --rebuild
+
+jobs:
+  update-packages:
+    name: Update packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+
+      - name: Update packages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
+          OBS_PROJECT: home:loichyan
+        run: |
+          ./scripts/obs-ci.py \
+            $([[ "${{ inputs.update }}" == false ]] || echo --update) \
+            $([[ "${{ inputs.release }}" == false ]] || echo --release) \
+            $([[ "${{ inputs.rebuild }}" == false ]] || echo --rebuild) \
+            $([[ -z "${{ inputs.packages }}" ]] \
+              && echo --all \
+              || for p in $(tr " " "\n"); do echo -p $p; done <<<"${{ inputs.packages }}" )
