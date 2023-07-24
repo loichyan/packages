@@ -238,14 +238,9 @@ class Package:
         <param name="subdir">{self.name}</param>
         <param name="filename">{self.name}-source</param>
         <param name="versionformat">%h</param>
-        <param name="extract">{self.name}.changes</param>
-        <param name="extract">{self.name}.spec</param>
+        <param name="extract">*.changes</param>
     </service>
-    <service name="extract_file" mode="buildtime">
-        <param name="archive">_service:obs_scm:{self.name}-source-*.obscpio</param>
-        <param name="files">{self.name}-source-*/*</param>
-    </service>
-    <service name="download_assets" mode="buildtime"></service>
+    <service name="download_assets"></service>
 </services>\
 """
 
