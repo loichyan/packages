@@ -340,6 +340,9 @@ class Package:
 
 
 class LocalPackage(Package):
+    def update_service(self):
+        return
+
     def update(self):
         return False
 
