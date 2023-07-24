@@ -195,14 +195,16 @@ class Package:
         <param name="subdir">{self.name}</param>
         <param name="filename">source</param>
         <param name="versionformat">%h</param>
-        <param name="extract">manifest {self.name}.changes {self.name}.spec</param>
+        <param name="extract">manifest</param>
+        <param name="extract">{self.name}.changes</param>
+        <param name="extract">{self.name}.spec</param>
     </service>
     <service name="extract_file" mode="buildtime">
         <param name="archive">_service:obs_scm:source-*.obscpio</param>
         <param name="files">source-*/*</param>
     </service>
     <service name="download_url" mode="buildtime">
-        <param name="download-manifest">manifest</param>
+        <param name="download-manifest">_service:obs_scm:manifest</param>
     </service>
 </services>\
 """
@@ -253,7 +255,7 @@ class Package:
             f"/source/{G.OBS_PROJECT}/{self.name}/_service",
             method="PUT",
             headers={"Content-Type": "application/xml"},
-            params="Update _service",
+            params={"comment": "Update `_service`"},
             data=self.service,
         )
 
