@@ -1,11 +1,12 @@
 # {{ METADATA BEGIN
-%define name symbols-nerd-fonts
+%define name nerd-font-symbols
 %define vtag v3.0.2
 %define version 3.0.2
 %define repo ryanoasis/nerd-fonts
 # METADATA END }}
-%define fontconf 10-%{name}.conf
-%define metainfo %{name}.metainfo.xml
+%define fontname nerd-font-symbols
+%define fontconf 10-%{fontname}.conf
+%define metainfo %{fontname}.metainfo.xml
 
 Name:          %{name}
 Version:       %{version}
@@ -24,7 +25,7 @@ Source1:       https://raw.githubusercontent.com/%{repo}/%{vtag}/LICENSE
 #!RemoteAsset
 Source2:       https://raw.githubusercontent.com/%{repo}/%{vtag}/readme.md
 #!RemoteAsset
-Source3:       https://raw.githubusercontent.com/%{repo}/%{vtag}/10-nerd-font-symbols.conf
+Source3:       https://raw.githubusercontent.com/%{repo}/%{vtag}/%{fontconf}
 Source4:       %{metainfo}
 
 %description

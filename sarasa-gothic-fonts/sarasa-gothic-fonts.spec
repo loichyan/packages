@@ -4,7 +4,8 @@
 %define version 0.41.3
 %define repo be5invis/Sarasa-Gothic
 # METADATA END }}
-%define metainfo %{name}.metainfo.xml
+%define fontname sarasa-gothic
+%define metainfo %{fontname}.metainfo.xml
 
 Name:          %{name}
 Version:       %{version}
@@ -18,7 +19,7 @@ Requires:      fontpackages-filesystem
 BuildRequires: p7zip
 BuildRequires: fontpackages-devel
 #!RemoteAsset
-Source0:       https://github.com/%{repo}/releases/download/%{vtag}/sarasa-gothic-ttc-%{version}.7z
+Source0:       https://github.com/%{repo}/releases/download/%{vtag}/%{fontname}-ttc-%{version}.7z
 #!RemoteAsset
 Source1:       https://raw.githubusercontent.com/%{repo}/%{vtag}/LICENSE
 #!RemoteAsset

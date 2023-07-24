@@ -9,19 +9,19 @@ You can find the RPM packages in the DNF repository at
 
 | Package               | Status                                                  |
 | --------------------- | ------------------------------------------------------- |
+| [nerd-font-symbols]   | [![nerd-font-symbols-badge]][nerd-font-symbols-pkg]     |
 | [nix-mount]           | [![nix-mount-badge]][nix-mount-pkg]                     |
 | [sarasa-gothic-fonts] | [![sarasa-gothic-fonts-badge]][sarasa-gothic-fonts-pkg] |
-| [symbols-nerd-fonts]  | [![symbols-nerd-fonts-badge]][symbols-nerd-fonts-pkg]   |
 | [wezterm]             | [![wezterm-badge]][wezterm-pkg]                         |
 
+[nerd-font-symbols]: https://www.nerdfonts.com
+[nerd-font-symbols-pkg]: https://build.opensuse.org/package/show/home:loichyan/nerd-font-symbols
+[nerd-font-symbols-badge]:
+  https://build.opensuse.org/projects/home:loichyan/packages/nerd-font-symbols/badge.svg?type=percent
 [nix-mount]: nix-mount
 [nix-mount-pkg]: https://build.opensuse.org/package/show/home:loichyan/nix-mount
 [nix-mount-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/nix-mount/badge.svg?type=percent
-[symbols-nerd-fonts]: https://www.nerdfonts.com
-[symbols-nerd-fonts-pkg]: https://build.opensuse.org/package/show/home:loichyan/symbols-nerd-fonts
-[symbols-nerd-fonts-badge]:
-  https://build.opensuse.org/projects/home:loichyan/packages/symbols-nerd-fonts/badge.svg?type=percent
 [wezterm]: https://wezfurlong.org/wezterm
 [wezterm-pkg]: https://build.opensuse.org/package/show/home:loichyan/wezterm
 [wezterm-badge]:

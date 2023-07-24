@@ -152,9 +152,9 @@ class Global:
     @cached_property
     def PACKAGES(self) -> T.Dict[str, T.Callable[[], "Package"]]:
         return {
+            "nerd-font-symbols": NerdFontSymbols,
             "nix-mount": NixMount,
             "sarasa-gothic-fonts": SarasaGothicFonts,
-            "symbols-nerd-fonts": SymbolsNerdFonts,
             "wezterm": Wezterm,
         }
 
@@ -353,9 +353,9 @@ class SarasaGothicFonts(GhPackage):
         super().__init__("sarasa-gothic-fonts", "be5invis/Sarasa-Gothic")
 
 
-class SymbolsNerdFonts(GhPackage):
+class NerdFontSymbols(GhPackage):
     def __init__(self):
-        super().__init__("symbols-nerd-fonts", "ryanoasis/nerd-fonts")
+        super().__init__("nerd-font-symbols-fonts", "ryanoasis/nerd-fonts")
 
 
 class Wezterm(GhPackage):
