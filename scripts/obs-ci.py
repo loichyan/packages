@@ -103,11 +103,11 @@ class Global:
 
     @cached_property
     def PAT_METADATA(self):
-        return re.compile(r"^(?:%define (\w+)) (.+)$", flags=re.M)
+        return re.compile(r"^(?:%define (\w+)) (.+)$")
 
     @cached_property
-    def PAT_AUTORELEASE(self):
-        return re.compile(r"^(Release: +%autorelease)(.*)$", flags=re.M)
+    def PAT_RELEASE(self):
+        return re.compile(r"^(Release: +)(.*)$")
 
     @cached_property
     def PAT_VERSION(self):
@@ -164,8 +164,9 @@ G = Global()
 
 class Spec:
     def __init__(self, path: str):
+        content = []
         metadata: T.Dict[str, str] = {}
-        body = ""
+        release = ""
         # 0 => Init
         # 1 => ParseMetadata
         state = 0
@@ -173,9 +174,16 @@ class Spec:
             for line in f:
                 if state == 0:
                     if line == G.METADATA_BEGIN:
+                        content.append("%METADATA")
                         state = 1
                     else:
-                        body += line
+                        mat = G.PAT_RELEASE.match(line)
+                        if mat is not None:
+                            content.append(mat[1])
+                            content.append("%RELEASE")
+                            release = mat[2]
+                        else:
+                            content.append(line)
                 elif state == 1:
                     if line == G.METADATA_END:
                         state = 0
@@ -184,16 +192,23 @@ class Spec:
                         assert mat is not None, f"Cannot parse metadata from {path}"
                         metadata[mat[1]] = mat[2]
         self.path = path
+        self.content = content
         self.metadata = metadata
-        self.body = body
+        self.release = release
 
     def save(self):
         with open(self.path, "w") as f:
-            f.write(G.METADATA_BEGIN)
-            for k, v in self.metadata.items():
-                f.write(f"%define {k} {v}\n")
-            f.write(G.METADATA_END)
-            f.write(self.body)
+            for content in self.content:
+                if content == "%METADATA":
+                    f.write(G.METADATA_BEGIN)
+                    for k, v in self.metadata.items():
+                        f.write(f"%define {k} {v}\n")
+                    f.write(G.METADATA_END)
+                elif content == "%RELEASE":
+                    f.write(self.release)
+                    f.write("\n")
+                else:
+                    f.write(content)
 
 
 class Package:
@@ -255,7 +270,7 @@ class Package:
         spec.metadata.update(
             self._metadata(), name=self.name, vtag=vtag, version=version
         )
-        spec.body = G.PAT_AUTORELEASE.sub(r"\1", spec.body)
+        spec.release = "%autorelease"
         spec.save()
         L.info(f"Updating changelog of {self.name}")
         now = datetime.now().strftime("%c")
