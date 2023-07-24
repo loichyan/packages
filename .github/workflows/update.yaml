@@ -46,7 +46,6 @@ jobs:
 
       - name: Update packages
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
           OBS_PROJECT: home:loichyan
         run: |

@@ -5,6 +5,7 @@ from datetime import datetime
 from functools import cached_property
 from subprocess import run
 from xml.etree import ElementTree as ET
+import json
 import logging as L
 import os
 import re
@@ -59,21 +60,26 @@ def obs_api(
     return tree
 
 
-def gh_api(path: str, method: T.Optional[str] = None, **kwargs) -> T.Any:
-    L.info(f"Calling GitHub API: {path}")
-    resp = R.request(
-        method or "GET",
-        f"https://api.github.com{path}",
-        **{
-            "headers": {
-                "Authorization": f"Bearer {G.GH_TOKEN}",
-                "Content-Type": "application/json",
-                **(kwargs.get("params") or {}),
-            },
-            **kwargs,
-        },
+def gh_api(
+    path: str,
+    method: T.Optional[str] = None,
+    body: T.Optional[T.IO] = None,
+) -> T.Any:
+    L.info(f"Calling OBS API {path}")
+    out = run(
+        [
+            "gh",
+            "api",
+            path,
+            "-X",
+            method or "GET",
+            "-H",
+            "Content-Type: application/json",
+        ],
+        stdin=body,
+        capture_output=True,
     )
-    return resp.json()
+    return json.loads(out.stdout)
 
 
 def write(path: str, content: str):
@@ -132,10 +138,6 @@ class Global:
     @cached_property
     def OBS_HOST(self):
         return require_env("OBS_HOST", "api.opensuse.org")
-
-    @cached_property
-    def GH_TOKEN(self):
-        return require_env("GH_TOKEN")
 
     @cached_property
     def GH_REPO(self):
