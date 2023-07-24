@@ -34,13 +34,13 @@ def obs_api(
     """
     Calls OBS API.
     """
-    L.info(f"Calling OBS API: {path}")
     if auth == None or auth == "login":
         authorization = f"Basic {G.OBS_LOGIN}"
     elif auth == "token":
         authorization = f"Token {G.OBS_TOKEN}"
     else:
         raise ValueError(f"Unsupported authorization method: '{auth}'")
+    L.info(f"Calling OBS API: {path}")
     kwargs.update(
         {
             "headers": {
@@ -60,6 +60,7 @@ def obs_api(
 
 
 def gh_api(path: str, method: T.Optional[str] = None, **kwargs) -> T.Any:
+    L.info(f"Calling GitHub API: {path}")
     resp = R.request(
         method or "GET",
         f"https://api.github.com{path}",
@@ -92,16 +93,20 @@ def require_env(key: str, default: T.Optional[str] = None):
 
 
 class Global:
-    @cached_property
-    def PAT_SPEC_VTAG(self):
-        return re.compile(r"^(%define vtag) (.+)$", flags=re.M)
+    @property
+    def METADATA_BEGIN(self):
+        return "# {{ METADATA BEGIN\n"
+
+    @property
+    def METADATA_END(self):
+        return "# METADATA END }}\n"
 
     @cached_property
-    def PAT_SPEC_VERSION(self):
-        return re.compile(r"^(%define version) (.+)$", flags=re.M)
+    def PAT_METADATA(self):
+        return re.compile(r"^(?:%define (\w+)) (.+)$", flags=re.M)
 
     @cached_property
-    def PAT_SPEC_AUTORELEASE(self):
+    def PAT_AUTORELEASE(self):
         return re.compile(r"^(Release: +%autorelease)(.*)$", flags=re.M)
 
     @cached_property
@@ -157,13 +162,43 @@ class Global:
 G = Global()
 
 
+class Spec:
+    def __init__(self, path: str):
+        metadata: T.Dict[str, str] = {}
+        body = ""
+        # 0 => Init
+        # 1 => ParseMetadata
+        state = 0
+        with open(path) as f:
+            for line in f:
+                if state == 0:
+                    if line == G.METADATA_BEGIN:
+                        state = 1
+                    else:
+                        body += line
+                elif state == 1:
+                    if line == G.METADATA_END:
+                        state = 0
+                    else:
+                        mat = G.PAT_METADATA.match(line)
+                        assert mat is not None, f"Cannot parse metadata from {path}"
+                        metadata[mat[1]] = mat[2]
+        self.path = path
+        self.metadata = metadata
+        self.body = body
+
+    def save(self):
+        with open(self.path, "w") as f:
+            f.write(G.METADATA_BEGIN)
+            for k, v in self.metadata.items():
+                f.write(f"%define {k} {v}\n")
+            f.write(G.METADATA_END)
+            f.write(self.body)
+
+
 class Package:
     def __init__(self, name: str):
         self.name = name
-
-    @cached_property
-    def _spec_path(self):
-        return f"{self.name}/{self.name}.spec"
 
     @cached_property
     def _changelog_path(self):
@@ -175,14 +210,7 @@ class Package:
 
     @cached_property
     def _spec(self):
-        with open(self._spec_path) as f:
-            return f.read()
-
-    @cached_property
-    def vtag(self) -> str:
-        mat = G.PAT_SPEC_VTAG.match(self._spec)
-        assert mat is not None, "Cannot parse %vtag from the spec"
-        return mat[2]
+        return Spec(f"{self.name}/{self.name}.spec")
 
     @cached_property
     def service(self):
@@ -193,55 +221,58 @@ class Package:
         <param name="url">https://github.com/{G.GH_REPO}</param>
         <param name="revision">main</param>
         <param name="subdir">{self.name}</param>
-        <param name="filename">source</param>
+        <param name="filename">{self.name}-source</param>
         <param name="versionformat">%h</param>
-        <param name="extract">manifest</param>
         <param name="extract">{self.name}.changes</param>
         <param name="extract">{self.name}.spec</param>
     </service>
     <service name="extract_file" mode="buildtime">
-        <param name="archive">_service:obs_scm:source-*.obscpio</param>
-        <param name="files">source-*/*</param>
+        <param name="archive">_service:obs_scm:{self.name}-source-*.obscpio</param>
+        <param name="files">{self.name}-source-*/*</param>
     </service>
-    <service name="download_url" mode="buildtime">
-        <param name="download-manifest">_service:obs_scm:manifest</param>
-    </service>
+    <service name="download_assets" mode="buildtime"></service>
 </services>\
 """
 
-    def update(self, vtag: T.Optional[str] = None):
+    @property
+    def vtag(self) -> str:
+        return self._spec.metadata["vtag"]
+
+    @property
+    def version(self) -> str:
+        return self._spec.metadata["version"]
+
+    def update(self):
         """
         Updates this package.
         """
-        vtag = vtag or self._fetch_newtag(self.vtag)
-        if vtag is None:
+        vtag = self._fetch_latest()
+        if vtag == self.vtag:
             return
         L.info(f"Updating SPEC of {self.name}")
-        new_version = self._parse_version(vtag)
-        new_spec = self._spec
-        new_spec = G.PAT_SPEC_VTAG.sub(rf"\1 {vtag}", new_spec)
-        new_spec = G.PAT_SPEC_VERSION.sub(rf"\1 {new_version}", new_spec)
-        new_spec = G.PAT_SPEC_AUTORELEASE.sub(r"\1", new_spec)
-        write(self._spec_path, new_spec)
+        version = self._parse_version(vtag)
+        spec = self._spec
+        spec.metadata.update(
+            self._metadata(), name=self.name, vtag=vtag, version=version
+        )
+        spec.body = G.PAT_AUTORELEASE.sub(r"\1", spec.body)
+        spec.save()
         L.info(f"Updating changelog of {self.name}")
         now = datetime.now().strftime("%c")
         changes = f"""\
-* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1
+* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {version}-1
 - Update to {vtag}
 
 """
-
         changes += read(self._changelog_path)
         write(self._changelog_path, changes)
-        L.info(f"Updating manifest of {self.name}")
-        write(self._manifest_path, "\n".join(self._sources(vtag)))
         return vtag
 
-    def release(self, vtag: T.Optional[str] = None):
+    def release(self):
         """
         Release updates.
         """
-        vtag = vtag or self.vtag
+        vtag = self.vtag
         git("add", self.name)
         git("commit", "-m", f"chore({self.name}): update to {vtag}")
         git("push", "--follow-tags")
@@ -271,6 +302,19 @@ class Package:
             params={"project": G.OBS_PROJECT, "package": self.name},
         )
 
+    def _metadata(self) -> T.Dict[str, str]:
+        """
+        Extra metadata prepended to the SPEC file.
+        """
+        return {}
+
+    def _fetch_latest(self) -> str:
+        """
+        Fetches the latest %vtag.
+        """
+        L.warning(f"{self.name} cannot be updated")
+        return self.vtag
+
     def _parse_version(self, vtag: str) -> str:
         """
         Parses %version from %vtag.
@@ -279,19 +323,10 @@ class Package:
         assert mat is not None
         return mat[1]
 
-    def _fetch_newtag(self, vtag: str) -> T.Optional[str]:
-        """
-        Fetches the new %vtag if no avaiable `None` should be returned.
-        """
-        L.warning(f"{self.name} cannot be updated")
-        return None
 
-    def _sources(self, vtag: str) -> T.List[str]:
-        """
-        Returns remote sources used by this package.
-        """
-        L.warning(f"{self.name} doesn't provide any sources")
-        return []
+class LocalPackage(Package):
+    def update(self):
+        return
 
 
 class GhPackage(Package):
@@ -299,46 +334,28 @@ class GhPackage(Package):
         super().__init__(name)
         self.repo = repo
 
-    def _fetch_newtag(self, vtag: str) -> T.Optional[str]:
+    def _metadata(self) -> T.Dict[str, str]:
+        return {"repo": self.repo}
+
+    def _fetch_latest(self) -> T.Optional[str]:
         L.info(f"Fetching the latest release of {self.repo}")
         resp = gh_api(f"/repos/{self.repo}/releases/latest")
-        latest_vtag = resp["tag_name"]
-        if latest_vtag != vtag:
-            return latest_vtag
+        return resp["tag_name"]
 
 
 class NixMount(Package):
     def __init__(self):
         super().__init__("nix-mount")
 
-    def _sources(self, vtag: str) -> T.List[str]:
-        return [f"nix.mount", f"nix-mount.service"]
-
 
 class SarasaGothicFonts(GhPackage):
     def __init__(self):
         super().__init__("sarasa-gothic-fonts", "be5invis/Sarasa-Gothic")
 
-    def _sources(self, vtag: str) -> T.List[str]:
-        version = self._parse_version(vtag)
-        return [
-            f"https://github.com/{self.repo}/releases/download/{vtag}/sarasa-gothic-ttc-{version}.7z",
-            f"https://raw.githubusercontent.com/{self.repo}/{vtag}/LICENSE",
-            f"https://raw.githubusercontent.com/{self.repo}/{vtag}/README.md",
-        ]
-
 
 class SymbolsNerdFonts(GhPackage):
     def __init__(self):
         super().__init__("symbols-nerd-fonts", "ryanoasis/nerd-fonts")
-
-    def _sources(self, vtag: str) -> T.List[str]:
-        return [
-            f"https://github.com/{self.repo}/releases/download/{vtag}/NerdFontsSymbolsOnly.zip",
-            f"https://raw.githubusercontent.com/{self.repo}/{vtag}/LICENSE",
-            f"https://raw.githubusercontent.com/{self.repo}/{vtag}/readme.md",
-            f"https://raw.githubusercontent.com/{self.repo}/{vtag}/10-nerd-font-symbols.conf",
-        ]
 
 
 class Wezterm(GhPackage):
@@ -349,11 +366,6 @@ class Wezterm(GhPackage):
         mat = G.PAT_WEZTERM_VERSION.match(vtag)
         assert mat is not None
         return mat[1]
-
-    def _sources(self, vtag: str) -> T.List[str]:
-        return [
-            f"https://github.com/{self.repo}/releases/download/{vtag}/{self.name}-{vtag}-src.tar.gz"
-        ]
 
 
 class App:
@@ -383,14 +395,14 @@ class App:
                 packages.append(package())
 
         for package in packages:
-            vtag = package.update() if args.update else package.vtag
+            updated = args.update and package.update()
             if args.release:
                 package.release()
             if args.show_service:
                 print(package.service)
             if args.update_service:
                 package.update_service()
-            if args.rebuild and vtag is not None:
+            if args.rebuild and (updated or not args.update):
                 package.rebuild()
 
 

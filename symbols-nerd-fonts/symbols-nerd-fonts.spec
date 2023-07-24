@@ -1,23 +1,30 @@
+# {{ METADATA BEGIN
+%define name symbols-nerd-fonts
 %define vtag v3.0.2
 %define version 3.0.2
-%define fontname symbols-nerd-fonts
-%define fontconf 10-%{fontname}.conf
-%define metainfo %{fontname}.metainfo.xml
+%define repo ryanoasis/nerd-fonts
+# METADATA END }}
+%define fontconf 10-%{name}.conf
+%define metainfo %{name}.metainfo.xml
 
-Name:          %{fontname}
+Name:          %{name}
 Version:       %{version}
-Release:       %autorelease -b 3
+Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT AND OFL
-URL:           https://www.nerdfonts.com
+URL:           https://github.com/%{repo}
 Summary:       Just the Nerd Font Icons. I.e Symbol font only.
 BuildArch:     noarch
 Requires:      fontpackages-filesystem
 BuildRequires: fontpackages-devel
-Source0:       NerdFontsSymbolsOnly.zip
-Source1:       LICENSE
-Source2:       readme.md
-Source3:       10-nerd-font-symbols.conf
+#!RemoteAsset
+Source0:       https://github.com/%{repo}/releases/download/%{vtag}/NerdFontsSymbolsOnly.zip
+#!RemoteAsset
+Source1:       https://raw.githubusercontent.com/%{repo}/%{vtag}/LICENSE
+#!RemoteAsset
+Source2:       https://raw.githubusercontent.com/%{repo}/%{vtag}/readme.md
+#!RemoteAsset
+Source3:       https://raw.githubusercontent.com/%{repo}/%{vtag}/10-nerd-font-symbols.conf
 Source4:       %{metainfo}
 
 %description

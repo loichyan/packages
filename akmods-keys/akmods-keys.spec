@@ -1,8 +1,11 @@
-%define vtag 0.1.0
+# {{ METADATA BEGIN
+%define name akmods-keys
+%define vtag v0.1.0
 %define version 0.1.0
+# METADATA END }}
 
-Name:        akmods-keys
-Version:     %version
+Name:        %{name}
+Version:     %{version}
 Release:     %autorelease
 Packager:    Loi Chyan <loichyan@foxmail.com>
 License:     MIT

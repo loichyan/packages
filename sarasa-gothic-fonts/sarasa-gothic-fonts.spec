@@ -1,22 +1,28 @@
+# {{ METADATA BEGIN
+%define name sarasa-gothic-fonts
 %define vtag v0.41.3
 %define version 0.41.3
-%define fontname sarasa-gothic-fonts
-%define metainfo %{fontname}.metainfo.xml
+%define repo be5invis/Sarasa-Gothic
+# METADATA END }}
+%define metainfo %{name}.metainfo.xml
 
-Name:          %{fontname}
+Name:          %{name}
 Version:       %{version}
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       OFL-1.1
-URL:           https://github.com/be5invis/Sarasa-Gothic
+URL:           https://github.com/%{repo}
 Summary:       Sarasa Gothic / 更纱黑体 / 更紗黑體 / 更紗ゴシック / 사라사 고딕
 BuildArch:     noarch
 Requires:      fontpackages-filesystem
 BuildRequires: p7zip
 BuildRequires: fontpackages-devel
-Source0:       sarasa-gothic-ttc-%{version}.7z
-Source1:       LICENSE
-Source2:       README.md
+#!RemoteAsset
+Source0:       https://github.com/%{repo}/releases/download/%{vtag}/sarasa-gothic-ttc-%{version}.7z
+#!RemoteAsset
+Source1:       https://raw.githubusercontent.com/%{repo}/%{vtag}/LICENSE
+#!RemoteAsset
+Source2:       https://raw.githubusercontent.com/%{repo}/%{vtag}/README.md
 Source3:       %{metainfo}
 
 %description
