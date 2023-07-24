@@ -2,12 +2,9 @@
 
 from argparse import ArgumentParser
 from datetime import datetime
-from enum import IntEnum
 from functools import cached_property
 from subprocess import run
-from textwrap import dedent
 from xml.etree import ElementTree as ET
-import hashlib
 import logging as L
 import os
 import re
@@ -187,6 +184,29 @@ class Package:
         assert mat is not None, "Cannot parse %vtag from the spec"
         return mat[2]
 
+    @cached_property
+    def service(self):
+        return f"""\
+<services>
+    <service name="obs_scm">
+        <param name="scm">git</param>
+        <param name="url">https://github.com/{G.GH_REPO}</param>
+        <param name="revision">main</param>
+        <param name="subdir">{self.name}</param>
+        <param name="filename">source</param>
+        <param name="versionformat">%h</param>
+        <param name="extract">manifest {self.name}.changes {self.name}.spec</param>
+    </service>
+    <service name="extract_file" mode="buildtime">
+        <param name="archive">_service:obs_scm:source-*.obscpio</param>
+        <param name="files">source-*/*</param>
+    </service>
+    <service name="download_url" mode="buildtime">
+        <param name="download-manifest">manifest</param>
+    </service>
+</services>\
+"""
+
     def update(self, vtag: T.Optional[str] = None):
         """
         Updates this package.
@@ -203,12 +223,12 @@ class Package:
         write(self._spec_path, new_spec)
         L.info(f"Updating changelog of <{self.name}>")
         now = datetime.now().strftime("%c")
-        changes = dedent(
-            f"""\
-                * {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1\n
-                - Update to {vtag}\n
-                """
-        )
+        changes = f"""\
+* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1
+- Update to {vtag}
+
+"""
+
         changes += read(self._changelog_path)
         write(self._changelog_path, changes)
         L.info(f"Updating manifest of <{self.name}>")
@@ -229,34 +249,12 @@ class Package:
         Updates services of this package.
         """
         L.info(f"Updating '_service' of <{self.name}>")
-        service = dedent(
-            f"""\
-            <services>
-                <service name="obs_scm">
-                    <param name="scm">git</param>
-                    <param name="url">https://github.com/{G.GH_REPO}</param>
-                    <param name="revision">main</param>
-                    <param name="subdir">{self.name}</param>
-                    <param name="filename">source</param>
-                    <param name="versionformat">%h</param>
-                    <param name="extract">manifest {self.name}.changes {self.name}.spec</param>
-                </service>
-                <service name="extract_file" mode="buildtime">
-                    <param name="archive">_service:obs_scm:source-*.obscpio</param>
-                    <param name="files">source-*/*</param>
-                </service>
-                <service name="download_url" mode="buildtime">
-                    <param name="download-manifest">manifest</param>
-                </service>
-            </services>\
-            """
-        )
         obs_api(
             f"/source/{G.OBS_PROJECT}/{self.name}/_service",
             method="PUT",
             headers={"Content-Type": "application/xml"},
             params="Update _service",
-            data=service,
+            data=self.service,
         )
 
     def rebuild(self):
@@ -362,6 +360,7 @@ class App:
         parser = ArgumentParser()
         parser.add_argument("--update", action="store_true")
         parser.add_argument("--release", action="store_true")
+        parser.add_argument("--show-service", action="store_true")
         parser.add_argument("--update-service", action="store_true")
         parser.add_argument("--rebuild", action="store_true")
         parser.add_argument("-o", "--outdir")
@@ -385,6 +384,8 @@ class App:
             vtag = package.update() if args.update else package.vtag
             if args.release:
                 package.release()
+            if args.show_service:
+                print(package.service)
             if args.update_service:
                 package.update_service()
             if args.rebuild and vtag is not None:
