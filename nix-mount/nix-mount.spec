@@ -31,4 +31,4 @@ install -Dm644 %{SOURCE1} %{SOURCE2} -t %{buildroot}%{_unitdir}
 %{_unitdir}/nix.mount
 
 %changelog
-%autochangelog
+
