@@ -243,7 +243,7 @@ class Package:
         <param name="subdir">{self.name}</param>
         <param name="filename">{self.name}-source</param>
         <param name="versionformat">%h</param>
-        <param name="extract">*.changes</param>
+        <param name="extract">*</param>
     </service>
     <service name="download_assets"></service>
 </services>\
