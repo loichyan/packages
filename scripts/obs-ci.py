@@ -152,9 +152,14 @@ class Global:
     @cached_property
     def PACKAGES(self) -> T.Dict[str, T.Callable[[], "Package"]]:
         return {
-            "nerd-font-symbols": NerdFontSymbols,
-            "nix-mount": NixMount,
-            "sarasa-gothic-fonts": SarasaGothicFonts,
+            "akmods-keys": lambda: LocalPackage("akmods-keys"),
+            "nerd-font-symbols": lambda: GhPackage(
+                "nerd-font-symbols-fonts", "ryanoasis/nerd-fonts"
+            ),
+            "nix-mount": lambda: Package("nix-mount"),
+            "sarasa-gothic-fonts": lambda: GhPackage(
+                "sarasa-gothic-fonts", "be5invis/Sarasa-Gothic"
+            ),
             "wezterm": Wezterm,
         }
 
@@ -252,13 +257,13 @@ class Package:
     def version(self) -> str:
         return self._spec.metadata["version"]
 
-    def update(self):
+    def update(self) -> bool:
         """
         Updates this package.
         """
         vtag = self._fetch_latest()
         if vtag == self.vtag:
-            return
+            pass
         L.info(f"Updating SPEC of {self.name}")
         version = self._parse_version(vtag)
         spec = self._spec
@@ -276,7 +281,7 @@ class Package:
 """
         changes += read(self._changelog_path)
         write(self._changelog_path, changes)
-        return vtag
+        return True
 
     def release(self):
         """
@@ -336,6 +341,12 @@ class Package:
 
 class LocalPackage(Package):
     def update(self):
+        return False
+
+    def release(self):
+        return
+
+    def rebuild(self):
         return
 
 
@@ -353,21 +364,6 @@ class GhPackage(Package):
         return resp["tag_name"]
 
 
-class NixMount(Package):
-    def __init__(self):
-        super().__init__("nix-mount")
-
-
-class SarasaGothicFonts(GhPackage):
-    def __init__(self):
-        super().__init__("sarasa-gothic-fonts", "be5invis/Sarasa-Gothic")
-
-
-class NerdFontSymbols(GhPackage):
-    def __init__(self):
-        super().__init__("nerd-font-symbols-fonts", "ryanoasis/nerd-fonts")
-
-
 class Wezterm(GhPackage):
     def __init__(self):
         super().__init__("wezterm", "wez/wezterm")
@@ -382,10 +378,10 @@ class App:
     @cached_property
     def cli(self):
         parser = ArgumentParser()
-        parser.add_argument("--update", action="store_true")
-        parser.add_argument("--release", action="store_true")
         parser.add_argument("--show-service", action="store_true")
         parser.add_argument("--update-service", action="store_true")
+        parser.add_argument("--update", action="store_true")
+        parser.add_argument("--release", action="store_true")
         parser.add_argument("--rebuild", action="store_true")
         parser.add_argument("-o", "--outdir")
         package = parser.add_mutually_exclusive_group(required=True)
@@ -405,13 +401,13 @@ class App:
                 packages.append(package())
 
         for package in packages:
+            if args.update_service:
+                package.update_service()
             updated = args.update and package.update()
             if args.release:
                 package.release()
             if args.show_service:
                 print(package.service)
-            if args.update_service:
-                package.update_service()
             if args.rebuild and (updated or not args.update):
                 package.rebuild()
 
