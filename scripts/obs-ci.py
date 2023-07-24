@@ -154,7 +154,7 @@ class Global:
         return {
             "akmods-keys": lambda: LocalPackage("akmods-keys"),
             "nerd-font-symbols": lambda: GhPackage(
-                "nerd-font-symbols-fonts", "ryanoasis/nerd-fonts"
+                "nerd-font-symbols", "ryanoasis/nerd-fonts"
             ),
             "nix-mount": lambda: Package("nix-mount"),
             "sarasa-gothic-fonts": lambda: GhPackage(
