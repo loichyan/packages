@@ -214,14 +214,14 @@ class Package:
         vtag = vtag or self._fetch_newtag(self.vtag)
         if vtag is None:
             return
-        L.info(f"Updating SPEC of <{self.name}>")
+        L.info(f"Updating SPEC of {self.name}")
         new_version = self._parse_version(vtag)
         new_spec = self._spec
         new_spec = G.PAT_SPEC_VTAG.sub(rf"\1 {vtag}", new_spec)
         new_spec = G.PAT_SPEC_VERSION.sub(rf"\1 {new_version}", new_spec)
         new_spec = G.PAT_SPEC_AUTORELEASE.sub(r"\1", new_spec)
         write(self._spec_path, new_spec)
-        L.info(f"Updating changelog of <{self.name}>")
+        L.info(f"Updating changelog of {self.name}")
         now = datetime.now().strftime("%c")
         changes = f"""\
 * {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {new_version}-1
@@ -231,7 +231,7 @@ class Package:
 
         changes += read(self._changelog_path)
         write(self._changelog_path, changes)
-        L.info(f"Updating manifest of <{self.name}>")
+        L.info(f"Updating manifest of {self.name}")
         write(self._manifest_path, "\n".join(self._sources(vtag)))
         return vtag
 
@@ -248,7 +248,7 @@ class Package:
         """
         Updates services of this package.
         """
-        L.info(f"Updating '_service' of <{self.name}>")
+        L.info(f"Updating '_service' of {self.name}")
         obs_api(
             f"/source/{G.OBS_PROJECT}/{self.name}/_service",
             method="PUT",
@@ -261,7 +261,7 @@ class Package:
         """
         Trigger rebuild of this package.
         """
-        L.info(f"Rebuilding <{self.name}>")
+        L.info(f"Rebuilding {self.name}")
         obs_api(
             f"/trigger/runservice",
             method="POST",
@@ -281,14 +281,14 @@ class Package:
         """
         Fetches the new %vtag if no avaiable `None` should be returned.
         """
-        L.warning(f"<{self.name}> cannot be updated")
+        L.warning(f"{self.name} cannot be updated")
         return None
 
     def _sources(self, vtag: str) -> T.List[str]:
         """
         Returns remote sources used by this package.
         """
-        L.warning(f"<{self.name}> doesn't provide any sources")
+        L.warning(f"{self.name} doesn't provide any sources")
         return []
 
 
@@ -377,7 +377,7 @@ class App:
             packages = []
             for pname in args.package:
                 package = G.PACKAGES.get(pname)
-                assert package is not None, f"<{pname}> is not defined"
+                assert package is not None, f"{pname} is not defined"
                 packages.append(package())
 
         for package in packages:
