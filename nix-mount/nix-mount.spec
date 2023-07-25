@@ -1,10 +1,7 @@
-# {{ METADATA BEGIN
-%define name nix-mount
 %define vtag v0.1.1
 %define version 0.1.1
-# METADATA END }}
 
-Name:          %{name}
+Name:          nix-mount
 Version:       %{version}
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>

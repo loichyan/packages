@@ -1,9 +1,7 @@
-# {{ METADATA BEGIN
 %define name wezterm
 %define vtag 20230712-072601-f4abf8fd
 %define version 20230712
 %define repo wez/wezterm
-# METADATA END }}
 
 Name:          %{name}
 Version:       %{version}

@@ -1,13 +1,10 @@
-# {{ METADATA BEGIN
-%define name sarasa-gothic-fonts
 %define vtag v0.41.3
 %define version 0.41.3
 %define repo be5invis/Sarasa-Gothic
-# METADATA END }}
 %define fontname sarasa-gothic
 %define metainfo %{fontname}.metainfo.xml
 
-Name:          %{name}
+Name:          %{fontname}-fonts
 Version:       %{version}
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>

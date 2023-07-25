@@ -1,14 +1,11 @@
-# {{ METADATA BEGIN
-%define name nerd-font-symbols
 %define vtag v3.0.2
 %define version 3.0.2
 %define repo ryanoasis/nerd-fonts
-# METADATA END }}
 %define fontname nerd-font-symbols
 %define fontconf 10-%{fontname}.conf
 %define metainfo %{fontname}.metainfo.xml
 
-Name:          %{name}
+Name:          %{fontname}
 Version:       %{version}
 Release:       %autorelease
 Packager:      Loi Chyan <loichyan@foxmail.com>

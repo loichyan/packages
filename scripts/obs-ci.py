@@ -112,6 +112,10 @@ class Global:
         return re.compile(r"^(?:%define (\w+)) (.+)$")
 
     @cached_property
+    def PAT_METADATA2(self):
+        return re.compile(r"^(?P<pref>%define (?P<k>\w+) |(?P<k>\w+): +)(?P<v>.+)$")
+
+    @cached_property
     def PAT_RELEASE(self):
         return re.compile(r"^(Release: +)(.*)$")
 
@@ -171,49 +175,28 @@ G = Global()
 
 class Spec:
     def __init__(self, path: str):
-        content = []
+        content: T.List[str] = []
         metadata: T.Dict[str, str] = {}
-        release = ""
-        # 0 => Init
-        # 1 => ParseMetadata
-        state = 0
         with open(path) as f:
             for line in f:
-                if state == 0:
-                    if line == G.METADATA_BEGIN:
-                        content.append("%METADATA")
-                        state = 1
-                    else:
-                        mat = G.PAT_RELEASE.match(line)
-                        if mat is not None:
-                            content.append(mat[1])
-                            content.append("%RELEASE")
-                            release = mat[2]
-                        else:
-                            content.append(line)
-                elif state == 1:
-                    if line == G.METADATA_END:
-                        state = 0
-                    else:
-                        mat = G.PAT_METADATA.match(line)
-                        assert mat is not None, f"Cannot parse metadata from {path}"
-                        metadata[mat[1]] = mat[2]
+                mat = G.PAT_METADATA2.match(line)
+                if mat is not None:
+                    content.append(mat["pref"])
+                    k = mat["k"]
+                    content.append(f"%%{k}")
+                    metadata[k] = mat["v"]
+                    content.append("\n")
+                else:
+                    content.append(line)
         self.path = path
         self.content = content
         self.metadata = metadata
-        self.release = release
 
     def save(self):
         with open(self.path, "w") as f:
             for content in self.content:
-                if content == "%METADATA":
-                    f.write(G.METADATA_BEGIN)
-                    for k, v in self.metadata.items():
-                        f.write(f"%define {k} {v}\n")
-                    f.write(G.METADATA_END)
-                elif content == "%RELEASE":
-                    f.write(self.release)
-                    f.write("\n")
+                if content.startswith("%%"):
+                    f.write(self.metadata[content[2:]])
                 else:
                     f.write(content)
 
@@ -265,15 +248,16 @@ class Package:
         """
         vtag = self._fetch_latest()
         if vtag == self.vtag:
-            pass
+            return True
         L.info(f"Updating SPEC of {self.name}")
         version = self._parse_version(vtag)
-        spec = self._spec
-        spec.metadata.update(
-            self._metadata(), name=self.name, vtag=vtag, version=version
+        self._spec.metadata.update(
+            self._metadata(),
+            vtag=vtag,
+            version=version,
+            Release="%autorelease",
         )
-        spec.release = "%autorelease"
-        spec.save()
+        self._spec.save()
         L.info(f"Updating changelog of {self.name}")
         now = datetime.now().strftime("%c")
         changes = f"""\
