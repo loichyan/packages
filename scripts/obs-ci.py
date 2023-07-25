@@ -109,11 +109,7 @@ class Global:
 
     @cached_property
     def PAT_METADATA(self):
-        return re.compile(r"^(?:%define (\w+)) (.+)$")
-
-    @cached_property
-    def PAT_METADATA2(self):
-        return re.compile(r"^(?P<pref>%define (?P<k>\w+) |(?P<k>\w+): +)(?P<v>.+)$")
+        return re.compile(r"^(%define (\w+) |(\w+): +)(.+)$")
 
     @cached_property
     def PAT_RELEASE(self):
@@ -179,13 +175,17 @@ class Spec:
         metadata: T.Dict[str, str] = {}
         with open(path) as f:
             for line in f:
-                mat = G.PAT_METADATA2.match(line)
+                mat = G.PAT_METADATA.match(line)
                 if mat is not None:
-                    content.append(mat["pref"])
-                    k = mat["k"]
-                    content.append(f"%%{k}")
-                    metadata[k] = mat["v"]
-                    content.append("\n")
+                    k = mat[2] or mat[3]
+                    if k in metadata:
+                        # Only the first value will be recorded.
+                        content.append(line)
+                    else:
+                        content.append(mat[1])
+                        content.append(f"%%{k}")
+                        metadata[k] = mat[4]
+                        content.append("\n")
                 else:
                     content.append(line)
         self.path = path
@@ -248,7 +248,7 @@ class Package:
         """
         vtag = self._fetch_latest()
         if vtag == self.vtag:
-            return True
+            return False
         L.info(f"Updating SPEC of {self.name}")
         version = self._parse_version(vtag)
         self._spec.metadata.update(
@@ -262,7 +262,7 @@ class Package:
         now = datetime.now().strftime("%c")
         changes = f"""\
 * {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {version}-1
-- Update to {vtag}
+- Update to {version}
 
 """
         changes += read(self._changelog_path)
@@ -273,9 +273,8 @@ class Package:
         """
         Release updates.
         """
-        vtag = self.vtag
         git("add", self.name)
-        git("commit", "-m", f"chore({self.name}): update to {vtag}")
+        git("commit", "-m", f"chore({self.name}): update to {self.version}")
         git("push", "--follow-tags")
 
     def update_service(self):
