@@ -246,7 +246,8 @@ class Package:
         <param name="subdir">{self.name}</param>
         <param name="filename">{self.name}-manifest</param>
         <param name="versionformat">%h</param>
-        <param name="extract">*.spec *.changes</param>
+        <param name="extract">*.spec</param>
+        <param name="extract">*.changes</param>
     </service>
     <service name="download_assets"></service>
 </services>\
