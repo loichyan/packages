@@ -44,6 +44,12 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Setup Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+
       - name: Update packages
         env:
           OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
