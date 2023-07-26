@@ -1,14 +1,16 @@
 %define name wezterm
 %define vtag 20230712-072601-f4abf8fd
 %define version 20230712
-%define repo wez/wezterm
+%define release %autorelease -b 2
+%define source xxx
+%define checksum yyy
 
 Name:          %{name}
 Version:       %{version}
-Release:       %autorelease -b 2
+Release:       %{release}
 Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
-URL:           https://github.com/%{repo}
+URL:           https://wezfurlong.org/wezterm/
 Summary:       Wez's Terminal Emulator.
 Requires:      %{name}-terminfo = %{version}-%{release}
 Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11, libwayland-client
@@ -16,8 +18,9 @@ Requires:      libwayland-egl, libwayland-cursor, mesa-libEGL, xcb-util, xcb-uti
 BuildRequires: cargo, make, gcc, gcc-c++, ncurses
 BuildRequires: fontconfig-devel, openssl-devel, libxcb-devel, libxkbcommon-devel, libxkbcommon-x11-devel, wayland-devel
 BuildRequires: mesa-libEGL-devel, xcb-util-devel, xcb-util-keysyms-devel, xcb-util-image-devel, xcb-util-wm-devel
-#!RemoteAsset
-Source:        https://github.com/%{repo}/releases/download/%{vtag}/%{name}-%{vtag}-src.tar.gz
+#!RemoteAsset: %{checksum}
+Source:        %{source}
+
 
 %define _description %{expand:
 wezterm is a terminal emulator with support for modern features
@@ -36,7 +39,7 @@ Requires:  ncurses-base
 %{_description}
 
 %prep
-%autosetup -n %{name}-%{vtag}
+%autosetup -c
 
 %build
 cargo build --all --release

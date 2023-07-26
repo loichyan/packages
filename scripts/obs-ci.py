@@ -3,26 +3,50 @@
 from argparse import ArgumentParser
 from datetime import datetime
 from functools import cached_property
+from os.path import join, basename
 from subprocess import run
+from tempfile import mkdtemp
+from urllib.parse import urlparse
 from xml.etree import ElementTree as ET
+import hashlib
+import io
 import json
 import logging as L
 import os
 import re
 import requests as R
+import subprocess
+import shutil as sh
 import typing as T
 
 
+def cmd(*args: str, stdin: T.Optional[T.IO[T.Any]] = None):
+    resp = run(
+        args,
+        stdin=stdin,
+        stdout=subprocess.PIPE,
+    )
+    resp.check_returncode()
+    return resp.stdout.decode()
+
+
+def gh(*args: str, stdin: T.Optional[T.IO[T.Any]] = None):
+    return cmd(*args, stdin=stdin)
+
+
+def download(url: str, outfile: str):
+    L.info(f"Downloading {url} to {outfile}")
+    return cmd("wget", url, f"-O{outfile}")
+
+
 def git(*args: str):
-    run(
-        [
-            "git",
-            "-c",
-            f"user.name={G.COMMIT_USERNAME}",
-            "-c",
-            f"user.email={G.COMMIT_EMAIL}",
-            *args,
-        ]
+    return cmd(
+        "git",
+        "-c",
+        f"user.name={G.COMMIT_USERNAME}",
+        "-c",
+        f"user.email={G.COMMIT_EMAIL}",
+        *args,
     )
 
 
@@ -30,7 +54,8 @@ def obs_api(
     path: str,
     method: T.Optional[str] = None,
     auth: T.Optional[T.Literal["login", "token"]] = None,
-    **kwargs,
+    headers: T.Optional[T.Dict[str, str]] = None,
+    **kwargs: T.Any,
 ) -> ET.Element:
     """
     Calls OBS API.
@@ -42,16 +67,16 @@ def obs_api(
     else:
         raise ValueError(f"Unsupported authorization method: '{auth}'")
     L.info(f"Calling OBS API: {path}")
-    kwargs.update(
-        {
-            "headers": {
-                "Accept": "application/xml; charset=utf-8",
-                "Authorization": authorization,
-                **(kwargs.get("headers") or {}),
-            },
-        }
+    resp = R.request(
+        method or "GET",
+        f"https://{G.OBS_HOST}{path}",
+        headers={
+            "Accept": "application/xml; charset=utf-8",
+            "Authorization": authorization,
+            **(headers or {}),
+        },
+        **kwargs,
     )
-    resp = R.request(method or "GET", f"https://{G.OBS_HOST}{path}", **kwargs)
     tree = ET.fromstring(resp.text)
     if resp.status_code != 200:
         summary = tree.find("./status/summary")
@@ -63,23 +88,27 @@ def obs_api(
 def gh_api(
     path: str,
     method: T.Optional[str] = None,
-    body: T.Optional[T.IO] = None,
+    body: T.Optional[T.Any] = None,
 ) -> T.Any:
-    L.info(f"Calling OBS API {path}")
-    out = run(
-        [
-            "gh",
-            "api",
-            path,
-            "-X",
-            method or "GET",
-            "-H",
-            "Content-Type: application/json",
-        ],
-        stdin=body,
-        capture_output=True,
+    L.info(f"Calling GitHub API {path}")
+    out = gh(
+        "api",
+        path,
+        "-X",
+        method or "GET",
+        "-H",
+        "Content-Type: application/json",
+        stdin=io.StringIO(json.dumps(body)) if body is not None else None,
     )
-    return json.loads(out.stdout)
+    return json.loads(out)
+
+
+def sha256(path: str) -> str:
+    hash = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash.update(chunk)
+    return hash.hexdigest()
 
 
 def write(path: str, content: str):
@@ -92,28 +121,21 @@ def read(path: str):
         return f.read()
 
 
-def require_env(key: str, default: T.Optional[str] = None):
+def ls(path: str = "."):
+    for f in os.listdir(path):
+        yield join(path, f)
+
+
+def require_env(key: str, default: T.Optional[str] = None) -> str:
     val = os.environ.get(key) or default
     assert val is not None, f"${key} must be specified"
     return val
 
 
 class Global:
-    @property
-    def METADATA_BEGIN(self):
-        return "# {{ METADATA BEGIN\n"
-
-    @property
-    def METADATA_END(self):
-        return "# METADATA END }}\n"
-
     @cached_property
     def PAT_METADATA(self):
-        return re.compile(r"^(%define (\w+) |(\w+): +)(.+)$")
-
-    @cached_property
-    def PAT_RELEASE(self):
-        return re.compile(r"^(Release: +)(.*)$")
+        return re.compile(r"^%define (\w+) (.+)$")
 
     @cached_property
     def PAT_VERSION(self):
@@ -122,6 +144,13 @@ class Global:
     @cached_property
     def PAT_WEZTERM_VERSION(self):
         return re.compile(r"^(\d+)-(\d+)-([0-9a-f]+)$")
+
+    @cached_property
+    def ARCHIVE_TYPES_AND_EXTS(self):
+        all: T.List[T.Tuple[str, str]] = []
+        for ty, exts, _ in sh.get_unpack_formats():
+            all.extend((ty, e) for e in exts)
+        return all
 
     @cached_property
     def OBS_TOKEN(self):
@@ -154,14 +183,10 @@ class Global:
     @cached_property
     def PACKAGES(self) -> T.Dict[str, T.Callable[[], "Package"]]:
         return {
-            "akmods-keys": lambda: LocalPackage("akmods-keys"),
-            "nerd-font-symbols": lambda: GhPackage(
-                "nerd-font-symbols", "ryanoasis/nerd-fonts"
-            ),
-            "nix-mount": lambda: Package("nix-mount"),
-            "sarasa-gothic-fonts": lambda: GhPackage(
-                "sarasa-gothic-fonts", "be5invis/Sarasa-Gothic"
-            ),
+            "akmods-keys": AkmodsKeys,
+            "nerd-font-symbols": NerdFontSymbols,
+            "nix-mount": NixMount,
+            "sarasa-gothic-fonts": SarasaGothicFonts,
             "wezterm": Wezterm,
         }
 
@@ -177,45 +202,37 @@ class Spec:
             for line in f:
                 mat = G.PAT_METADATA.match(line)
                 if mat is not None:
-                    k = mat[2] or mat[3]
-                    if k in metadata:
-                        # Only the first value will be recorded.
-                        content.append(line)
-                    else:
-                        content.append(mat[1])
-                        content.append(f"%%{k}")
-                        metadata[k] = mat[4]
-                        content.append("\n")
+                    metadata[mat[1]] = mat[2]
                 else:
                     content.append(line)
+                    break
+            for line in f:
+                content.append(line)
         self.path = path
         self.content = content
         self.metadata = metadata
 
-    def save(self):
+    def save(self, **metadata: str):
+        self.metadata.update(metadata)
         with open(self.path, "w") as f:
+            for k, v in self.metadata.items():
+                f.write(f"%define {k} {v}\n")
             for content in self.content:
-                if content.startswith("%%"):
-                    f.write(self.metadata[content[2:]])
-                else:
-                    f.write(content)
+                f.write(content)
 
 
 class Package:
     def __init__(self, name: str):
         self.name = name
+        self._files: T.List[str] = []
 
     @cached_property
     def _changelog_path(self):
-        return f"{self.name}/{self.name}.changes"
-
-    @cached_property
-    def _manifest_path(self):
-        return f"{self.name}/manifest"
+        return join(self.name, f"{self.name}.changes")
 
     @cached_property
     def _spec(self):
-        return Spec(f"{self.name}/{self.name}.spec")
+        return Spec(join(self.name, f"{self.name}.spec"))
 
     @cached_property
     def service(self):
@@ -235,47 +252,12 @@ class Package:
 """
 
     @property
-    def vtag(self) -> str:
+    def vtag(self):
         return self._spec.metadata["vtag"]
 
     @property
-    def version(self) -> str:
+    def version(self):
         return self._spec.metadata["version"]
-
-    def update(self) -> bool:
-        """
-        Updates this package.
-        """
-        vtag = self._fetch_latest()
-        if vtag == self.vtag:
-            return False
-        L.info(f"Updating SPEC of {self.name}")
-        version = self._parse_version(vtag)
-        self._spec.metadata.update(
-            self._metadata(),
-            vtag=vtag,
-            version=version,
-            Release="%autorelease",
-        )
-        self._spec.save()
-        L.info(f"Updating changelog of {self.name}")
-        now = datetime.now().strftime("%c")
-        changes = f"""\
-* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {version}-1
-- Update to {version}
-
-"""
-        changes += read(self._changelog_path)
-        write(self._changelog_path, changes)
-        return True
-
-    def release(self):
-        """
-        Release updates.
-        """
-        git("add", self.name)
-        git("commit", "-m", f"chore({self.name}): update to {self.version}")
-        git("push", "--follow-tags")
 
     def update_service(self):
         """
@@ -290,6 +272,107 @@ class Package:
             data=self.service,
         )
 
+    def update(self) -> T.Optional[str]:
+        """
+        Updates this package, returns the new %vtag if avialable.
+        """
+        vtag = self._fetch_latest()
+        if vtag == self.vtag:
+            return
+        L.info(f"Updating SPEC of {self.name}")
+        version = self._parse_version(vtag)
+        self._spec.save(
+            vtag=vtag,
+            version=version,
+            release="%autorelease",
+            **self._metadata(),
+        )
+        L.info(f"Updating changelog of {self.name}")
+        now = datetime.now().strftime("%c")
+        changes = f"""\
+* {now} {G.COMMIT_USERNAME} <{G.COMMIT_EMAIL}> - {version}-1
+- Update to {version}
+
+"""
+        changes += read(self._changelog_path)
+        write(self._changelog_path, changes)
+        return vtag
+
+    def update_source(self, outdir: T.Optional[str] = None):
+        """
+        Downloads and compresses all needed sources.
+        """
+        cachedir = join(".cache", f"{self.name}-{self.version}")
+        os.makedirs(cachedir, exist_ok=True)
+        outdir = outdir or mkdtemp()
+        # Download sources
+        workdir = mkdtemp()
+        for source in self._sources():
+            url = urlparse(source)
+            source = source[: len(source) - len(url.fragment)]
+            filename = basename(url.path)
+            if url.scheme == "":
+                cachefile = join(self.name, url.path)
+            else:
+                cachefile = join(cachedir, filename)
+                if not os.path.exists(cachefile):
+                    download(source, cachefile)
+            for ty, ext in G.ARCHIVE_TYPES_AND_EXTS:
+                # Unpack all files to the outdir if supported
+                if filename.endswith(ext):
+                    tmpdir = mkdtemp()
+                    L.info(f"Unpacking {cachefile} to {tmpdir}")
+                    sh.unpack_archive(cachefile, tmpdir, ty)
+                    for f in ls(join(tmpdir, url.fragment)):
+                        sh.move(f, workdir)
+                    sh.rmtree(tmpdir)
+                    break
+            else:
+                # or copy it to the outdir
+                sh.copy(cachefile, join(workdir, filename))
+        # Trigger the post-unpack hook
+        cwd = os.getcwd()
+        try:
+            os.chdir(workdir)
+            self._post_unpack()
+        finally:
+            os.chdir(cwd)
+        # Compress all sources
+        outbase = f"{self.name}-{self.version}"
+        outext = "tar.xz"
+        outfile = join(outdir, f"{outbase}.{outext}")
+        L.info(f"Compressing {workdir} to {outfile}")
+        sh.make_archive(join(outdir, outbase), "xztar", workdir)
+        sh.rmtree(workdir)
+        L.info(f"Calculates checksum of {outfile}")
+        checksum = sha256(outfile)
+        outchecksum = join(outdir, f"{outbase}.sha256")
+        write(outchecksum, checksum)
+        L.info(f"Updating SPEC of {self.name}")
+        self._spec.save(
+            source=f"https://github.com/{G.GH_REPO}/releases/download/nightly/{outbase}.{outext}",
+            checksum=checksum,
+        )
+        self._files.extend((outfile, outchecksum))
+        return outdir
+
+    def release(self):
+        """
+        Releases updates.
+        """
+        git("add", self.name)
+        git("commit", "-m", f"chore({self.name}): update to {self.version}")
+        git("push")
+        L.info("Uploading %s" % (",".join(self._files)))
+        gh("release", "upload", "nightly", *self._files)
+        lastcommit = git("rev-parse", "HEAD")
+        L.info(f"Updating nightly tag ref to {lastcommit}")
+        gh_api(
+            f"/repos/{G.GH_REPO}/git/refs/nightly",
+            method="PATCH",
+            body={"sha": lastcommit},
+        )
+
     def rebuild(self):
         """
         Trigger rebuild of this package.
@@ -301,12 +384,6 @@ class Package:
             auth="token",
             params={"project": G.OBS_PROJECT, "package": self.name},
         )
-
-    def _metadata(self) -> T.Dict[str, str]:
-        """
-        Extra metadata prepended to the SPEC file.
-        """
-        return {}
 
     def _fetch_latest(self) -> str:
         """
@@ -323,13 +400,35 @@ class Package:
         assert mat is not None
         return mat[1]
 
+    def _metadata(self) -> T.Dict[str, str]:
+        """
+        Returns additional metadata which is inserted to the SPEC file.
+        """
+        return {}
+
+    def _sources(self) -> T.List[str]:
+        """
+        Returns sources use by this package, supports local and remote URLs. All supported arvhices
+        will be unpacked and stripped with the optional '#<subdir>' fragment.
+        """
+        return []
+
+    def _post_unpack(self):
+        """
+        Runs after all downloaded sources are unpacked.
+        """
+        ...
+
 
 class LocalPackage(Package):
     def update_service(self):
         return
 
     def update(self):
-        return False
+        return None
+
+    def update_source(self, outdir: T.Optional[str] = None):
+        return outdir or mkdtemp()
 
     def release(self):
         return
@@ -343,23 +442,94 @@ class GhPackage(Package):
         super().__init__(name)
         self.repo = repo
 
-    def _metadata(self) -> T.Dict[str, str]:
-        return {"repo": self.repo}
-
-    def _fetch_latest(self) -> T.Optional[str]:
+    def _fetch_latest(self) -> str:
         L.info(f"Fetching the latest release of {self.repo}")
         resp = gh_api(f"/repos/{self.repo}/releases/latest")
         return resp["tag_name"]
+
+
+class FontPackage(GhPackage):
+    def __init__(self, fontname: str, repo: str, name: T.Optional[str] = None):
+        name = name or f"{fontname}-fonts"
+        super().__init__(name, repo)
+        self.fontname = fontname
+
+    def _metadata(self) -> T.Dict[str, str]:
+        return {"fontname": self.fontname}
+
+
+class AkmodsKeys(LocalPackage):
+    def __init__(self):
+        super().__init__("akmods-keys")
+
+
+class NerdFontSymbols(FontPackage):
+    def __init__(self):
+        super().__init__(
+            "nerd-font-symbols",
+            "ryanoasis/nerd-fonts",
+            "nerd-font-symbols",
+        )
+
+    def _sources(self) -> T.List[str]:
+        return [
+            f"https://github.com/{self.repo}/releases/download/{self.vtag}/NerdFontsSymbolsOnly.zip",
+            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/LICENSE",
+            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/readme.md",
+            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/10-{self.fontname}.conf",
+            f"{self.fontname}.metainfo.xml",
+        ]
+
+    def _post_unpack(self):
+        # Remove windows compatible fonts
+        for f in ls():
+            if f.endswith("Windows Compatible.ttf"):
+                os.remove(f)
+
+
+class NixMount(Package):
+    def __init__(self):
+        super().__init__("nix-mount")
+
+    def _sources(self) -> T.List[str]:
+        return ["nix.mount", "nix-mount.service"]
+
+
+class SarasaGothicFonts(FontPackage):
+    def __init__(self):
+        super().__init__("sarasa-gothic", "be5invis/Sarasa-Gothic")
+
+    def _metadata(self) -> T.Dict[str, str]:
+        return {"fontname": self.fontname}
+
+    def _sources(self) -> T.List[str]:
+        return [
+            f"https://github.com/{self.repo}/releases/download/{self.vtag}/{self.fontname}-ttc-{self.version}.7z",
+            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/LICENSE",
+            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/README.md",
+            f"{self.fontname}.metainfo.xml",
+        ]
 
 
 class Wezterm(GhPackage):
     def __init__(self):
         super().__init__("wezterm", "wez/wezterm")
 
-    def _parse_version(self, vtag: str) -> T.Optional[str]:
+    def _parse_version(self, vtag: str) -> str:
         mat = G.PAT_WEZTERM_VERSION.match(vtag)
         assert mat is not None
         return mat[1]
+
+    def _sources(self) -> T.List[str]:
+        return [
+            f"https://github.com/{self.repo}/releases/download/{self.vtag}/{self.name}-{self.vtag}-src.tar.gz#{self.name}-{self.vtag}"
+        ]
+
+    def _post_unpack(self):
+        # Vendor dependencies for offline build
+        config = cmd("cargo", "vendor")
+        with open(join(".cargo", "config"), "a") as f:
+            f.write(config)
 
 
 class App:
@@ -369,6 +539,7 @@ class App:
         parser.add_argument("--show-service", action="store_true")
         parser.add_argument("--update-service", action="store_true")
         parser.add_argument("--update", action="store_true")
+        parser.add_argument("--update-source", action="store_true")
         parser.add_argument("--release", action="store_true")
         parser.add_argument("--rebuild", action="store_true")
         parser.add_argument("-o", "--outdir")
@@ -389,15 +560,18 @@ class App:
                 packages.append(package())
 
         for package in packages:
-            if args.update_service:
-                package.update_service()
-            updated = args.update and package.update()
-            if args.release:
-                package.release()
             if args.show_service:
                 print(package.service)
-            if args.rebuild and (updated or not args.update):
-                package.rebuild()
+            if args.update_service:
+                package.update_service()
+            updated = args.update and package.update() is not None
+            if updated or not args.update:
+                if args.update_source:
+                    package.update_source(args.outdir)
+                if args.release:
+                    package.release()
+                if args.rebuild:
+                    package.rebuild()
 
 
 if __name__ == "__main__":
@@ -405,5 +579,10 @@ if __name__ == "__main__":
         level=L.INFO,
         format="[%(asctime)s] [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    sh.register_unpack_format(
+        "7zip",
+        ["7z"],
+        lambda src, dst: cmd("7z", "x", src, f"-o{dst}"),
     )
     App().run()

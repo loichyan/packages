@@ -34,4 +34,4 @@ akmods-keys/*.priv
 *.rpm
 
 ## Temp generated files
-/tmp
+.cache
