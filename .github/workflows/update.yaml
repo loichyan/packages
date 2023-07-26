@@ -52,8 +52,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Cache Rust toolchain
+        uses: actions/cache@v3
+        id: cache-rust-toolchain
+        with:
+          path: ~/.rustup
+          key: rust-toolchain
+
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
+        if: ${{ steps.cache-rust-toolchain.outputs.cache-hit != 'true' }}
         with:
           toolchain: stable
           profile: minimal
