@@ -330,7 +330,10 @@ class Package:
                     break
             else:
                 # or copy it to the outdir
-                sh.copy(cachefile, join(workdir, filename))
+                sh.copy(
+                    cachefile,
+                    join(workdir, url.fragment if url.fragment else filename),
+                )
         # Trigger the post-unpack hook
         cwd = os.getcwd()
         try:
@@ -414,7 +417,8 @@ class Package:
     def _sources(self) -> T.List[str]:
         """
         Returns sources use by this package, supports local and remote URLs. All supported arvhices
-        will be unpacked and stripped with the optional '#<subdir>' fragment.
+        will be unpacked and stripped with the optional '#<subdir>' fragment. Other files can be renamed
+        with the optional '#<newname>' fragment.
         """
         return []
 
@@ -483,7 +487,7 @@ class NerdFontSymbols(FontPackage):
         return [
             f"https://github.com/{self.repo}/releases/download/{self.vtag}/NerdFontsSymbolsOnly.zip",
             f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/LICENSE",
-            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/readme.md",
+            f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/readme.md#README.md",
             f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/10-{self.fontname}.conf",
             f"{self.fontname}.metainfo.xml",
         ]
