@@ -53,65 +53,10 @@ A package is checked locally (via manually running or GitHub Actions):
 if ("Is %vtag the latest?")
   noop
 else {
-  "Update SPEC files (obs-ci.py --update"
-  "Archive source.tgz (mksource -o source.tgz)"
-  "Commit changes (git commit)"
-  "Release source.tgz (gh release)"
-  "Trigger rebuild (obs-ci.py --rebuild)"
-}
-
-"END"
--->
-
-```text
-          ┌─────┐
-          │START│
-          └──┬──┘
-    _________▽__________
-   ╱                    ╲
-  ╱ Is %vtag the latest? ╲___
-  ╲                      ╱yes│
-   ╲____________________╱    │
-             │no             │
-   ┌─────────▽─────────┐     │
-   │Update SPEC files  │     │
-   │(obs-ci.py --update│     │
-   └─────────┬─────────┘     │
-┌────────────▽───────────┐   │
-│Archive source.tgz      │   │
-│(mksource -o source.tgz)│   │
-└────────────┬───────────┘   │
-     ┌───────▽──────┐        │
-     │Commit changes│        │
-     │(git commit)  │        │
-     └───────┬──────┘        │
-   ┌─────────▽────────┐      │
-   │Release source.tgz│      │
-   │(gh release)      │      │
-   └─────────┬────────┘      │
-  ┌──────────▽──────────┐    │
-  │Trigger rebuild      │    │
-  │(obs-ci.py --rebuild)│    │
-  └──────────┬──────────┘    │
-             └───┬───────────┘
-               ┌─▽─┐
-               │END│
-               └───┘
-```
-
-When the OBS instance receive the rebuild request:
-
-<!--
-// https://arthursonzogni.com/Diagon/#Flowchart
-
-"START"
-
-if ("Is %vtag the latest?")
-  noop
-else {
   "Update SPEC files (obs-ci --update)"
-  "Update sources (obs-ci--update-soure)"
-  "Release updates (obs-ci --release)"
+  "Update sources (obs-ci --update-source)"
+  "Upload sources (obs-ci --upload)"
+  "Commit changes (obs-ci --commit)"
   "Trigger rebuild (obs-ci --rebuild)"
 }
 
@@ -132,14 +77,18 @@ else {
    │Update SPEC files│      │
    │(obs-ci --update)│      │
    └────────┬────────┘      │
-┌───────────▽────────────┐  │
-│Update sources          │  │
-│(obs-ci --update-source)│  │
-└───────────┬────────────┘  │
-  ┌─────────▽────────┐      │
-  │Release updates   │      │
-  │(obs-ci --release)│      │
-  └─────────┬────────┘      │
+┌───────────▽──────────┐    │
+│Update sources (obs-ci│    │
+│--update-source)      │    │
+└───────────┬──────────┘    │
+   ┌────────▽────────┐      │
+   │Upload sources   │      │
+   │(obs-ci --upload)│      │
+   └────────┬────────┘      │
+   ┌────────▽────────┐      │
+   │Commit changes   │      │
+   │(obs-ci --commit)│      │
+   └────────┬────────┘      │
   ┌─────────▽────────┐      │
   │Trigger rebuild   │      │
   │(obs-ci --rebuild)│      │
@@ -148,6 +97,42 @@ else {
               ┌─▽─┐
               │END│
               └───┘
+```
+
+When the OBS instance receive the rebuild request:
+
+<!--
+// https://arthursonzogni.com/Diagon/#Flowchart
+
+"START"
+
+{
+  "Fetch SPEC files (obs_scm)"
+  "Download sources (download_assets)"
+  "Build packages"
+}
+
+"END"
+-->
+
+```text
+      ┌─────┐
+      │START│
+      └──┬──┘
+ ┌───────▽───────┐
+ │Fetch SPEC     │
+ │files (obs_scm)│
+ └───────┬───────┘
+┌────────▽────────┐
+│Download sources │
+│(download_assets)│
+└────────┬────────┘
+ ┌───────▽──────┐
+ │Build packages│
+ └───────┬──────┘
+       ┌─▽─┐
+       │END│
+       └───┘
 ```
 
 ## ⚖️ License
