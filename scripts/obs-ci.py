@@ -244,7 +244,7 @@ class Package:
         <param name="url">https://github.com/{G.GH_REPO}</param>
         <param name="revision">main</param>
         <param name="subdir">{self.name}</param>
-        <param name="filename">{self.name}-manifest</param>
+        <param name="filename">{self.name}-git</param>
         <param name="versionformat">%h</param>
         <param name="extract">*.spec</param>
         <param name="extract">*.changes</param>
