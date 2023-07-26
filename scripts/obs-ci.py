@@ -31,7 +31,7 @@ def cmd(*args: str, stdin: T.Optional[T.IO[T.Any]] = None):
 
 
 def gh(*args: str, stdin: T.Optional[T.IO[T.Any]] = None):
-    return cmd(*args, stdin=stdin)
+    return cmd("gh", *args, stdin=stdin)
 
 
 def download(url: str, outfile: str):
@@ -213,6 +213,7 @@ class Spec:
         self.metadata = metadata
 
     def save(self, **metadata: str):
+        L.info(f"Updating SPEC file {self.path}")
         self.metadata.update(metadata)
         with open(self.path, "w") as f:
             for k, v in self.metadata.items():
@@ -279,7 +280,6 @@ class Package:
         vtag = self._fetch_latest()
         if vtag == self.vtag:
             return
-        L.info(f"Updating SPEC of {self.name}")
         version = self._parse_version(vtag)
         self._spec.save(
             vtag=vtag,
@@ -348,7 +348,6 @@ class Package:
         checksum = sha256(outfile)
         outchecksum = join(outdir, f"{outbase}.sha256")
         write(outchecksum, checksum)
-        L.info(f"Updating SPEC of {self.name}")
         self._spec.save(
             source=f"https://github.com/{G.GH_REPO}/releases/download/nightly/{outbase}.{outext}",
             checksum=checksum,
