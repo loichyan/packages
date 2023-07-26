@@ -17,10 +17,18 @@ on:
         type: boolean
         required: false
         description: --update
-      release:
+      update-source:
         type: boolean
         required: false
-        description: --release
+        description: --update-source
+      upload:
+        type: boolean
+        required: false
+        description: --upload
+      commit:
+        type: boolean
+        required: false
+        description: --commit
       rebuild:
         type: boolean
         required: false
@@ -57,7 +65,9 @@ jobs:
         run: |
           ./scripts/obs-ci.py \
             $([[ "${{ inputs.update }}" == false ]] || echo --update) \
-            $([[ "${{ inputs.release }}" == false ]] || echo --release) \
+            $([[ "${{ inputs.update-source }}" == false ]] || echo --update-source) \
+            $([[ "${{ inputs.upload }}" == false ]] || echo --upload) \
+            $([[ "${{ inputs.commit }}" == false ]] || echo --commit) \
             $([[ "${{ inputs.rebuild }}" == false ]] || echo --rebuild) \
             $([[ -z "${{ inputs.packages }}" ]] \
               && echo --all \

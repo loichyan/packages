@@ -356,15 +356,20 @@ class Package:
         self._files.extend((outfile, outchecksum))
         return outdir
 
-    def release(self):
+    def upload(self):
+        """
+        Uploads attached files.
+        """
+        L.info("Uploading %s" % (",".join(self._files)))
+        gh("release", "upload", "nightly", *self._files)
+
+    def commit(self):
         """
         Releases updates.
         """
         git("add", self.name)
         git("commit", "-m", f"chore({self.name}): update to {self.version}")
         git("push")
-        L.info("Uploading %s" % (",".join(self._files)))
-        gh("release", "upload", "nightly", *self._files)
         lastcommit = git("rev-parse", "HEAD")
         L.info(f"Updating nightly tag ref to {lastcommit}")
         gh_api(
@@ -430,7 +435,10 @@ class LocalPackage(Package):
     def update_source(self, outdir: T.Optional[str] = None):
         return outdir or mkdtemp()
 
-    def release(self):
+    def commit(self):
+        return
+
+    def upload(self):
         return
 
     def rebuild(self):
@@ -540,7 +548,8 @@ class App:
         parser.add_argument("--update-service", action="store_true")
         parser.add_argument("--update", action="store_true")
         parser.add_argument("--update-source", action="store_true")
-        parser.add_argument("--release", action="store_true")
+        parser.add_argument("--upload", action="store_true")
+        parser.add_argument("--commit", action="store_true")
         parser.add_argument("--rebuild", action="store_true")
         parser.add_argument("-o", "--outdir")
         package = parser.add_mutually_exclusive_group(required=True)
@@ -568,8 +577,10 @@ class App:
             if updated or not args.update:
                 if args.update_source:
                     package.update_source(args.outdir)
-                if args.release:
-                    package.release()
+                if args.upload:
+                    package.upload()
+                if args.commit:
+                    package.commit()
                 if args.rebuild:
                     package.rebuild()
 
