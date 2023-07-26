@@ -243,7 +243,7 @@ class Package:
         <param name="url">https://github.com/{G.GH_REPO}</param>
         <param name="revision">main</param>
         <param name="subdir">{self.name}</param>
-        <param name="filename">{self.name}-source</param>
+        <param name="filename">{self.name}-manifest</param>
         <param name="versionformat">%h</param>
         <param name="extract">*.spec *.changes</param>
     </service>
@@ -338,7 +338,7 @@ class Package:
         finally:
             os.chdir(cwd)
         # Compress all sources
-        outbase = f"{self.name}-{self.version}"
+        outbase = f"{self.name}-{self.version}-source"
         outext = "tar.xz"
         outfile = join(outdir, f"{outbase}.{outext}")
         L.info(f"Compressing {workdir} to {outfile}")
