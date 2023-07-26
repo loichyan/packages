@@ -11,23 +11,22 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/wezterm/
 Summary:       Wez's Terminal Emulator.
+Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11
+Requires:      libwayland-client, libwayland-egl, libwayland-cursor, mesa-libEGL
+Requires:      xcb-util, xcb-util-keysyms, xcb-util-image, xcb-util-wm
 Requires:      %{name}-terminfo = %{version}-%{release}
-Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11, libwayland-client
-Requires:      libwayland-egl, libwayland-cursor, mesa-libEGL, xcb-util, xcb-util-keysyms, xcb-util-image, xcb-util-wm
-BuildRequires: cargo, make, gcc, gcc-c++, ncurses
-BuildRequires: fontconfig-devel, openssl-devel, libxcb-devel, libxkbcommon-devel, libxkbcommon-x11-devel, wayland-devel
-BuildRequires: mesa-libEGL-devel, xcb-util-devel, xcb-util-keysyms-devel, xcb-util-image-devel, xcb-util-wm-devel
+BuildRequires: cargo, make, gcc, gcc-c++, ncurses, fontconfig-devel, openssl-devel
+BuildRequires: libxcb-devel, libxkbcommon-devel, libxkbcommon-x11-devel, wayland-devel
+BuildRequires: mesa-libEGL-devel, xcb-util-devel, xcb-util-keysyms-devel
+BuildRequires: xcb-util-image-devel, xcb-util-wm-devel
 #!RemoteAsset: %{checksum}
 Source:        %{source}
 
 
-%define _description %{expand:
+%description
 wezterm is a terminal emulator with support for modern features
 such as fonts with ligatures, hyperlinks, tabs and multiple
-windows.}
-
-%description
-%{_description}
+windows.
 
 %package terminfo
 Summary:   The terminfo file for wezterm.
@@ -35,7 +34,11 @@ BuildArch: noarch
 Requires:  ncurses-base
 
 %description terminfo
-%{_description}
+The terminfo file for wezterm.
+
+%files terminfo
+%license LICENSE.md
+%{_datadir}/terminfo
 
 %prep
 %autosetup -c
@@ -60,8 +63,6 @@ install -Dm644 assets/wezterm-nautilus.py %{buildroot}%{_datadir}/nautilus-pytho
 # install-terminfo
 install -dm755 %{buildroot}%{_datadir}/terminfo
 tic -x -o %{buildroot}%{_datadir}/terminfo termwiz/data/wezterm.terminfo
-
-The terminfo file for wezterm.
 
 %files
 %license LICENSE.md
