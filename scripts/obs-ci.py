@@ -351,7 +351,7 @@ class Package:
         write(outchecksum, checksum)
         self._spec.save(
             source=f"https://github.com/{G.GH_REPO}/releases/download/nightly/{outbase}.{outext}",
-            checksum=checksum,
+            checksum=f"sha256:{checksum}",
         )
         self._files.extend((outfile, outchecksum))
         return outdir

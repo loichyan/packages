@@ -1,8 +1,8 @@
 %define vtag v0.1.1
 %define version 0.1.1
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/nix-mount-0.1.1.tar.xz
-%define checksum 20d50fb0970210678e640eb8f0ff67b406de7f1921bef6544dfe684e0eafcbfe
+%define source https://github.com/loichyan/packages/releases/download/nightly/nix-mount-0.1.1-source.tar.xz
+%define checksum sha256:c7d233d651b7e88e1fa3ab01b32fd1852787072d1ada59695446d4c19736a128
 
 Name:          nix-mount
 Version:       %{version}
