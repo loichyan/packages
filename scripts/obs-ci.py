@@ -9,7 +9,6 @@ from tempfile import mkdtemp
 from urllib.parse import urlparse
 from xml.etree import ElementTree as ET
 import hashlib
-import io
 import json
 import logging as L
 import os
@@ -20,18 +19,18 @@ import shutil as sh
 import typing as T
 
 
-def cmd(*args: str, stdin: T.Optional[T.IO[T.Any]] = None):
+def cmd(*args: str, input: T.Optional[str] = None):
     resp = run(
         args,
-        stdin=stdin,
+        input=input.encode() if input else None,
         stdout=subprocess.PIPE,
     )
     resp.check_returncode()
     return resp.stdout.decode()
 
 
-def gh(*args: str, stdin: T.Optional[T.IO[T.Any]] = None):
-    return cmd("gh", *args, stdin=stdin)
+def gh(*args: str, input: T.Optional[str] = None):
+    return cmd("gh", *args, input=input)
 
 
 def download(url: str, outfile: str):
@@ -91,15 +90,20 @@ def gh_api(
     body: T.Optional[T.Any] = None,
 ) -> T.Any:
     L.info(f"Calling GitHub API {path}")
-    out = gh(
+    args = [
         "api",
         path,
         "-X",
         method or "GET",
         "-H",
         "Content-Type: application/json",
-        stdin=io.StringIO(json.dumps(body)) if body is not None else None,
-    )
+    ]
+    if body is not None:
+        args.extend(["--input", "-"])
+        input = json.dumps(body)
+    else:
+        input = None
+    out = gh(*args, input=input)
     return json.loads(out)
 
 
@@ -174,11 +178,14 @@ class Global:
 
     @cached_property
     def COMMIT_USERNAME(self):
-        return require_env("COMMIT_USERNAME", "github-actions")
+        return require_env("COMMIT_USERNAME", "github-actions[bot]")
 
     @cached_property
     def COMMIT_EMAIL(self):
-        return require_env("COMMIT_EMAIL", "github-actions@github.com")
+        return require_env(
+            "COMMIT_EMAIL",
+            "github-actions[bot]@users.noreply.github.com",
+        )
 
     @cached_property
     def PACKAGES(self) -> T.Dict[str, T.Callable[[], "Package"]]:
@@ -368,10 +375,10 @@ class Package:
         git("add", self.name)
         git("commit", "-m", f"chore({self.name}): {msg}")
         git("push")
-        lastcommit = git("rev-parse", "HEAD")
+        lastcommit = git("rev-parse", "HEAD").rstrip()
         L.info(f"Updating nightly tag ref to {lastcommit}")
         gh_api(
-            f"/repos/{G.GH_REPO}/git/refs/nightly",
+            f"/repos/{G.GH_REPO}/git/refs/tags/nightly",
             method="PATCH",
             body={"sha": lastcommit},
         )
@@ -587,7 +594,7 @@ class App:
                 if args.update_source:
                     package.update_source(args.outdir)
                 if args.release:
-                    package.release()
+                    package.release(args.message)
 
 
 if __name__ == "__main__":
