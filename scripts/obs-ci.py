@@ -570,7 +570,6 @@ class App:
 
     def run(self):
         args = self.cli
-        print(args)
         if args.all:
             packages: T.List[Package] = [p() for p in G.PACKAGES.values()]
         else:
