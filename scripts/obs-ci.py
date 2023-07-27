@@ -443,10 +443,7 @@ class LocalPackage(Package):
     def update_source(self, outdir: T.Optional[str] = None):
         return outdir or mkdtemp()
 
-    def upload(self):
-        return
-
-    def commit(self, msg: T.Optional[str] = None):
+    def release(self, msg: T.Optional[str] = None):
         return
 
     def rebuild(self):
@@ -553,13 +550,13 @@ class App:
     def cli(self):
         parser = ArgumentParser()
         for long in [
+            "--ci",
             "--show-service",
             "--update-service",
             "--update",
             "--update-source",
             "--release",
             "--rebuild",
-            "--ci",
         ]:
             parser.add_argument(long, action="store_true")
         parser.add_argument("-a", "--all", action="store_true")
@@ -583,6 +580,7 @@ class App:
             if args.ci and package.update():
                 package.update_source()
                 package.release()
+                package.rebuild()
             elif not args.ci:
                 if args.show_service:
                     print(package.service)
@@ -594,6 +592,8 @@ class App:
                     package.update_source(args.outdir)
                 if args.release:
                     package.release(args.message)
+                if args.rebuild:
+                    package.rebuild()
 
 
 if __name__ == "__main__":
