@@ -34,12 +34,12 @@ You can find the RPM packages in the DNF repository at
 ## ⚙️ Installation
 
 ```sh
-dnf config-manager --add-repo https://download.opensuse.org/repositories/home:loichyan/Fedora_38/home:loichyan.repo
+source /etc/os-release &&
+  dnf config-manager --add-repo https://download.opensuse.org/repositories/home:loichyan/Fedora_$VERSION_ID/home:loichyan.repo
 # Or download manually
 source /etc/os-release &&
   curl -fL "https://download.opensuse.org/repositories/home:loichyan/Fedora_$VERSION_ID/home:loichyan.repo" |
-  sudo tee /etc/yum.repos.d/_obs:build.opensuse.org:home:loichyan.repo
-
+  sudo tee /etc/yum.repos.d/home_loichyan.repo
 ```
 
 ## 📦 Packaging process
