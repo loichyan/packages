@@ -55,4 +55,4 @@ jobs:
         run: |
           [[ "${{ github.event_name }}" = "workflow_dispatch" ]] \
           && ./scripts/obs-ci.py ${{ inputs.args }} \
-          || ./scripts/obs-ci.py --ci
+          || ./scripts/obs-ci.py --ci --all
