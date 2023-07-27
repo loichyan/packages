@@ -359,19 +359,14 @@ class Package:
         self._files.extend((outfile, outchecksum))
         return outdir
 
-    def upload(self):
-        """
-        Uploads attached files.
-        """
-        L.info("Uploading %s" % (",".join(self._files)))
-        gh("release", "upload", "nightly", *self._files)
-
-    def commit(self):
+    def release(self, msg: T.Optional[str] = None):
         """
         Releases updates.
         """
+        msg = msg or f"update to {self.version}"
+        L.info(f"Commiting changes")
         git("add", self.name)
-        git("commit", "-m", f"chore({self.name}): update to {self.version}")
+        git("commit", "-m", f"chore({self.name}): {msg}")
         git("push")
         lastcommit = git("rev-parse", "HEAD")
         L.info(f"Updating nightly tag ref to {lastcommit}")
@@ -380,6 +375,8 @@ class Package:
             method="PATCH",
             body={"sha": lastcommit},
         )
+        L.info("Uploading %s" % (",".join(self._files)))
+        gh("release", "upload", "nightly", *self._files)
 
     def rebuild(self):
         """
@@ -439,10 +436,10 @@ class LocalPackage(Package):
     def update_source(self, outdir: T.Optional[str] = None):
         return outdir or mkdtemp()
 
-    def commit(self):
+    def upload(self):
         return
 
-    def upload(self):
+    def commit(self, msg: T.Optional[str] = None):
         return
 
     def rebuild(self):
@@ -548,21 +545,25 @@ class App:
     @cached_property
     def cli(self):
         parser = ArgumentParser()
-        parser.add_argument("--show-service", action="store_true")
-        parser.add_argument("--update-service", action="store_true")
-        parser.add_argument("--update", action="store_true")
-        parser.add_argument("--update-source", action="store_true")
-        parser.add_argument("--upload", action="store_true")
-        parser.add_argument("--commit", action="store_true")
-        parser.add_argument("--rebuild", action="store_true")
-        parser.add_argument("-o", "--outdir")
-        package = parser.add_mutually_exclusive_group(required=True)
-        package.add_argument("-a", "--all", action="store_true")
-        package.add_argument("-p", "--package", action="append")
+        for long in [
+            "--show-service",
+            "--update-service",
+            "--update",
+            "--update-source",
+            "--release",
+            "--rebuild",
+            "--ci",
+        ]:
+            parser.add_argument(long, action="store_true")
+        parser.add_argument("-a", "--all", action="store_true")
+        parser.add_argument("-m", "--message", metavar="STRING")
+        parser.add_argument("-o", "--outdir", metavar="PATH")
+        parser.add_argument("package", nargs="*")
         return parser.parse_args()
 
     def run(self):
         args = self.cli
+        print(args)
         if args.all:
             packages: T.List[Package] = [p() for p in G.PACKAGES.values()]
         else:
@@ -573,20 +574,20 @@ class App:
                 packages.append(package())
 
         for package in packages:
-            if args.show_service:
-                print(package.service)
-            if args.update_service:
-                package.update_service()
-            updated = args.update and package.update() is not None
-            if updated or not args.update:
+            if args.ci and package.update():
+                package.update_source()
+                package.release()
+            elif not args.cli:
+                if args.show_service:
+                    print(package.service)
+                if args.update_service:
+                    package.update_service()
+                if args.update and package.update():
+                    package.update()
                 if args.update_source:
                     package.update_source(args.outdir)
-                if args.upload:
-                    package.upload()
-                if args.commit:
-                    package.commit()
-                if args.rebuild:
-                    package.rebuild()
+                if args.release:
+                    package.release()
 
 
 if __name__ == "__main__":

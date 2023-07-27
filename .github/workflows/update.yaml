@@ -9,30 +9,10 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
     inputs:
-      packages:
+      args:
         type: string
         required: false
-        description: --package
-      update:
-        type: boolean
-        required: false
-        description: --update
-      update-source:
-        type: boolean
-        required: false
-        description: --update-source
-      upload:
-        type: boolean
-        required: false
-        description: --upload
-      commit:
-        type: boolean
-        required: false
-        description: --commit
-      rebuild:
-        type: boolean
-        required: false
-        description: --rebuild
+        description: Arguments passed to obs-ci.py
 
 jobs:
   update-packages:
@@ -61,23 +41,18 @@ jobs:
 
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
-        if: ${{ steps.cache-rust-toolchain.outputs.cache-hit != 'true' }}
+        if: steps.cache-rust-toolchain.outputs.cache-hit != 'true'
         with:
           toolchain: stable
           profile: minimal
 
       - name: Update packages
+        if: github.event_name != 'schedule'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
           OBS_PROJECT: home:loichyan
         run: |
-          ./scripts/obs-ci.py \
-            $([[ "${{ inputs.update }}" == false ]] || echo --update) \
-            $([[ "${{ inputs.update-source }}" == false ]] || echo --update-source) \
-            $([[ "${{ inputs.upload }}" == false ]] || echo --upload) \
-            $([[ "${{ inputs.commit }}" == false ]] || echo --commit) \
-            $([[ "${{ inputs.rebuild }}" == false ]] || echo --rebuild) \
-            $([[ -z "${{ inputs.packages }}" ]] \
-              && echo --all \
-              || for p in $(tr " " "\n"); do echo -p $p; done <<<"${{ inputs.packages }}" )
+          [[ "${{ github.event_name }}" = "workflow_dispatch" ]] \
+          && ./scripts/obs-ci.py ${{ inputs.args }} \
+          || ./scripts/obs-ci.py --ci
