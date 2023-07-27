@@ -53,6 +53,7 @@ jobs:
           OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
           OBS_PROJECT: home:loichyan
         run: |
-          [[ "${{ github.event_name }}" = "workflow_dispatch" ]] \
-          && ./scripts/obs-ci.py ${{ inputs.args }} \
-          || ./scripts/obs-ci.py --ci --all
+          if [[ "${{ github.event_name }}" = "workflow_dispatch" ]]; \
+          then ./scripts/obs-ci.py ${{ inputs.args }}; \
+          else ./scripts/obs-ci.py --ci --all; \
+          fi
