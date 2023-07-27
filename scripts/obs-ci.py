@@ -577,7 +577,7 @@ class App:
             if args.ci and package.update():
                 package.update_source()
                 package.release()
-            elif not args.cli:
+            elif not args.ci:
                 if args.show_service:
                     print(package.service)
                 if args.update_service:
