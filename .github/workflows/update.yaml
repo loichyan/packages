@@ -33,7 +33,15 @@ jobs:
           pip install -r requirements.txt
 
       - name: Setup Rust toolchain
+        id: setup-rust-toolchain
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust toolchain
+        uses: actions/cache@v3
+        with:
+          path: ~/.rustup
+          key: |
+            setup-rust-toolchain${{ runner.name }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}
 
       - name: Update packages
         env:
