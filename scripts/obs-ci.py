@@ -110,7 +110,7 @@ class Global:
 
     @cached_property
     def GH_REPO(self):
-        return self.GH.get_repo(require_env("GH_REPO", "loichyan/packages"))
+        return require_env("GH_REPO", "loichyan/packages")
 
     @cached_property
     def COMMIT_USERNAME(self):
@@ -366,11 +366,12 @@ class Package:
         L.info(f"Commiting changes")
         G.REPO.index.add([self.name])
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
-        release = G.GH_REPO.get_release("nightly")
+        repo = G.GH.get_repo(G.GH_REPO)
+        release = repo.get_release("nightly")
         L.info("Push commits")
         G.REPO.remote().push()
         L.info(f"Updating nightly tag ref to {lastcommit}")
-        G.GH_REPO.get_git_ref("tags/nightly").edit(lastcommit)
+        repo.get_git_ref("tags/nightly").edit(lastcommit)
         for f in self._files:
             L.info(f"Uploading asset {f}")
             release.upload_asset(f)
