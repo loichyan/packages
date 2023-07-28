@@ -32,7 +32,7 @@ def cmd(*args: str, input: T.Optional[str] = None):
 
 def download(url: str, outfile: str):
     L.info(f"Downloading {url} to {outfile}")
-    return cmd("wget", url, f"-O{outfile}")
+    return cmd("curl", "-fsSL", url, f"-o{outfile}")
 
 
 def sha256(path: str) -> str:
