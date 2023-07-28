@@ -127,8 +127,8 @@ class Global:
     def REPO(self):
         repo = git.Repo()
         with repo.config_writer() as w:
-            w.set("user", "name", self.COMMIT_USERNAME)
-            w.set("user", "email", self.COMMIT_EMAIL)
+            w.set_value("user", "name", self.COMMIT_USERNAME)
+            w.set_value("user", "email", self.COMMIT_EMAIL)
         return repo
 
     @cached_property
