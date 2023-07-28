@@ -386,7 +386,6 @@ class Package:
         """
         Fetches the latest %vtag.
         """
-        L.warning(f"{self.name} cannot be updated")
         return self.vtag
 
     def _parse_version(self, vtag: str) -> str:
