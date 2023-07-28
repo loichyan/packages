@@ -8,8 +8,9 @@ from subprocess import run
 from tempfile import mkdtemp
 from urllib.parse import urlparse
 from xml.etree import ElementTree as ET
+import git
+import github
 import hashlib
-import json
 import logging as L
 import os
 import re
@@ -29,82 +30,9 @@ def cmd(*args: str, input: T.Optional[str] = None):
     return resp.stdout.decode()
 
 
-def gh(*args: str, input: T.Optional[str] = None):
-    return cmd("gh", *args, input=input)
-
-
 def download(url: str, outfile: str):
     L.info(f"Downloading {url} to {outfile}")
     return cmd("wget", url, f"-O{outfile}")
-
-
-def git(*args: str):
-    return cmd(
-        "git",
-        "-c",
-        f"user.name={G.COMMIT_USERNAME}",
-        "-c",
-        f"user.email={G.COMMIT_EMAIL}",
-        *args,
-    )
-
-
-def obs_api(
-    path: str,
-    method: T.Optional[str] = None,
-    auth: T.Optional[T.Literal["login", "token"]] = None,
-    headers: T.Optional[T.Dict[str, str]] = None,
-    **kwargs: T.Any,
-) -> ET.Element:
-    """
-    Calls OBS API.
-    """
-    if auth == None or auth == "login":
-        authorization = f"Basic {G.OBS_LOGIN}"
-    elif auth == "token":
-        authorization = f"Token {G.OBS_TOKEN}"
-    else:
-        raise ValueError(f"Unsupported authorization method: '{auth}'")
-    L.info(f"Calling OBS API: {path}")
-    resp = R.request(
-        method or "GET",
-        f"https://{G.OBS_HOST}{path}",
-        headers={
-            "Accept": "application/xml; charset=utf-8",
-            "Authorization": authorization,
-            **(headers or {}),
-        },
-        **kwargs,
-    )
-    tree = ET.fromstring(resp.text)
-    if resp.status_code != 200:
-        summary = tree.find("./status/summary")
-        summary = summary.text if summary is not None else None
-        raise RuntimeError(f"OBS API error: {summary or resp.text}")
-    return tree
-
-
-def gh_api(
-    path: str,
-    method: T.Optional[str] = None,
-    body: T.Optional[T.Any] = None,
-) -> T.Any:
-    L.info(f"Calling GitHub API {path}")
-    args = [
-        "api",
-        path,
-        "-X",
-        method or "GET",
-        "-H",
-        "Content-Type: application/json",
-    ]
-    if body is not None:
-        args.extend(["--input", "-"])
-        input = json.dumps(body)
-    else:
-        input = None
-    out = gh(*args, input=input)
-    return json.loads(out)
 
 
 def sha256(path: str) -> str:
@@ -169,12 +97,20 @@ class Global:
         return require_env("OBS_PROJECT")
 
     @cached_property
+    def OBS(self):
+        return Obs()
+
+    @cached_property
     def OBS_HOST(self):
         return require_env("OBS_HOST", "api.opensuse.org")
 
     @cached_property
+    def GH(self):
+        return github.Github(auth=github.Auth.Token(require_env("GH_TOKEN")))
+
+    @cached_property
     def GH_REPO(self):
-        return require_env("GH_REPO", "loichyan/packages")
+        return self.GH.get_repo(require_env("GH_REPO", "loichyan/packages"))
 
     @cached_property
     def COMMIT_USERNAME(self):
@@ -188,6 +124,14 @@ class Global:
         )
 
     @cached_property
+    def REPO(self):
+        repo = git.Repo()
+        with repo.config_writer() as w:
+            w.set("user", "name", self.COMMIT_USERNAME)
+            w.set("user", "email", self.COMMIT_EMAIL)
+        return repo
+
+    @cached_property
     def PACKAGES(self) -> T.Dict[str, T.Callable[[], "Package"]]:
         return {
             "akmods-keys": AkmodsKeys,
@@ -199,6 +143,60 @@ class Global:
 
 
 G = Global()
+
+
+class Obs:
+    def _api(
+        self,
+        method: str,
+        path: str,
+        params: T.Optional[T.Dict[str, str]] = None,
+        auth: T.Optional[str] = None,
+        headers: T.Optional[T.Dict[str, str]] = None,
+        data: T.Optional[str] = None,
+    ) -> ET.Element:
+        """
+        Calls OBS API.
+        """
+        auth = auth or f"Basic {G.OBS_LOGIN}"
+        headers = headers or {}
+        L.info(f"Calling OBS API: {path}")
+        resp = R.request(
+            method,
+            f"https://{G.OBS_HOST}{path}",
+            params=params,
+            headers={
+                "Accept": "application/xml; charset=utf-8",
+                "Authorization": auth,
+                **headers,
+            },
+            data=data,
+        )
+        tree = ET.fromstring(resp.text)
+        if resp.status_code != 200:
+            summary = tree.find("./status/summary")
+            summary = summary.text if summary is not None else None
+            raise RuntimeError(f"OBS API error: {summary or resp.text}")
+        return tree
+
+    def trigger(self, package: str, cmd: T.Optional[str] = None):
+        cmd = cmd or "runservice"
+        self._api(
+            "POST",
+            f"/trigger/{cmd}",
+            params={"project": G.OBS_PROJECT, "package": package},
+            auth=f"Token {G.OBS_TOKEN}",
+        )
+
+    def update_service(self, package: str, service: str, msg: T.Optional[str]):
+        msg = msg or "Update `_service`"
+        self._api(
+            "PUT",
+            f"/source/{G.OBS_PROJECT}/{package}/_service",
+            params={"comment": msg},
+            headers={"Content-Type": "application/xml"},
+            data=service,
+        )
 
 
 class Spec:
@@ -268,18 +266,12 @@ class Package:
     def version(self):
         return self._spec.metadata["version"]
 
-    def update_service(self):
+    def update_service(self, msg: T.Optional[str] = None):
         """
         Updates services of this package.
         """
         L.info(f"Updating '_service' of {self.name}")
-        obs_api(
-            f"/source/{G.OBS_PROJECT}/{self.name}/_service",
-            method="PUT",
-            headers={"Content-Type": "application/xml"},
-            params={"comment": "Update `_service`"},
-            data=self.service,
-        )
+        G.OBS.update_service(self.name, self.service, msg)
 
     def update(self) -> T.Optional[str]:
         """
@@ -372,30 +364,23 @@ class Package:
         """
         msg = msg or f"update to {self.version}"
         L.info(f"Commiting changes")
-        git("add", self.name)
-        git("commit", "-m", f"chore({self.name}): {msg}")
-        git("push")
-        lastcommit = git("rev-parse", "HEAD").rstrip()
+        G.REPO.index.add([self.name])
+        lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
+        release = G.GH_REPO.get_release("nightly")
+        L.info("Push commits")
+        G.REPO.remote().push()
         L.info(f"Updating nightly tag ref to {lastcommit}")
-        gh_api(
-            f"/repos/{G.GH_REPO}/git/refs/tags/nightly",
-            method="PATCH",
-            body={"sha": lastcommit},
-        )
-        L.info("Uploading %s" % (",".join(self._files)))
-        gh("release", "upload", "nightly", *self._files)
+        G.GH_REPO.get_git_ref("tags/nightly").edit(lastcommit)
+        for f in self._files:
+            L.info(f"Uploading asset {f}")
+            release.upload_asset(f)
 
     def rebuild(self):
         """
         Trigger rebuild of this package.
         """
         L.info(f"Rebuilding {self.name}")
-        obs_api(
-            f"/trigger/runservice",
-            method="POST",
-            auth="token",
-            params={"project": G.OBS_PROJECT, "package": self.name},
-        )
+        G.OBS.trigger(self.name)
 
     def _fetch_latest(self) -> str:
         """
@@ -434,7 +419,7 @@ class Package:
 
 
 class LocalPackage(Package):
-    def update_service(self):
+    def update_service(self, msg: T.Optional[str] = None):
         return
 
     def update(self):
@@ -455,10 +440,13 @@ class GhPackage(Package):
         super().__init__(name)
         self.repo = repo
 
+    @cached_property
+    def _gh_repo(self):
+        return G.GH.get_repo(self.repo)
+
     def _fetch_latest(self) -> str:
         L.info(f"Fetching the latest release of {self.repo}")
-        resp = gh_api(f"/repos/{self.repo}/releases/latest")
-        return resp["tag_name"]
+        return self._gh_repo.get_latest_release().tag_name
 
 
 class FontPackage(GhPackage):
@@ -585,7 +573,7 @@ class App:
                 if args.show_service:
                     print(package.service)
                 if args.update_service:
-                    package.update_service()
+                    package.update_service(args.message)
                 if args.update and package.update():
                     package.update()
                 if args.update_source:
