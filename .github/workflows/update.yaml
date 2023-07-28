@@ -36,7 +36,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Update packages
-        if: github.event_name != 'schedule'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OBS_TOKEN: ${{ secrets.OBS_TOKEN }}
