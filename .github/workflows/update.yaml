@@ -41,7 +41,7 @@ jobs:
         with:
           path: ~/.rustup
           key: |
-            setup-rust-toolchain${{ runner.name }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}
+            setup-rust-toolchain-${{ env.RUNNER_OS }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}
 
       - name: Update packages
         env:
