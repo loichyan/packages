@@ -38,7 +38,7 @@ jobs:
         with:
           path: ~/.rustup
           key: |
-            setup-rust-toolchain-${{ env.RUNNER_OS }}
+            setup-rust-toolchain-${{ vars.RUNNER_OS }}
 
       - name: Setup Rust toolchain
         if: steps.cache-rustup.outputs.cache-hit != 'true'
