@@ -1,8 +1,8 @@
-%define vtag v0.41.5
-%define version 0.41.5
+%define vtag v0.41.6
+%define version 0.41.6
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/sarasa-gothic-fonts-0.41.5-source.tar.xz
-%define checksum sha256:524a433217d27d5956226f39446432a10d26eef985c8d74ae1a06ac5e9e39758
+%define source https://github.com/loichyan/packages/releases/download/nightly/sarasa-gothic-fonts-0.41.6-source.tar.xz
+%define checksum sha256:31d76ce79439c5d57c90c04745f052c4460d3aff5f773e6c74df20602f8953cd
 %define fontname sarasa-gothic
 
 %define fontname sarasa-gothic
