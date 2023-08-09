@@ -2,8 +2,8 @@
 %define version 2.1.0
 %define date 2023-08-02T17:26:01.000
 %define release %autorelease
-%define source *
-%define checksum *
+%define source https://github.com/loichyan/packages/releases/download/nightly/v2raya-2.1.0-source.tar.xz
+%define checksum sha256:66386518ba7d5e70afdecd79928d2094bdffa9d4abde82596b53e710836f877c
 
 Name:          v2raya
 Version:       %{version}
