@@ -21,11 +21,16 @@ import shutil as sh
 import typing as T
 
 
-def cmd(*args: str, input: T.Optional[str] = None):
+def cmd(
+    *args: str,
+    input: T.Optional[str] = None,
+    cwd: T.Optional[str] = None,
+):
     resp = run(
         args,
         input=input.encode() if input else None,
         stdout=subprocess.PIPE,
+        cwd=cwd,
     )
     resp.check_returncode()
     return resp.stdout.decode()
@@ -139,6 +144,7 @@ class Global:
             "nerd-font-symbols": NerdFontSymbols,
             "nix-mount": NixMount,
             "sarasa-gothic-fonts": SarasaGothicFonts,
+            "v2raya": V2rayA,
             "wezterm": Wezterm,
         }
 
@@ -525,6 +531,20 @@ class SarasaGothicFonts(FontPackage):
             f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/README.md",
             f"{self.fontname}.metainfo.xml",
         ]
+
+
+class V2rayA(GhPackage):
+    def __init__(self):
+        super().__init__("v2raya", "v2rayA/v2rayA")
+
+    def _sources(self) -> T.List[str]:
+        return [
+            f"https://github.com/{self.repo}/archive/refs/tags/{self.vtag}.tar.gz#v2rayA-{self.version}",
+        ]
+
+    def _post_unpack(self):
+        # Vendor dependencies for offline build
+        cmd("go", "mod", "vendor", cwd="service")
 
 
 class Wezterm(GhPackage):
