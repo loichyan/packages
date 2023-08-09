@@ -146,6 +146,7 @@ class Global:
             "sarasa-gothic-fonts": SarasaGothicFonts,
             "v2raya": V2rayA,
             "wezterm": Wezterm,
+            "xray": Xray,
         }
 
 
@@ -566,6 +567,20 @@ class Wezterm(GhPackage):
         config = cmd("cargo", "vendor")
         with open(join(".cargo", "config"), "a") as f:
             f.write(config)
+
+
+class Xray(GhPackage):
+    def __init__(self):
+        super().__init__("xray", "XTLS/Xray-core")
+
+    def _sources(self) -> T.List[str]:
+        return [
+            f"https://github.com/{self.repo}/archive/refs/tags/{self.vtag}.tar.gz#Xray-core-{self.version}",
+        ]
+
+    def _post_unpack(self):
+        # Vendor dependencies for offline build
+        cmd("go", "mod", "vendor")
 
 
 class App:
