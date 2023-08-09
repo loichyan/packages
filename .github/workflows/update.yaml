@@ -51,6 +51,6 @@ jobs:
           OBS_PROJECT: home:loichyan
         run: |
           if [[ "${{ github.event_name }}" = "workflow_dispatch" ]]; \
-          then ./scripts/ci.py ${{ inputs.args }}; \
-          else ./scripts/ci.py --ci --all; \
+          then ./ci.py ${{ inputs.args }}; \
+          else ./ci.py --ci --all; \
           fi
