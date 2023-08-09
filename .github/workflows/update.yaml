@@ -32,17 +32,24 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Cache Rust toolchain
+      - name: Restore Rust Toolchain Cache
+        uses: actions/cache/restore@v3
+        id: restore-rust-toolchain-cache
+        with:
+          path: ~/.rustup
+          key: setup-rust-toolchain-${{ runner.os }}-
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        id: setup-rust-toolchain
+        if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
+
+      - name: Save Rust Toolchain Cache
         uses: actions/cache@v3
-        id: cache-rust-toolchain
         with:
           path: ~/.rustup
           key: |
-            setup-rust-toolchain-${{ runner.os }}
-
-      - name: Setup Rust toolchain
-        if: steps.cache-rustup.outputs.cache-hit != 'true'
-        uses: dtolnay/rust-toolchain@stable
+            setup-rust-toolchain-${{ runner.os }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}}
 
       - name: Update packages
         env:
