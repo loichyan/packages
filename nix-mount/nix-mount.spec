@@ -1,5 +1,6 @@
 %define vtag v0.1.1
 %define version 0.1.1
+%define date 2023-05-30T14:21:46.000
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/nix-mount-0.1.1-source.tar.xz
 %define checksum sha256:c7d233d651b7e88e1fa3ab01b32fd1852787072d1ada59695446d4c19736a128

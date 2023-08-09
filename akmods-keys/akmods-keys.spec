@@ -1,5 +1,6 @@
 %define vtag v0.1.0
 %define version 0.1.0
+%define date 2023-06-25T15:40:38.000
 
 Name:        akmods-keys
 Version:     %{version}

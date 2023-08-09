@@ -1,5 +1,6 @@
 %define vtag v3.0.2
 %define version 3.0.2
+%define date 2023-06-04T20:45:34.000
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/nerd-font-symbols-3.0.2-source.tar.xz
 %define checksum sha256:3d8b34548b412e79ba19cdd9470e6b148af7734d178ab0b78b906e4ab43f0939

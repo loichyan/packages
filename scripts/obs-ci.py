@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from argparse import ArgumentParser
+from dataclasses import dataclass
 from datetime import datetime
 from functools import cached_property
 from os.path import join, basename
@@ -227,6 +228,12 @@ class Spec:
                 f.write(content)
 
 
+@dataclass
+class Release:
+    tag: str
+    date: datetime
+
+
 class Package:
     def __init__(self, name: str):
         self.name = name
@@ -263,6 +270,10 @@ class Package:
         return self._spec.metadata["vtag"]
 
     @property
+    def date(self):
+        return datetime.fromisoformat(self._spec.metadata["date"])
+
+    @property
     def version(self):
         return self._spec.metadata["version"]
 
@@ -277,12 +288,15 @@ class Package:
         """
         Updates this package, returns the new %vtag if avialable.
         """
-        vtag = self._fetch_latest()
-        if vtag == self.vtag:
+        release = self._fetch_latest()
+
+        if release.date <= self.date:
             return
+        vtag = release.tag
         version = self._parse_version(vtag)
         self._spec.save(
             vtag=vtag,
+            date=release.date.isoformat(),
             version=version,
             release="%autorelease",
             **self._metadata(),
@@ -383,11 +397,11 @@ class Package:
         L.info(f"Rebuilding {self.name}")
         G.OBS.trigger(self.name)
 
-    def _fetch_latest(self) -> str:
+    def _fetch_latest(self) -> Release:
         """
         Fetches the latest %vtag.
         """
-        return self.vtag
+        return Release(tag=self.vtag, date=self.date)
 
     def _parse_version(self, vtag: str) -> str:
         """
@@ -444,9 +458,10 @@ class GhPackage(Package):
     def _gh_repo(self):
         return G.GH.get_repo(self.repo)
 
-    def _fetch_latest(self) -> str:
+    def _fetch_latest(self) -> Release:
         L.info(f"Fetching the latest release of {self.repo}")
-        return self._gh_repo.get_latest_release().tag_name
+        release = self._gh_repo.get_latest_release()
+        return Release(tag=release.tag_name, date=release.created_at)
 
 
 class FontPackage(GhPackage):
