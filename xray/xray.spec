@@ -12,7 +12,7 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MPL-2.0
 Url:           https://xtls.github.io/
 Summary:       Xray, Penetrates Everything.
-BuildRequires: golang >= 1.20
+BuildRequires: golang >= 1.19
 BuildRequires: systemd-rpm-macros
 #!RemoteAsset: %{checksum}
 Source:        %{source}
@@ -27,7 +27,7 @@ Fully compatible configuration.
 %autosetup -c
 
 %build
-go build -ldflags "-s -w -buildid=" -trimpath -o xray
+go build -ldflags "-s -w -buildid=" -trimpath -o xray ./main
 
 %install
 install -Dm755 xray -t %{buildroot}%{_bindir}
