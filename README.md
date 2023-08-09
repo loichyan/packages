@@ -54,50 +54,50 @@ A package is checked locally (via manually running or GitHub Actions):
 if ("Is %vtag the latest?")
   noop
 else {
-  "Update SPEC files (obs-ci --update)"
-  "Update sources (obs-ci --update-source)"
-  "Upload sources (obs-ci --upload)"
-  "Commit changes (obs-ci --commit)"
-  "Trigger rebuild (obs-ci --rebuild)"
+  "Update SPEC files (ci --update)"
+  "Update sources (ci --update-source)"
+  "Upload sources (ci --upload)"
+  "Commit changes (ci --commit)"
+  "Trigger rebuild (ci --rebuild)"
 }
 
 "END"
 -->
 
 ```text
-         ┌─────┐
-         │START│
-         └──┬──┘
-   _________▽__________
-  ╱                    ╲
- ╱ Is %vtag the latest? ╲___
- ╲                      ╱yes│
-  ╲____________________╱    │
-            │no             │
-   ┌────────▽────────┐      │
-   │Update SPEC files│      │
-   │(obs-ci --update)│      │
-   └────────┬────────┘      │
-┌───────────▽──────────┐    │
-│Update sources (obs-ci│    │
-│--update-source)      │    │
-└───────────┬──────────┘    │
-   ┌────────▽────────┐      │
-   │Upload sources   │      │
-   │(obs-ci --upload)│      │
-   └────────┬────────┘      │
-   ┌────────▽────────┐      │
-   │Commit changes   │      │
-   │(obs-ci --commit)│      │
-   └────────┬────────┘      │
-  ┌─────────▽────────┐      │
-  │Trigger rebuild   │      │
-  │(obs-ci --rebuild)│      │
-  └─────────┬────────┘      │
-            └───┬───────────┘
-              ┌─▽─┐
-              │END│
-              └───┘
+        ┌─────┐
+        │START│
+        └──┬──┘
+  _________▽__________
+ ╱                    ╲
+╱ Is %vtag the latest? ╲___
+╲                      ╱yes│
+ ╲____________________╱    │
+           │no             │
+  ┌────────▽────────┐      │
+  │Update SPEC files│      │
+  │(ci --update)    │      │
+  └────────┬────────┘      │
+ ┌─────────▽────────┐      │
+ │Update sources (ci│      │
+ │--update-source)  │      │
+ └─────────┬────────┘      │
+   ┌───────▽──────┐        │
+   │Upload sources│        │
+   │(ci --upload) │        │
+   └───────┬──────┘        │
+   ┌───────▽──────┐        │
+   │Commit changes│        │
+   │(ci --commit) │        │
+   └───────┬──────┘        │
+   ┌───────▽───────┐       │
+   │Trigger rebuild│       │
+   │(ci --rebuild) │       │
+   └───────┬───────┘       │
+           └───┬───────────┘
+             ┌─▽─┐
+             │END│
+             └───┘
 ```
 
 When the OBS instance receive the rebuild request:

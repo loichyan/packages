@@ -12,7 +12,7 @@ on:
       args:
         type: string
         required: false
-        description: Arguments passed to obs-ci.py
+        description: Arguments passed to ci.py
 
 jobs:
   update-packages:
@@ -51,6 +51,6 @@ jobs:
           OBS_PROJECT: home:loichyan
         run: |
           if [[ "${{ github.event_name }}" = "workflow_dispatch" ]]; \
-          then ./scripts/obs-ci.py ${{ inputs.args }}; \
-          else ./scripts/obs-ci.py --ci --all; \
+          then ./scripts/ci.py ${{ inputs.args }}; \
+          else ./scripts/ci.py --ci --all; \
           fi
