@@ -118,6 +118,10 @@ class Global:
         return require_env("GH_REPO", "loichyan/packages")
 
     @cached_property
+    def GH_BRANCH(self):
+        return require_env("GH_BRANCH", "main")
+
+    @cached_property
     def COMMIT_USERNAME(self):
         return require_env("COMMIT_USERNAME", "github-actions[bot]")
 
@@ -248,7 +252,7 @@ class BasePackage:
     <service name="obs_scm">
         <param name="scm">git</param>
         <param name="url">https://github.com/{G.GH_REPO}</param>
-        <param name="revision">main</param>
+        <param name="revision">{G.GH_BRANCH}</param>
         <param name="subdir">{self.name}</param>
         <param name="filename">{self.name}-git</param>
         <param name="versionformat">%h</param>
