@@ -26,12 +26,15 @@ Library for writing plugins and frontends for pop-launcher.
 just vendor=1
 
 %install
-just rootdir=%{buildroot} install
+just rootdir=%{buildroot} install_bin
+just rootdir=%{buildroot} bin_path=%{_bindir}/pop-launcher install_scripts
+just rootdir=%{buildroot} bin_path=%{_bindir}/pop-launcher install_plugins
 
 %files
 %license LICENSE
 %doc README.md
 %{_bindir}/pop-launcher
-%{_prefix}/lib/pop-launcher/*
+%{_prefix}/lib/pop-launcher/plugins/*
+%{_prefix}/lib/pop-launcher/scripts/*
 
 %changelog
