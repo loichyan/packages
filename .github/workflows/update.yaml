@@ -45,7 +45,7 @@ jobs:
         with:
           path: ~/.rustup
           key: |
-            setup-rust-toolchain-${{ runner.os }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}}
+            setup-rust-toolchain-${{ runner.os }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}
 
       - name: Setup Golang
         uses: actions/setup-go@v4
