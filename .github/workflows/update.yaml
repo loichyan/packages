@@ -28,11 +28,7 @@ jobs:
           python-version: "3.10"
           cache: pip
 
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-
-      - name: Restore Rust Toolchain Cache
+      - name: Restore Rust toolchain cache
         uses: actions/cache/restore@v3
         id: restore-rust-toolchain-cache
         with:
@@ -44,12 +40,26 @@ jobs:
         id: setup-rust-toolchain
         if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
 
-      - name: Save Rust Toolchain Cache
+      - name: Save Rust toolchain cache
         uses: actions/cache@v3
         with:
           path: ~/.rustup
           key: |
             setup-rust-toolchain-${{ runner.os }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}}
+
+      - name: Setup Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Python requirements
+        run: |
+          pip install -r requirements.txt
 
       - name: Update packages
         env:
