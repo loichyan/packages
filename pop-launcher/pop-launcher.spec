@@ -12,11 +12,9 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MPL-2.0
 URL:           https://github.com/pop-os/launcher/
 Summary:       Library for writing plugins and frontends for pop-launcher
-BuildRequires: cargo
+BuildRequires: cargo, just
 #!RemoteAsset: %{checksum}
 Source:        %{source}
-Patch0         0001-Copy-instead-of-symlink.patch
-Patch1:        0001-Remove-frozen-lock.patch
 
 %description
 Library for writing plugins and frontends for pop-launcher.
@@ -25,7 +23,7 @@ Library for writing plugins and frontends for pop-launcher.
 %autosetup -c
 
 %build
-just build-vendored
+just vendor=1
 
 %install
 just rootdir=%{buildroot} install
