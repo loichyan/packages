@@ -22,19 +22,15 @@ A Linux web GUI client of Project V which supports V2Ray, Xray, SS, SSR, Trojan 
 
 %prep
 %autosetup -c
+%define BUILD_DIR %{_builddir}/%{name}-%{version}
 
 %build
-# build: gui
-cd %{_builddir}/gui
-export NODE_OPTIONS=--openssl-legacy-provider
-yarn --check-files
-OUTPUT_DIR=%{_builddir}/service/server/router/web yarn build
 # build: core
-cd %{_builddir}/service
+cd "%{BUILD_DIR}/service"
 go build -ldflags '-X github.com/v2rayA/v2rayA/conf.Version='%{version}' -s -w' -trimpath -o v2raya
 
 %install
-cd "%{_builddir}"
+cd "%{BUILD_DIR}"
 install -Dm755 service/v2raya -t %{buildroot}%{_bindir}
 install -dm750 %{buildroot}/etc/v2raya/
 install -Dm644 install/universal/v2raya.default -t %{buildroot}%{_sysconfdir}/default/v2raya
