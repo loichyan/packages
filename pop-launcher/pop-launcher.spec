@@ -3,7 +3,7 @@
 %define date 2023-08-10T08:11:09.780
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/pop-launcher-1.2.1-source.tar.xz
-%define checksum d4afa2921a51257202c0f8c509e62e1de11df39459cd659ab81f7aa576db80ef
+%define checksum sha256:d4afa2921a51257202c0f8c509e62e1de11df39459cd659ab81f7aa576db80ef
 
 Name:          pop-launcher
 Version:       %{version}
