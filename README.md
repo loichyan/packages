@@ -11,6 +11,7 @@ You can find the RPM packages in the DNF repository at
 | --------------------- | ------------------------------------------------------- |
 | [nerd-font-symbols]   | [![nerd-font-symbols-badge]][nerd-font-symbols-pkg]     |
 | [nix-mount]           | [![nix-mount-badge]][nix-mount-pkg]                     |
+| [pop-launcher]        | [![pop-launcher-badge]][pop-launcher-pkg]               |
 | [sarasa-gothic-fonts] | [![sarasa-gothic-fonts-badge]][sarasa-gothic-fonts-pkg] |
 | [v2raya]              | [![v2raya-badge]][v2raya-pkg]                           |
 | [wezterm]             | [![wezterm-badge]][wezterm-pkg]                         |
@@ -24,6 +25,10 @@ You can find the RPM packages in the DNF repository at
 [nix-mount-pkg]: https://build.opensuse.org/package/show/home:loichyan/nix-mount
 [nix-mount-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/nix-mount/badge.svg?type=percent
+[pop-launcher]: https://www.nerdfonts.com
+[pop-launcher-pkg]: https://build.opensuse.org/package/show/home:loichyan/pop-launcher
+[pop-launcher-badge]:
+  https://build.opensuse.org/projects/home:loichyan/packages/pop-launcher/badge.svg?type=percent
 [sarasa-gothic-fonts]: https://github.com/be5invis/Sarasa-Gothic
 [sarasa-gothic-fonts-pkg]: https://build.opensuse.org/package/show/home:loichyan/sarasa-gothic-fonts
 [sarasa-gothic-fonts-badge]:
