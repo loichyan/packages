@@ -34,10 +34,10 @@ cd %{BUILD_DIR}
 install -Dm755 service/v2raya -t %{buildroot}%{_bindir}
 install -dm750 %{buildroot}/etc/v2raya/
 install -Dm644 install/universal/v2raya.default -t %{buildroot}%{_sysconfdir}/default/v2raya
-install -Dm644 install/universal/v2raya.desktop -t %{buildroot}/usr/share/applications/
+install -Dm644 install/universal/v2raya.desktop -t %{buildroot}%{_datadir}/applications/
 install -Dm644 install/universal/v2raya.service -t %{buildroot}%{_unitdir}
 install -Dm644 install/universal/v2raya-lite.service -t %{buildroot}%{_userunitdir}
-install -Dm644 gui/public/img/icons/android-chrome-512x512.png %{buildroot}/usr/share/icons/hicolor/512x512/apps/v2raya.png
+install -Dm644 gui/public/img/icons/android-chrome-512x512.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/v2raya.png
 
 %files
 %config(noreplace) %{_sysconfdir}/default/v2raya
