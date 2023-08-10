@@ -38,7 +38,7 @@ Requires:  ncurses-base
 The terminfo file for wezterm.
 
 %files terminfo
-%license LICENSE.md
+%license LICENSE
 %{_datadir}/terminfo
 
 %prep
@@ -66,7 +66,7 @@ install -dm755 %{buildroot}%{_datadir}/terminfo
 tic -x -o %{buildroot}%{_datadir}/terminfo termwiz/data/wezterm.terminfo
 
 %files
-%license LICENSE.md
+%license LICENSE
 %doc README.md
 %{_bindir}/wezterm
 %{_bindir}/wezterm-gui
@@ -82,7 +82,7 @@ tic -x -o %{buildroot}%{_datadir}/terminfo termwiz/data/wezterm.terminfo
 %{_sysconfdir}/profile.d/*
 
 %files terminfo
-%license LICENSE.md
+%license LICENSE
 %{_datadir}/terminfo
 
 %changelog

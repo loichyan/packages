@@ -1,4 +1,5 @@
 from lib import G, GhPackage, cmd, join
+import os
 import typing as T
 
 
@@ -17,6 +18,8 @@ class Package(GhPackage):
         ]
 
     def _post_unpack(self):
+        if os.path.exists("LICENSE.md"):
+            os.rename("LICENSE.md", "LICENSE")
         # Vendor dependencies for offline build
         config = cmd("cargo", "vendor")
         with open(join(".cargo", "config"), "a") as f:
