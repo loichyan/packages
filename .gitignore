@@ -26,6 +26,9 @@ Session.vim
 ## Misc
 foo.*
 
+## Python
+__pycache__
+
 ## Private keys
 akmods-keys/*.der
 akmods-keys/*.priv
