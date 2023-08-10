@@ -57,6 +57,9 @@ jobs:
         with:
           node-version: 18
 
+      - name: Setup Just
+        uses: extractions/setup-just@v1
+
       - name: Install Python requirements
         run: |
           pip install -r requirements.txt
