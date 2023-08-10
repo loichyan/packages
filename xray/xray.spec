@@ -3,7 +3,7 @@
 %define date 2023-06-19T00:35:46.000
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/xray-1.8.3-source.tar.xz
-%define checksum sha256:693e0a6da2f170bcd2968994b575eb1306039627ed2caed414c234a84c1f5587
+%define checksum sha256:29af2d51900828d004b50a48cf371af69fc36944030eb6f28a25de155d45ef00
 
 Name:          xray
 Version:       %{version}
