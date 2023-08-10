@@ -29,7 +29,7 @@ def cmd(
         input=input.encode() if input else None,
         stdout=subprocess.PIPE,
         cwd=cwd,
-        env=env,
+        env={**os.environ.copy(), **env} if env is not None else None,
     )
     resp.check_returncode()
     return resp.stdout.decode()

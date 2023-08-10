@@ -1,6 +1,8 @@
 from lib import GhPackage, cmd
+from os.path import join
 import typing as T
 import os
+import shutil as sh
 
 
 class Package(GhPackage):
@@ -15,14 +17,15 @@ class Package(GhPackage):
     def _post_unpack(self):
         cwd = os.getcwd()
         # Build gui
-        cmd(
-            "yarn",
-            "build",
+        args: T.Dict[str, T.Any] = dict(
             cwd="gui",
             env={
                 "NODE_OPTIONS": "--openssl-legacy-provider",
                 "OUTPUT_DIR": f"{cwd}/service/server/router/web",
             },
         )
+        cmd("yarn", "--check-files", **args)
+        cmd("yarn", "build", **args)
+        sh.rmtree(join("gui", "node_modules"))
         # Vendor dependencies for offline build
         cmd("go", "mod", "vendor", cwd="service")
