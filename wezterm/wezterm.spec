@@ -45,7 +45,7 @@ The terminfo file for wezterm.
 %autosetup -c
 
 %build
-cargo build --all --release
+cargo build --frozen --offline --all --release
 
 %install
 # install-main
