@@ -1,5 +1,6 @@
 from lib import GhPackage, cmd
 import typing as T
+import os
 
 
 class Package(GhPackage):
@@ -12,5 +13,16 @@ class Package(GhPackage):
         ]
 
     def _post_unpack(self):
+        cwd = os.getcwd()
+        # Build gui
+        cmd(
+            "yarn",
+            "build",
+            cwd="gui",
+            env={
+                "NODE_OPTIONS": "--openssl-legacy-provider",
+                "OUTPUT_DIR": f"{cwd}/service/server/router/web",
+            },
+        )
         # Vendor dependencies for offline build
         cmd("go", "mod", "vendor", cwd="service")

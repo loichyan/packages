@@ -22,12 +22,14 @@ def cmd(
     *args: str,
     input: T.Optional[str] = None,
     cwd: T.Optional[str] = None,
+    env: T.Optional[T.Dict[str, str]] = None,
 ):
     resp = run(
         args,
         input=input.encode() if input else None,
         stdout=subprocess.PIPE,
         cwd=cwd,
+        env=env,
     )
     resp.check_returncode()
     return resp.stdout.decode()
