@@ -36,11 +36,12 @@ jobs:
           key: setup-rust-toolchain-${{ runner.os }}-
 
       - name: Setup Rust toolchain
+        if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
         id: setup-rust-toolchain
-        if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
 
       - name: Save Rust toolchain cache
+        if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
         uses: actions/cache@v3
         with:
           path: ~/.rustup
