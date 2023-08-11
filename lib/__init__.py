@@ -380,13 +380,21 @@ class BasePackage:
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
         repo = G.GH.get_repo(G.GH_REPO)
         release = repo.get_release("nightly")
+        file_names = set(basename(f) for f in self._files)
+        for asset in release.get_assets():
+            fname = asset.name
+            if fname in file_names:
+                file_names.remove(fname)
+                assert asset.delete_asset(), f"Cannot delete asset {fname}"
+            if len(file_names) == 0:
+                break
+        for f in self._files:
+            L.info(f"Uploading asset {f}")
+            release.upload_asset(f, name=basename(f))
         L.info("Push commits")
         G.REPO.remote().push()
         L.info(f"Updating nightly tag ref to {lastcommit}")
         repo.get_git_ref("tags/nightly").edit(lastcommit)
-        for f in self._files:
-            L.info(f"Uploading asset {f}")
-            release.upload_asset(f)
 
     def rebuild(self):
         """
