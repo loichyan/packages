@@ -16,7 +16,7 @@ Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11
 Requires:      libwayland-client, libwayland-egl, libwayland-cursor, mesa-libEGL
 Requires:      xcb-util, xcb-util-keysyms, xcb-util-image, xcb-util-wm
 Requires:      %{name}-terminfo = %{version}-%{release}
-BuildRequires: cargo, make, gcc, gcc-c++, ncurses, fontconfig-devel, openssl-devel
+BuildRequires: cargo >= 1.65, make, gcc, gcc-c++, ncurses, fontconfig-devel, openssl-devel
 BuildRequires: libxcb-devel, libxkbcommon-devel, libxkbcommon-x11-devel, wayland-devel
 BuildRequires: mesa-libEGL-devel, xcb-util-devel, xcb-util-keysyms-devel
 BuildRequires: xcb-util-image-devel, xcb-util-wm-devel
