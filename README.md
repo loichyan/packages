@@ -70,8 +70,7 @@ if ("Is %vtag the latest?")
 else {
   "Update SPEC files (ci --update)"
   "Update sources (ci --update-source)"
-  "Upload sources (ci --upload)"
-  "Commit changes (ci --commit)"
+  "Release sources (ci --release)"
   "Trigger rebuild (ci --rebuild)"
 }
 
@@ -96,14 +95,10 @@ else {
  │Update sources (ci│      │
  │--update-source)  │      │
  └─────────┬────────┘      │
-   ┌───────▽──────┐        │
-   │Upload sources│        │
-   │(ci --upload) │        │
-   └───────┬──────┘        │
-   ┌───────▽──────┐        │
-   │Commit changes│        │
-   │(ci --commit) │        │
-   └───────┬──────┘        │
+   ┌───────▽───────┐       │
+   │Release sources│       │
+   │(ci --release) │       │
+   └───────┬───────┘       │
    ┌───────▽───────┐       │
    │Trigger rebuild│       │
    │(ci --rebuild) │       │
