@@ -384,6 +384,7 @@ class BasePackage:
         for asset in release.get_assets():
             fname = asset.name
             if fname in file_names:
+                L.warning(f"Deleting existing asset {fname}")
                 file_names.remove(fname)
                 assert asset.delete_asset(), f"Cannot delete asset {fname}"
             if len(file_names) == 0:
