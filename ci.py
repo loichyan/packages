@@ -3,9 +3,8 @@
 from argparse import ArgumentParser
 from functools import cached_property
 from importlib import import_module
-from lib import BasePackage, cmd
+from lib import BasePackage
 import logging as L
-import shutil as sh
 import typing as T
 
 
@@ -34,8 +33,11 @@ class App:
         if args.all:
             args.package = [
                 "akmods-keys",
+                "librime",
+                "mygnome",
                 "nerd-font-symbols",
                 "nix-mount",
+                "pop-launcher",
                 "sarasa-gothic-fonts",
                 "v2raya",
                 "wezterm",
@@ -44,7 +46,7 @@ class App:
         packages: T.List[BasePackage] = []
         for pname in args.package:
             try:
-                pmod = import_module(pname)
+                pmod = import_module(f"{pname}.package")
             except ModuleNotFoundError:
                 raise RuntimeError(f"Package {pname} not found")
             packages.append(pmod.Package())
@@ -74,10 +76,5 @@ if __name__ == "__main__":
         level=L.INFO,
         format="[%(asctime)s] [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
-    )
-    sh.register_unpack_format(
-        "7zip",
-        ["7z"],
-        lambda src, dst: cmd("7z", "x", src, f"-o{dst}"),
     )
     App().run()

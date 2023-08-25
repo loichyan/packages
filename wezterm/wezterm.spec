@@ -12,6 +12,7 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/wezterm/
 Summary:       Wez's Terminal Emulator.
+# TODO: no need requires?
 Requires:      dbus, fontconfig, openssl, libxcb, libxkbcommon, libxkbcommon-x11
 Requires:      libwayland-client, libwayland-egl, libwayland-cursor, mesa-libEGL
 Requires:      xcb-util, xcb-util-keysyms, xcb-util-image, xcb-util-wm

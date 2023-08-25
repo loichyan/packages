@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -ex
+
+7z x ${SOURCE0}
+cp ${SOURCE1} ${SOURCE2} ${SOURCE3} .

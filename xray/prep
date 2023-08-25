@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -ex
+
+tar -xzf ${SOURCE0} --strip-components=1
+go mod vendor

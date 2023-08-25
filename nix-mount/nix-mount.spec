@@ -2,8 +2,8 @@
 %define version 0.1.1
 %define date 2023-05-30T14:21:46.000
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/nix-mount-0.1.1-source.tar.xz
-%define checksum sha256:c7d233d651b7e88e1fa3ab01b32fd1852787072d1ada59695446d4c19736a128
+%define source https://github.com/loichyan/packages/releases/download/nightly/nix-mount-0.1.1.src.tar.xz
+%define checksum sha256:e825e445f250d2e728ec853b68b163940ccc57fa4df93c449a0c0ac98620317f
 
 Name:          nix-mount
 Version:       %{version}

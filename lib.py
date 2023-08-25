@@ -1,6 +1,7 @@
 import git
 import github
 import hashlib
+import itertools
 import logging as L
 import os
 import re
@@ -11,7 +12,7 @@ import typing as T
 from dataclasses import dataclass
 from datetime import datetime
 from functools import cached_property
-from os.path import join, basename
+from os.path import join, basename, exists
 from subprocess import run
 from tempfile import mkdtemp
 from urllib.parse import urlparse
@@ -81,13 +82,6 @@ class Global:
     @cached_property
     def PAT_WEZTERM_VERSION(self):
         return re.compile(r"^(\d+)-(\d+)-([0-9a-f]+)$")
-
-    @cached_property
-    def ARCHIVE_TYPES_AND_EXTS(self):
-        all: T.List[T.Tuple[str, str]] = []
-        for ty, exts, _ in sh.get_unpack_formats():
-            all.extend((ty, e) for e in exts)
-        return all
 
     @cached_property
     def OBS_TOKEN(self):
@@ -314,46 +308,45 @@ class BasePackage:
         """
         Downloads and compresses all needed sources.
         """
-        cachedir = join(".cache", f"{self.name}-{self.version}")
-        os.makedirs(cachedir, exist_ok=True)
         outdir = outdir or mkdtemp()
         # Download sources
-        workdir = mkdtemp()
+        srcdir = join(outdir, f"{self.name}-{self.version}")
+        os.makedirs(srcdir, exist_ok=True)
+        sources: T.List[str] = []
         for source in self._sources():
             url = urlparse(source)
-            source = source[: len(source) - len(url.fragment)]
-            filename = basename(url.path)
+            srcname = basename(url.path)
+            srcfile = join(srcdir, url.fragment if url.fragment else srcname)
+            sources.append(srcfile)
+            if exists(srcfile):
+                continue
             if url.scheme == "":
-                cachefile = join(self.name, url.path)
+                sh.copy(join(self.name, url.path), srcfile)
             else:
-                cachefile = join(cachedir, filename)
-                if not os.path.exists(cachefile):
-                    download(source, cachefile)
-            for ty, ext in G.ARCHIVE_TYPES_AND_EXTS:
-                # Unpack all files to the outdir if supported
-                if filename.endswith(ext):
-                    tmpdir = mkdtemp()
-                    L.info(f"Unpacking {cachefile} to {tmpdir}")
-                    sh.unpack_archive(cachefile, tmpdir, ty)
-                    for f in ls(join(tmpdir, url.fragment)):
-                        sh.move(f, workdir)
-                    sh.rmtree(tmpdir)
-                    break
-            else:
-                # or copy it to the outdir
-                sh.copy(
-                    cachefile,
-                    join(workdir, url.fragment if url.fragment else filename),
-                )
-        # Trigger the post-unpack hook
-        cwd = os.getcwd()
-        try:
+                download(source, srcfile)
+        # Trigger the prep hook
+        workdir = mkdtemp()
+        pwd = os.getcwd()
+        prep_script = join(pwd, self.name, "prep")
+        if exists(prep_script):
             os.chdir(workdir)
-            self._post_unpack()
-        finally:
-            os.chdir(cwd)
+            try:
+                env: T.Dict[str, str] = {}
+                for i, v in enumerate(sources):
+                    env[f"SOURCE{i}"] = v
+                for k, v in itertools.chain(
+                    self._spec.metadata.items(),
+                    self._metadata().items(),
+                ):
+                    env[k] = v
+                cmd(prep_script, env=env)
+            finally:
+                os.chdir(pwd)
+        else:
+            for s in sources:
+                sh.copy(s, workdir)
         # Compress all sources
-        outbase = f"{self.name}-{self.version}-source"
+        outbase = f"{self.name}-{self.version}.src"
         outext = "tar.xz"
         outfile = join(outdir, f"{outbase}.{outext}")
         L.info(f"Compressing {workdir} to {outfile}")
@@ -376,6 +369,7 @@ class BasePackage:
         """
         msg = msg or f"update to {self.version}"
         L.info(f"Commiting changes")
+        # FIXME: .gitignore should be repected
         G.REPO.index.add([self.name])  # type: ignore
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
         repo = G.GH.get_repo(G.GH_REPO)
@@ -432,12 +426,6 @@ class BasePackage:
         """
         return []
 
-    def _post_unpack(self):
-        """
-        Runs after all downloaded sources are unpacked.
-        """
-        ...
-
 
 class LocalPackage(BasePackage):
     def update_service(self, msg: T.Optional[str] = None):
@@ -478,4 +466,4 @@ class FontPackage(GhPackage):
         self.fontname = fontname
 
     def _metadata(self) -> T.Dict[str, str]:
-        return {"fontname": self.fontname}
+        return dict(fontname=self.fontname, **super()._metadata())

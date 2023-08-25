@@ -2,8 +2,8 @@
 %define version 3.0.2
 %define date 2023-06-04T20:45:34.000
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/nerd-font-symbols-3.0.2-source.tar.xz
-%define checksum sha256:3d8b34548b412e79ba19cdd9470e6b148af7734d178ab0b78b906e4ab43f0939
+%define source https://github.com/loichyan/packages/releases/download/nightly/nerd-font-symbols-3.0.2.src.tar.xz
+%define checksum sha256:64113d9411a42eb330bc8e798b6cfc64e86472f2fb7c7a7b6901cec7f88dec55
 
 %define fontname nerd-font-symbols
 %define metainfo %{fontname}.metainfo.xml

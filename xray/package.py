@@ -8,7 +8,7 @@ class Package(GhPackage):
 
     def _sources(self) -> T.List[str]:
         return [
-            f"https://github.com/{self.repo}/archive/{self.vtag}.tar.gz#Xray-core-{self.version}",
+            f"https://github.com/{self.repo}/archive/{self.vtag}.tar.gz",
         ]
 
     def _post_unpack(self):
