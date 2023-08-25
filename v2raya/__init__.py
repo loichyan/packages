@@ -11,7 +11,7 @@ class Package(GhPackage):
 
     def _sources(self) -> T.List[str]:
         return [
-            f"https://github.com/{self.repo}/archive/refs/tags/{self.vtag}.tar.gz#v2rayA-{self.version}",
+            f"https://github.com/{self.repo}/archive/{self.vtag}.tar.gz#v2rayA-{self.version}",
         ]
 
     def _post_unpack(self):
