@@ -12,7 +12,7 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       AGPL-3.0
 Url:           https://github.com/v2rayA/v2rayA
 Summary:       A Linux web GUI client of Project V which supports V2Ray, Xray, SS, SSR, Trojan and Pingtunnel
-BuildRequires: golang >= 1.17
+BuildRequires: golang >= 1.23
 BuildRequires: systemd-rpm-macros
 #!RemoteAsset: %{checksum}
 Source:        %{source}
