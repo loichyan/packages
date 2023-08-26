@@ -110,7 +110,10 @@ Requires : gnome-shell-extension-user-theme
 # Misc
 Requires : gnome-tweaks
 Requires : ibus
+Requires : ibus-typing-booster
 Requires : ibus-rime
+Requires : librime
+Requires : librime-plugin-lua
 Requires : pop-launcher
 Requires : yaru-theme
 
