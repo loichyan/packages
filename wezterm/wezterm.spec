@@ -2,8 +2,8 @@
 %define version 20230712
 %define date 2023-07-12T14:26:01.000
 %define release %autorelease -b 2
-%define source https://github.com/loichyan/packages/releases/download/nightly/wezterm-20230712-source.tar.xz
-%define checksum sha256:adafbef84dc464dfe97bf1ff970f13fd6ddca90c1fdc4751adc894de5a8fc43e
+%define source https://github.com/loichyan/packages/releases/download/nightly/wezterm-20230712.src.tar.xz
+%define checksum sha256:72da065d54879c06f155e35c8da9c2fc2b9a5087ced348d6ef809ecd0937890b
 
 Name:          wezterm
 Version:       %{version}
