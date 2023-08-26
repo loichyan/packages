@@ -51,3 +51,4 @@ install -Dm644 gui/public/img/icons/android-chrome-512x512.png %{buildroot}%{_da
 %{_datadir}/icons/hicolor/512x512/apps/v2raya.png
 
 %changelog
+%autochangelog

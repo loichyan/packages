@@ -87,3 +87,4 @@ tic -x -o %{buildroot}%{_datadir}/terminfo termwiz/data/wezterm.terminfo
 %{_datadir}/terminfo
 
 %changelog
+%autochangelog

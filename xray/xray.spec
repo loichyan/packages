@@ -38,3 +38,4 @@ install -Dm755 xray -t %{buildroot}%{_bindir}
 %{_bindir}/xray
 
 %changelog
+%autochangelog

@@ -33,3 +33,4 @@ install -Dm644 nix.mount %{name}.service -t %{buildroot}%{_unitdir}
 %{_unitdir}/nix.mount
 
 %changelog
+%autochangelog

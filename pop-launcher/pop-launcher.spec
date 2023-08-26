@@ -39,3 +39,4 @@ just rootdir=%{buildroot} bin_path=%{_bindir}/pop-launcher install_plugins
 %{_prefix}/lib/pop-launcher/scripts/*
 
 %changelog
+%autochangelog
