@@ -369,8 +369,7 @@ class BasePackage:
         """
         msg = msg or f"update to {self.version}"
         L.info(f"Commiting changes")
-        # FIXME: .gitignore should be repected
-        G.REPO.index.add([self.name])  # type: ignore
+        G.REPO.git.add(self.name)
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
         repo = G.GH.get_repo(G.GH_REPO)
         release = repo.get_release("nightly")
