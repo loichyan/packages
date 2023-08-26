@@ -9,6 +9,7 @@ You can find the RPM packages in the DNF repository at
 
 | Package               | Status                                                  |
 | --------------------- | ------------------------------------------------------- |
+| [librime]             | [![librime-badge]][librime-pkg]                         |
 | [nerd-font-symbols]   | [![nerd-font-symbols-badge]][nerd-font-symbols-pkg]     |
 | [nix-mount]           | [![nix-mount-badge]][nix-mount-pkg]                     |
 | [pop-launcher]        | [![pop-launcher-badge]][pop-launcher-pkg]               |
@@ -17,6 +18,10 @@ You can find the RPM packages in the DNF repository at
 | [wezterm]             | [![wezterm-badge]][wezterm-pkg]                         |
 | [xray]                | [![xray-badge]][xray-pkg]                               |
 
+[librime]: https://www.nerdfonts.com
+[librime-pkg]: https://build.opensuse.org/package/show/home:loichyan/librime
+[librime-badge]:
+  https://build.opensuse.org/projects/home:loichyan/packages/librime/badge.svg?type=percent
 [nerd-font-symbols]: https://www.nerdfonts.com
 [nerd-font-symbols-pkg]: https://build.opensuse.org/package/show/home:loichyan/nerd-font-symbols
 [nerd-font-symbols-badge]:
