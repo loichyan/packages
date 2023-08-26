@@ -4,7 +4,7 @@
 %define date 2023-08-25T06:10:37.507
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/librime-1.8.5.src.tar.xz
-%define checksum sha256:5dc42c24f82ea71d7e6c21e378ba5d9f29b527f92663a34e80d7a90464e3b87c
+%define checksum sha256:f5ed4aff25dc2ff67e9ee35fb30dac16a71a0e0720da110e003d9e9784b54fd7
 
 # Adapt from https://src.fedoraproject.org/rpms/librime/blob/rawhide/f/librime.spec
 Name:          librime
