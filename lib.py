@@ -251,7 +251,6 @@ class BasePackage:
         <param name="filename">{self.name}-git</param>
         <param name="versionformat">%h</param>
         <param name="extract">*.spec</param>
-        <param name="extract">*.changes</param>
     </service>
     <service name="download_assets"></service>
 </services>\
@@ -371,7 +370,11 @@ class BasePackage:
         L.info(f"Commiting changes")
         G.REPO.git.add(self.name)
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
+        L.info("Push commits")
+        G.REPO.remote().push()
+        L.info(f"Updating nightly tag ref to {lastcommit}")
         repo = G.GH.get_repo(G.GH_REPO)
+        repo.get_git_ref("tags/nightly").edit(lastcommit)
         release = repo.get_release("nightly")
         file_names = set(basename(f) for f in self._files)
         for asset in release.get_assets():
@@ -385,10 +388,6 @@ class BasePackage:
         for f in self._files:
             L.info(f"Uploading asset {f}")
             release.upload_asset(f, name=basename(f))
-        L.info("Push commits")
-        G.REPO.remote().push()
-        L.info(f"Updating nightly tag ref to {lastcommit}")
-        repo.get_git_ref("tags/nightly").edit(lastcommit)
 
     def rebuild(self):
         """
