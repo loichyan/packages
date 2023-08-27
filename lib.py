@@ -233,7 +233,7 @@ class BasePackage:
 
     @cached_property
     def _changelog_path(self):
-        return join(self.name, f"{self.name}.changes")
+        return join(self.name, f"changelog")
 
     @cached_property
     def _spec(self):
