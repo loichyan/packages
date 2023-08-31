@@ -32,9 +32,7 @@ class App:
         args = self.cli
         if args.all:
             args.package = [
-                "akmods-keys",
                 "librime",
-                "mygnome",
                 "nerd-font-symbols",
                 "nix-mount",
                 "pop-launcher",
