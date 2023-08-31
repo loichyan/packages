@@ -103,9 +103,8 @@ Requires : xdg-desktop-portal-gnome
 Requires : xdg-desktop-portal-gtk
 Requires : xdg-user-dirs-gtk
 # Extensions
+Requires : gnome-extensions-app
 Requires : gnome-shell-extension-appindicator
-Requires : gnome-shell-extension-pop-shell
-Requires : gnome-shell-extension-pop-shell-shortcut-overrides
 Requires : gnome-shell-extension-user-theme
 # Misc
 Requires : gnome-tweaks
@@ -114,7 +113,6 @@ Requires : ibus-typing-booster
 Requires : ibus-rime
 Requires : librime
 Requires : librime-plugin-lua
-Requires : pop-launcher
 Requires : yaru-theme
 
 %description
