@@ -432,9 +432,6 @@ class LocalPackage(BasePackage):
     def update(self):
         return None
 
-    def update_source(self, outdir: T.Optional[str] = None):
-        return outdir or mkdtemp()
-
     def release(self, msg: T.Optional[str] = None):
         return
 
