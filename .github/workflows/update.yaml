@@ -29,24 +29,15 @@ jobs:
           cache: pip
 
       - name: Restore Rust toolchain cache
-        uses: actions/cache/restore@v3
-        id: restore-rust-toolchain-cache
-        with:
-          path: ~/.rustup
-          key: setup-rust-toolchain-${{ runner.os }}-
-
-      - name: Setup Rust toolchain
-        if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
-        uses: dtolnay/rust-toolchain@stable
-        id: setup-rust-toolchain
-
-      - name: Save Rust toolchain cache
-        if: steps.restore-rust-toolchain-cache.outputs.cache-hit != 'true'
+        id: setup-rust-toolchain-cache
         uses: actions/cache@v3
         with:
           path: ~/.rustup
-          key: |
-            setup-rust-toolchain-${{ runner.os }}-${{ steps.setup-rust-toolchain.outputs.cachekey }}
+          key: setup-rust-toolchain-${{ runner.os }}-1.65
+
+      - name: Setup Rust toolchain
+        if: steps.setup-rust-toolchain-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@1.65
 
       - name: Setup Golang
         uses: actions/setup-go@v4
