@@ -28,15 +28,15 @@ jobs:
           python-version: "3.10"
           cache: pip
 
-      - name: Restore Rust toolchain cache
-        id: setup-rust-toolchain-cache
+      - name: Rust toolchain cache
+        id: rust-toolchain-cache
         uses: actions/cache@v3
         with:
           path: ~/.rustup
           key: setup-rust-toolchain-${{ runner.os }}-1.65
 
       - name: Setup Rust toolchain
-        if: steps.setup-rust-toolchain-cache.outputs.cache-hit != 'true'
+        if: steps.rust-toolchain-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@1.65
 
       - name: Setup Golang
