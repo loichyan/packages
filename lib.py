@@ -117,11 +117,14 @@ class Global:
 
     @cached_property
     def COMMIT_USERNAME(self):
-        return require_env("COMMIT_USERNAME", "github-actions")
+        return require_env("COMMIT_USERNAME", "github-actions[bot]")
 
     @cached_property
     def COMMIT_EMAIL(self):
-        return require_env("COMMIT_EMAIL", "github-actions@users.noreply.github.com")
+        return require_env(
+            "COMMIT_EMAIL",
+            "github-actions[bot]@users.noreply.github.com",
+        )
 
     @cached_property
     def REPO(self):
