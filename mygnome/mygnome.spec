@@ -1,6 +1,6 @@
-%define vtag v0.1.0
-%define version 0.1.0
-%define date 2023-08-24T10:49:00.000
+%define vtag v39
+%define version 39
+%define date 2023-11-08T02:24:17.569
 %define release %autorelease
 
 Name:      mygnome
@@ -12,8 +12,8 @@ URL:       https://github.com/loichyan/packages
 Summary:   My Gnome setup packages.
 BuildArch: noarch
 # Gnome desktop
-# Adapt from https://pagure.io/fedora-comps/blob/main/f/comps-f38.xml.in
-# Mandatory
+# Adapt from https://pagure.io/fedora-comps/blob/main/f/comps-f39.xml.in
+# type=mandatory
 Requires : dconf
 Requires : gdm
 #Requires : gnome-boxes
@@ -30,14 +30,14 @@ Requires : gnome-text-editor
 Requires : nautilus
 Requires : polkit
 Requires : yelp
-# Default
+# type=default
 Requires : adobe-source-code-pro-fonts
 Requires : at-spi2-atk
 Requires : at-spi2-core
 Requires : avahi
 Requires : baobab
-Requires : cheese
-Requires : eog
+#Requires : cheese
+Requires : snapshot
 Requires : evince
 Requires : evince-djvu
 #Requires : evince-nautilus
@@ -57,11 +57,9 @@ Requires : gnome-disk-utility
 Requires : gnome-font-viewer
 Requires : gnome-logs
 Requires : gnome-maps
-Requires : gnome-photos
 Requires : gnome-remote-desktop
 Requires : gnome-system-monitor
 Requires : gnome-terminal-nautilus
-Requires : gnome-themes-extra
 Requires : gnome-user-docs
 Requires : gnome-user-share
 Requires : gnome-weather
@@ -73,9 +71,9 @@ Requires : gvfs-goa
 Requires : gvfs-gphoto2
 Requires : gvfs-mtp
 Requires : gvfs-smb
-Requires : libproxy-duktape
 Requires : librsvg2
 Requires : libsane-hpaio
+Requires : loupe
 Requires : mesa-dri-drivers
 Requires : mesa-libEGL
 Requires : ModemManager
