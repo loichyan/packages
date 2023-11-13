@@ -12,6 +12,7 @@ URL:       https://github.com/loichyan/packages
 Summary:   My Silverblue setup packages.
 BuildArch: noarch
 Requires:  cascadia-code-fonts
+Requires:  fira-code-fonts
 Requires:  code
 Requires:  fish
 Requires:  geary
