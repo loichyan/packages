@@ -1,9 +1,10 @@
-%define vtag v3.0.2
-%define version 3.0.2
-%define date 2023-06-04T20:45:34.000
+%define vtag v3.1.0
+%define version 3.1.0
+%define date 2023-11-21T10:31:12
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/nerd-font-symbols-3.0.2.src.tar.xz
-%define checksum sha256:faa8cbfd16240a089334db6e1e783aa35600593eff737c7101582c51eb278235
+%define source https://github.com/loichyan/packages/releases/download/nightly/nerd-font-symbols-3.1.0.src.tar.xz
+%define checksum sha256:ac819c7ca8696941ea810979a44b7b66852aa5c167e0dce81b02289e280f8ada
+%define fontname nerd-font-symbols
 
 %define fontname nerd-font-symbols
 %define metainfo %{fontname}.metainfo.xml
