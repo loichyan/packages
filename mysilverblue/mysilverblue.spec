@@ -1,6 +1,6 @@
-%define vtag v0.1.0
-%define version 0.1.0
-%define date 2023-08-31T07:44:18.376
+%define vtag v0.2.0
+%define version 0.2.0
+%define date 2023-12-02T08:32:56.586
 %define release %autorelease
 
 Name:      mysilverblue
@@ -18,6 +18,7 @@ Requires:  fish
 Requires:  geary
 Requires:  google-chrome-stable
 Requires:  google-noto-serif-cjk-vf-fonts
+Requires:  mozilla-openh264
 Requires:  nerd-font-symbols
 Requires:  nix-mount
 Requires:  podman-compose
