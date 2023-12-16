@@ -1,6 +1,6 @@
-%define vtag v0.2.0
-%define version 0.2.0
-%define date 2023-12-02T08:32:56.586
+%define vtag v0.3.0
+%define version 0.3.0
+%define date 2023-12-16T05:44:58.268
 %define release %autorelease
 
 Name:      mysilverblue
@@ -22,6 +22,7 @@ Requires:  mozilla-openh264
 Requires:  nerd-font-symbols
 Requires:  nix-mount
 Requires:  podman-compose
+Requires:  podman-docker
 Requires:  wezterm
 Requires:  wl-clipboard
 # Requires:  mygnome
