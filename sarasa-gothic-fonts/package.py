@@ -11,7 +11,7 @@ class Package(FontPackage):
 
     def _sources(self) -> T.List[str]:
         return [
-            f"https://github.com/{self.repo}/releases/download/{self.vtag}/{self.fontname}-ttc-{self.version}.7z",
+            f"https://github.com/{self.repo}/releases/download/{self.vtag}/Sarasa-TTC-{self.version}.7z",
             f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/LICENSE",
             f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/README.md",
             f"{self.fontname}.metainfo.xml",
