@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -euxo pipfail
 
 ROOT=$PWD
 tar -xzf ${SOURCE0} --strip-components=1
