@@ -2,6 +2,6 @@
 
 set -euxo pipfail
 
-tar -xzf ${SOURCE0} --strip-components=1
+tar -xzf "$SOURCE0" --strip-components=1
 mkdir -p plugins/librime-lua
-tar -xzf ${SOURCE1} --strip-components=1 -C plugins/librime-lua
+tar -xzf "$SOURCE1" --strip-components=1 -C plugins/librime-lua

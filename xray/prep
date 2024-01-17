@@ -2,5 +2,5 @@
 
 set -euxo pipfail
 
-tar -xzf ${SOURCE0} --strip-components=1
+tar -xzf "$SOURCE0" --strip-components=1
 go mod vendor

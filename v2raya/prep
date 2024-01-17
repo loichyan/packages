@@ -2,13 +2,14 @@
 
 set -euxo pipfail
 
-ROOT=$PWD
-tar -xzf ${SOURCE0} --strip-components=1
-cd "${ROOT}/gui"
+ROOT="$PWD"
+tar -xzf "$SOURCE0" --strip-components=1
+cd "$ROOT/gui"
 yarn --check-files
-NODE_OPTIONS=--openssl-legacy-provider \
-	OUTPUT_DIR=$ROOT/service/server/router/web \
+env \
+	NODE_OPTIONS=--openssl-legacy-provider \
+	OUTPUT_DIR="$ROOT/service/server/router/web" \
 	yarn build
 rm -rf node_modules
-cd "${ROOT}/service"
+cd "$ROOT/service"
 go mod vendor

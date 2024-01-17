@@ -2,7 +2,7 @@
 
 set -euxo pipfail
 
-tar -xzf ${SOURCE0} --strip-components=1
+tar -xzf "$SOURCE0" --strip-components=1
 mv LICENSE.md LICENSE
 mkdir -p .cargo
 cargo vendor >>.cargo/config

@@ -2,6 +2,6 @@
 
 set -euxo pipfail
 
-unzip ${SOURCE0}
-rm -f *Windows\ Compatible.ttf
-cp ${SOURCE1} ${SOURCE2} ${SOURCE3} ${SOURCE4} .
+unzip "$SOURCE0"
+rm -f ./*"Windows Compatible.ttf"
+cp "$SOURCE1" "$SOURCE2" "$SOURCE3" "$SOURCE4" .

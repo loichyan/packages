@@ -2,5 +2,5 @@
 
 set -euxo pipfail
 
-7z x ${SOURCE0}
-cp ${SOURCE1} ${SOURCE2} ${SOURCE3} .
+7z x "$SOURCE0"
+cp "$SOURCE1" "$SOURCE2" "$SOURCE3" .
