@@ -39,6 +39,7 @@ class App:
                 "nerd-font-symbols",
                 "nix-mount",
                 "pop-launcher",
+                "rec-mono-fonts",
                 "sarasa-gothic-fonts",
                 "v2raya",
                 "wezterm",
