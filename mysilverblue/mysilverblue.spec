@@ -1,6 +1,6 @@
-%define vtag v0.3.0
-%define version 0.3.0
-%define date 2023-12-16T05:44:58.268
+%define vtag v0.4.0
+%define version 0.4.0
+%define date 2024-01-17T03:54:08.713
 %define release %autorelease
 
 Name:      mysilverblue
@@ -11,7 +11,6 @@ License:   MIT
 URL:       https://github.com/loichyan/packages
 Summary:   My Silverblue setup packages.
 BuildArch: noarch
-Requires:  cascadia-code-fonts
 Requires:  fira-code-fonts
 Requires:  code
 Requires:  fish
@@ -23,6 +22,7 @@ Requires:  nerd-font-symbols
 Requires:  nix-mount
 Requires:  podman-compose
 Requires:  podman-docker
+Requires:  rec-mono-fonts
 Requires:  wezterm
 Requires:  wl-clipboard
 # Requires:  mygnome
