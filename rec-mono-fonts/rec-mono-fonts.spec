@@ -8,7 +8,7 @@
 
 %define metainfo %{fontname}.metainfo.xml
 
-Name:          %{fontname}
+Name:          %{fontname}-fonts
 Version:       %{version}
 Release:       %{release}
 Packager:      Loi Chyan <loichyan@foxmail.com>
