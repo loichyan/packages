@@ -18,7 +18,3 @@ class Package(GhPackage):
 
     def _metadata(self) -> T.Dict[str, str]:
         return dict(lua_plugin_vtag=self.lub_plugin_rev, **super()._metadata())
-
-    def _post_unpack(self):
-        # Vendor dependencies for offline build
-        cmd("just", "vendor")

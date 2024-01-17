@@ -1,5 +1,4 @@
-from lib import FontPackage, ls
-import os
+from lib import FontPackage
 import typing as T
 
 
@@ -19,9 +18,3 @@ class Package(FontPackage):
             f"https://raw.githubusercontent.com/{self.repo}/{self.vtag}/10-{self.fontname}.conf",
             f"{self.fontname}.metainfo.xml",
         ]
-
-    def _post_unpack(self):
-        # Remove windows compatible fonts
-        for f in ls():
-            if f.endswith("Windows Compatible.ttf"):
-                os.remove(f)

@@ -6,7 +6,6 @@
 %define checksum sha256:cbc9b0da33118d42992a6d7a4d11a6f0bc53ec9c484f119720367a04fa83cba3
 %define fontname sarasa-gothic
 
-%define fontname sarasa-gothic
 %define metainfo %{fontname}.metainfo.xml
 
 Name:          %{fontname}-fonts

@@ -1,4 +1,4 @@
-from lib import GhPackage, cmd
+from lib import GhPackage
 import typing as T
 
 
@@ -10,7 +10,3 @@ class Package(GhPackage):
         return [
             f"https://github.com/{self.repo}/archive/{self.vtag}.tar.gz",
         ]
-
-    def _post_unpack(self):
-        # Vendor dependencies for offline build
-        cmd("go", "mod", "vendor")
