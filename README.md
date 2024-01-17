@@ -13,12 +13,13 @@ You can find the RPM packages in the DNF repository at
 | [nerd-font-symbols]   | [![nerd-font-symbols-badge]][nerd-font-symbols-pkg]     |
 | [nix-mount]           | [![nix-mount-badge]][nix-mount-pkg]                     |
 | [pop-launcher]        | [![pop-launcher-badge]][pop-launcher-pkg]               |
+| [rec-mono-fonts]      | [![rec-mono-fonts-badge]][rec-mono-fonts-pkg]           |
 | [sarasa-gothic-fonts] | [![sarasa-gothic-fonts-badge]][sarasa-gothic-fonts-pkg] |
 | [v2raya]              | [![v2raya-badge]][v2raya-pkg]                           |
 | [wezterm]             | [![wezterm-badge]][wezterm-pkg]                         |
 | [xray]                | [![xray-badge]][xray-pkg]                               |
 
-[librime]: https://www.nerdfonts.com
+[librime]: https://github.com/rime/librime
 [librime-pkg]: https://build.opensuse.org/package/show/home:loichyan/librime
 [librime-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/librime/badge.svg?type=percent
@@ -30,15 +31,19 @@ You can find the RPM packages in the DNF repository at
 [nix-mount-pkg]: https://build.opensuse.org/package/show/home:loichyan/nix-mount
 [nix-mount-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/nix-mount/badge.svg?type=percent
-[pop-launcher]: https://www.nerdfonts.com
+[pop-launcher]: https://github.com/pop-os/launcher
 [pop-launcher-pkg]: https://build.opensuse.org/package/show/home:loichyan/pop-launcher
 [pop-launcher-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/pop-launcher/badge.svg?type=percent
+[rec-mono-fonts]: https://recursive.design/
+[rec-mono-fonts-pkg]: https://build.opensuse.org/package/show/home:loichyan/rec-mono-fonts
+[rec-mono-fonts-badge]:
+  https://build.opensuse.org/projects/home:loichyan/packages/rec-mono-fonts/badge.svg?type=percent
 [sarasa-gothic-fonts]: https://github.com/be5invis/Sarasa-Gothic
 [sarasa-gothic-fonts-pkg]: https://build.opensuse.org/package/show/home:loichyan/sarasa-gothic-fonts
 [sarasa-gothic-fonts-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/sarasa-gothic-fonts/badge.svg?type=percent
-[v2raya]: https://www.nerdfonts.com
+[v2raya]: https://v2raya.org/
 [v2raya-pkg]: https://build.opensuse.org/package/show/home:loichyan/v2raya
 [v2raya-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/v2raya/badge.svg?type=percent
@@ -46,7 +51,7 @@ You can find the RPM packages in the DNF repository at
 [wezterm-pkg]: https://build.opensuse.org/package/show/home:loichyan/wezterm
 [wezterm-badge]:
   https://build.opensuse.org/projects/home:loichyan/packages/wezterm/badge.svg?type=percent
-[xray]: https://www.nerdfonts.com
+[xray]: https://xtls.github.io/
 [xray-pkg]: https://build.opensuse.org/package/show/home:loichyan/xray
 [xray-badge]: https://build.opensuse.org/projects/home:loichyan/packages/xray/badge.svg?type=percent
 
