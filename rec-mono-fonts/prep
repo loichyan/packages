@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+workdir=$(mktemp -d)
+unzip -d "$workdir" "$SOURCE0"
+fontdir="$workdir/ArrowType-Recursive-$version"
+mv "$fontdir/Recursive_Code/"*/*.ttf .
+mv "$fontdir/Recursive_Code/README.md" .
+mv "$fontdir/LICENSE.txt" LICENSE
+cp "$SOURCE1" .
+rm -r "$workdir"

@@ -38,3 +38,4 @@ akmods-keys/*.priv
 
 ## Temp generated files
 .cache
+rpmbuild
