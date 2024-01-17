@@ -3,7 +3,7 @@
 %define date 2024-01-17T01:43:58.436
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/rec-mono-fonts-1.085.src.tar.xz
-%define checksum sha256:68d54f6070aad96550f780b566132ecb60bd797b636c1ad14258030830e34399
+%define checksum sha256:23024dc85664485bc309fe07b3dc2319a558b7ab7c696c099b16011be6d62bd1
 %define fontname rec-mono
 
 %define metainfo %{fontname}.metainfo.xml
