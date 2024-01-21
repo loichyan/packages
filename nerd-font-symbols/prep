@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euxo pipfail
+set -euxo pipefail
 
 unzip "$SOURCE0"
 rm -f ./*"Windows Compatible.ttf"

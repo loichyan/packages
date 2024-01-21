@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euxo pipfail
+set -euxo pipefail
 
 7z x "$SOURCE0"
 cp "$SOURCE1" "$SOURCE2" "$SOURCE3" .
