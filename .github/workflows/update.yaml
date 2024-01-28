@@ -18,9 +18,15 @@ jobs:
   update-packages:
     name: Update packages
     runs-on: ubuntu-latest
+    env:
+      RUST_TOOLCHAIN: "1.75"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Intialize
+        run: |
+          echo "$HOME/.cargo/bin" >>"$GITHUB_PATH"
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -28,16 +34,20 @@ jobs:
           python-version: "3.10"
           cache: pip
 
-      - name: Rust toolchain cache
-        id: rust-toolchain-cache
+      - name: Cache Rust toolchain
+        id: cache-rust-toolchain
         uses: actions/cache@v3
         with:
-          path: ~/.rustup
-          key: setup-rust-toolchain-${{ runner.os }}-1.65
+          path: |
+            ~/.cargo/bin/
+            ~/.rustup/
+          key: rust-toolchain-${{ runner.os }}-${{ env.RUST_TOOLCHAIN }}
 
       - name: Setup Rust toolchain
-        if: steps.rust-toolchain-cache.outputs.cache-hit != 'true'
-        uses: dtolnay/rust-toolchain@1.65
+        if: steps.cache-rust-toolchain.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
 
       - name: Setup Golang
         uses: actions/setup-go@v4
@@ -47,7 +57,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: "18"
 
       - name: Setup Just
         uses: extractions/setup-just@v1
