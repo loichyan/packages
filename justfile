@@ -1,6 +1,12 @@
+_just := quote(just_executable()) + ' --justfile=' + quote(justfile())
+outdir := justfile_directory() / 'rpmbuild/SOURCES'
+
 set shell := ["/usr/bin/env", "bash", "-euo", "pipefail", "-c"]
 set positional-arguments := true
 set ignore-comments := true
+
+_default:
+    @{{ _just }} --list
 
 date:
     @date -u +"%Y-%m-%dT%T.%3N"
@@ -13,4 +19,5 @@ docker image="fedora-rpmbuild:39":
         "{{ image }}"
 
 ci *args:
-    ./ci.py --outdir="$PWD/SOURCES" "$@"
+    @mkdir -p "{{ outdir }}"
+    @./ci.py --outdir="$PWD/rpmbuild/SOURCES" "$@"
