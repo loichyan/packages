@@ -1,9 +1,9 @@
-%define vtag 20240128-202157-1e552d76
-%define version 20240128
-%define date 2024-01-29T03:21:57
+%define vtag 20240203-110809-5046fc22
+%define version 20240203
+%define date 2024-02-03T18:08:09
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/wezterm-20240128.src.tar.xz
-%define checksum sha256:a16e9d6cedd4e8b8b9d8ec93198d650b9cc78d93ffd1aef9de4d99c613f9dd54
+%define source https://github.com/loichyan/packages/releases/download/nightly/wezterm-20240203.src.tar.xz
+%define checksum sha256:afd3adb97a50964ce3626cf777afc52ebba07f4dfc34ba2e4df27d3c4ca63a09
 
 Name:          wezterm
 Version:       %{version}
