@@ -2,8 +2,6 @@
 %define version 0.1.0
 %define date 2023-06-25T15:40:38.000
 %define release %autorelease
-%define source akmods-keys-0.1.0.src.tar.xz
-%define checksum *
 
 Name:          akmods-keys
 Version:       %{version}
@@ -13,22 +11,25 @@ License:       MIT
 URL:           https://github.com/CheariX/silverblue-akmods-keys
 Summary:       Keys for akmods
 BuildArch:     noarch
+Requires:      akmod-nvidia
+Requires:      xorg-x11-drv-nvidia
+Requires:      xorg-x11-drv-nvidia-cuda
 Supplements:   akmods
-#!RemoteAsset: %{checksum}
-Source:        %{source}
+Source0:       macros.kmodtool
+Source1:       private_key.priv
+Source2:       public_key.der
 
 %description
 Akmods ostree keys for signing modules.
 
 %prep
-%autosetup -c
 
 %build
 
 %install
-install -Dm640 macros.kmodtool -t %{buildroot}%{_sysconfdir}/rpm/
-install -Dm640 private_key.priv -t %{buildroot}%{_sysconfdir}/pki/%{name}/private/
-install -Dm640 public_key.der -t %{buildroot}%{_sysconfdir}/pki/%{name}/certs/
+install -Dm640 %{SOURCE0} -t %{buildroot}%{_sysconfdir}/rpm/
+install -Dm640 %{SOURCE1} -t %{buildroot}%{_sysconfdir}/pki/%{name}/private/
+install -Dm640 %{SOURCE2} -t %{buildroot}%{_sysconfdir}/pki/%{name}/certs/
 
 %files
 %attr(0644,root,root) %{_sysconfdir}/pki/%{name}/certs

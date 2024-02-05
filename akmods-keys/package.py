@@ -7,4 +7,4 @@ class Package(LocalPackage):
         super().__init__("akmods-keys")
 
     def _sources(self) -> T.List[str]:
-        return ["macros.kmodtool", "private_key.priv", "public_key.der"]
+        return ["macros.kmodtool"]
