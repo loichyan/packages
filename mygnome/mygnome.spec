@@ -1,5 +1,5 @@
-%define vtag v39
-%define version 39
+%define vtag v39.0.0
+%define version 39.0.0
 %define date 2023-11-08T02:24:17.569
 %define release %autorelease
 
