@@ -1,6 +1,6 @@
 %define vtag v0.4.0
 %define version 0.4.0
-%define date 2024-01-17T03:54:08.713
+%define date 2024-02-05T03:14:35.774
 %define release %autorelease
 
 Name:      mysilverblue
@@ -15,7 +15,6 @@ Requires:  fira-code-fonts
 Requires:  code
 Requires:  fish
 Requires:  geary
-Requires:  google-chrome-stable
 Requires:  google-noto-serif-cjk-vf-fonts
 Requires:  mozilla-openh264
 Requires:  nerd-font-symbols
