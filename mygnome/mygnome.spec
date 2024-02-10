@@ -16,7 +16,7 @@ BuildArch: noarch
 # type=mandatory
 Requires : dconf
 Requires : gdm
-#Requires : gnome-boxes
+Requires : gnome-boxes
 Requires : gnome-connections
 Requires : gnome-control-center
 Requires : gnome-initial-setup
