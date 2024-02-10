@@ -1,6 +1,6 @@
-%define vtag v0.4.0
-%define version 0.4.0
-%define date 2024-02-05T03:14:35.774
+%define vtag v39.0.0
+%define version 39.0.0
+%define date 2024-02-06T04:23:31.803
 %define release %autorelease
 
 Name:      mysilverblue
@@ -22,11 +22,12 @@ Requires:  nix-mount
 Requires:  podman-compose
 Requires:  podman-docker
 Requires:  rec-mono-fonts
+Requires:  snapper
 Requires:  wezterm
 Requires:  wl-clipboard
-# Requires:  mygnome
-# Requires:  v2raya
-# Requires:  xray
+#Requires:  mygnome
+#Requires:  v2raya
+#Requires:  xray
 
 %description
 My Silverblue setup packages.
