@@ -14,6 +14,10 @@ BuildArch:     noarch
 Requires:      akmod-nvidia
 Requires:      xorg-x11-drv-nvidia
 Requires:      xorg-x11-drv-nvidia-cuda
+# Video acceleration support
+Requires:      nvidia-vaapi-driver
+Requires:      libva-utils
+Requires:      vdpauinfo
 Supplements:   akmods
 Source0:       macros.kmodtool
 Source1:       private_key.priv

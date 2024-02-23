@@ -1,13 +1,14 @@
+set export := true
+set ignore-comments := true
+set positional-arguments := true
+set shell := ["/usr/bin/env", "bash", "-euo", "pipefail", "-c"]
+
 _just := quote(just_executable()) + ' --justfile=' + quote(justfile())
 _setup_bash := 'set -euo pipefail'
-outdir := justfile_directory() / 'rpmbuild/SOURCES'
+
 author := 'Loi Chyan <loichyan@foxmail.com>'
 image := 'fedora-rpmbuild:39'
-
-set shell := ["/usr/bin/env", "bash", "-euo", "pipefail", "-c"]
-set positional-arguments := true
-set ignore-comments := true
-set export := true
+outdir := justfile_directory() / 'rpmbuild/SOURCES'
 
 _default:
     @{{ _just }} --list
@@ -39,8 +40,8 @@ build package:
     pkg={{ quote(package) }}
 
     case "$pkg" in
-    my*)
-        rm rpmbuild/RPMS/*/"$pkg"*.rpm
+    akmods-keys|my*)
+        rm -f rpmbuild/RPMS/*/"$pkg"*.rpm
         {{ _just }} docker rpmbuild -ba "/workspace/$pkg/$pkg.spec"
     ;;
     *)
