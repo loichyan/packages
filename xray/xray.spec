@@ -1,9 +1,9 @@
-%define vtag v1.8.7
-%define version 1.8.7
-%define date 2024-01-07T20:19:18
+%define vtag v1.8.8
+%define version 1.8.8
+%define date 2024-02-25T14:31:59
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/xray-1.8.7.src.tar.xz
-%define checksum sha256:71352c5964e783c30802e5be1041369608929af9b999edb87ca5fb088b83a67c
+%define source https://github.com/loichyan/packages/releases/download/nightly/xray-1.8.8.src.tar.xz
+%define checksum sha256:3bb1957421a095d5a8e69b997491416ae80af2aa92fa511c32191a3486794a5d
 
 Name:          xray
 Version:       %{version}
