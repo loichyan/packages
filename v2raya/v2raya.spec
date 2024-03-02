@@ -1,9 +1,9 @@
-%define vtag v2.2.4.7
-%define version 2.2.4.7
-%define date 2024-02-15T12:18:26
+%define vtag v2.2.5
+%define version 2.2.5
+%define date 2024-03-01T11:31:14
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/v2raya-2.2.4.7.src.tar.xz
-%define checksum sha256:c8782980a624691e830004dd06be089ca4aa4ee0facd6e30c383886f2e58fe77
+%define source https://github.com/loichyan/packages/releases/download/nightly/v2raya-2.2.5.src.tar.xz
+%define checksum sha256:dfef0954047cab196e74846d5256819d257604c06976d1c28f36c47c43b08238
 
 Name:          v2raya
 Version:       %{version}
