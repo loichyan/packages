@@ -38,12 +38,12 @@ class App:
                 "mysilverblue",
                 "nerd-font-symbols",
                 "nix-mount",
-                "pop-launcher",
                 "rec-mono-fonts",
-                "sarasa-gothic-fonts",
-                "v2raya",
                 "wezterm",
-                "xray",
+                # "pop-launcher",
+                # "sarasa-gothic-fonts",
+                # "v2raya",
+                # "xray",
             ]
         packages: T.List[BasePackage] = []
         for pname in args.package:
