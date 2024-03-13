@@ -1,6 +1,6 @@
-%define vtag v39.0.0
-%define version 39.0.0
-%define date 2023-11-08T02:24:17.569
+%define vtag v39.1.0
+%define version 39.1.0
+%define date 2024-03-13T23:15:19.980
 %define release %autorelease
 
 Name:      mygnome
@@ -37,7 +37,6 @@ Requires : at-spi2-core
 Requires : avahi
 Requires : baobab
 #Requires : cheese
-Requires : snapshot
 Requires : evince
 Requires : evince-djvu
 #Requires : evince-nautilus
@@ -100,6 +99,9 @@ Requires : xdg-desktop-portal
 Requires : xdg-desktop-portal-gnome
 Requires : xdg-desktop-portal-gtk
 Requires : xdg-user-dirs-gtk
+# Extra apps
+Requires : evolution
+Requires : snapshot
 # Extensions
 Requires : gnome-extensions-app
 Requires : gnome-shell-extension-appindicator

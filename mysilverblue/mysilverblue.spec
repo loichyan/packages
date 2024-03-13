@@ -1,6 +1,6 @@
-%define vtag v39.0.0
-%define version 39.0.0
-%define date 2024-02-06T04:23:31.803
+%define vtag v39.1.0
+%define version 39.1.0
+%define date 2024-03-13T23:15:19.980
 %define release %autorelease
 
 Name:      mysilverblue
@@ -14,7 +14,6 @@ BuildArch: noarch
 Requires:  fira-code-fonts
 Requires:  code
 Requires:  fish
-Requires:  geary
 Requires:  google-noto-serif-cjk-vf-fonts
 Requires:  mozilla-openh264
 Requires:  nerd-font-symbols
