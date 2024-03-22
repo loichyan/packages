@@ -39,10 +39,11 @@ class App:
                 "nerd-font-symbols",
                 "nix-mount",
                 "rec-mono-fonts",
-                "wezterm",
                 # "pop-launcher",
+                # "rio",
                 # "sarasa-gothic-fonts",
                 # "v2raya",
+                # "wezterm",
                 # "xray",
             ]
         packages: T.List[BasePackage] = []
