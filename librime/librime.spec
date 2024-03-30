@@ -1,10 +1,10 @@
-%define vtag 1.10.0
-%define version 1.10.0
+%define vtag 1.11.0
+%define version 1.11.0
 %define lua_plugin_vtag 399b680793e4c0adf3a18422b7e3d452018aea06
-%define date 2024-02-09T15:50:38
+%define date 2024-03-29T09:20:47
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/librime-1.10.0.src.tar.xz
-%define checksum sha256:2dde95618e642617698a5d857e974ef890312104013608769bc0e2f2e81dfd7e
+%define source https://github.com/loichyan/packages/releases/download/nightly/librime-1.11.0.src.tar.xz
+%define checksum sha256:d272c88c489340c138b1976b3b13075c2ae2fa65cec6ca8bf45b3e275927485a
 
 # Adapt from https://src.fedoraproject.org/rpms/librime/blob/rawhide/f/librime.spec
 Name:          librime
