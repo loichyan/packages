@@ -7,7 +7,7 @@ _just := quote(just_executable()) + ' --justfile=' + quote(justfile())
 _setup_bash := 'set -euo pipefail'
 
 author := 'Loi Chyan <loichyan@foxmail.com>'
-image := 'fedora-rpmbuild:39'
+image := 'fedora-rpmbuild:40'
 outdir := justfile_directory() / 'rpmbuild/SOURCES'
 
 _default:
@@ -17,7 +17,7 @@ date:
     @date -u +"%Y-%m-%dT%T.%3N"
     @date -u +"%a %d %b %T %Y"
 
-update package version:
+bump package version:
     #!/usr/bin/env bash
     {{ _setup_bash }}
     pkg={{ quote(package) }}
