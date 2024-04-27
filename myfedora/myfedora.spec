@@ -4,13 +4,13 @@
 
 %define release %autorelease
 
-Name:      mysilverblue
+Name:      myfedora
 Version:   %{version}
 Release:   %{release}
 Packager:  Loi Chyan <loichyan@foxmail.com>
 License:   MIT
 URL:       https://github.com/loichyan/packages
-Summary:   My Silverblue setup packages.
+Summary:   My Fedora setup packages.
 BuildArch: noarch
 Requires:  fira-code-fonts
 Requires:  code
@@ -25,12 +25,11 @@ Requires:  podman-docker
 Requires:  rec-mono-fonts
 Requires:  snapper
 Requires:  wl-clipboard
-#Requires:  mygnome
 #Requires:  v2raya
 #Requires:  xray
 
 %description
-My Silverblue setup packages.
+My Fedora setup packages.
 
 %prep
 

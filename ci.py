@@ -34,8 +34,8 @@ class App:
             args.package = [
                 "akmods-keys",
                 "librime",
+                "myfedora",
                 "mygnome",
-                "mysilverblue",
                 "nerd-font-symbols",
                 "nix-mount",
                 "rec-mono-fonts",
