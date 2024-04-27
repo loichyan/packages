@@ -1,6 +1,6 @@
 %define vtag 1.11.0
 %define version 1.11.0
-%define lua_plugin_vtag 399b680793e4c0adf3a18422b7e3d452018aea06
+%define lua_plugin_vtag 7c1b93965962b7c480d4d7f1a947e4712a9f0c5f
 %define date 2024-03-29T09:20:47
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/librime-1.11.0.src.tar.xz
@@ -68,7 +68,7 @@ Loaded dynamically as a librime plugin
 %autosetup -c
 
 %build
-%cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_MERGED_PLUGINS=Off -DENABLE_EXTERNAL_PLUGINS=On
+%cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_MERGED_PLUGINS=OFF -DENABLE_EXTERNAL_PLUGINS=ON
 %cmake_build
 
 %install
