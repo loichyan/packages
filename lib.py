@@ -277,7 +277,7 @@ class BasePackage:
 
     def update(self) -> T.Optional[str]:
         """
-        Updates this package, returns the new %vtag if avialable.
+        Updates this package, returns the new %vtag if available.
         """
         release = self._fetch_latest()
 
@@ -367,7 +367,7 @@ class BasePackage:
         Releases updates.
         """
         msg = msg or f"update to {self.version}"
-        L.info(f"Commiting changes")
+        L.info(f"Committing changes")
         G.REPO.git.add(self.name)
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
         L.info("Push commits")
