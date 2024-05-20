@@ -1,6 +1,6 @@
-%define vtag v40.0.0
-%define version 40.0.0
-%define date 2024-04-27T06:54:31.586
+%define vtag v40.1.0
+%define version 40.1.0
+%define date 2024-05-20T08:48:12.198
 
 %define release %autorelease
 
@@ -12,10 +12,11 @@ License:   MIT
 URL:       https://github.com/loichyan/packages
 Summary:   My Fedora setup packages.
 BuildArch: noarch
-Requires:  fira-code-fonts
 Requires:  code
+Requires:  fira-code-fonts
 Requires:  fish
 Requires:  google-noto-serif-cjk-vf-fonts
+Requires:  gstreamer1-plugin-openh264
 Requires:  kitty
 Requires:  mozilla-openh264
 Requires:  nerd-font-symbols
