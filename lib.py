@@ -80,6 +80,10 @@ class Global:
         return re.compile(r"^v(.+)$")
 
     @cached_property
+    def PAT_NIGHTLY_VERSION(self):
+        return re.compile(r"^nightly-(\d+)-([0-9a-f]+)$")
+
+    @cached_property
     def PAT_WEZTERM_VERSION(self):
         return re.compile(r"^(\d+)-(\d+)-([0-9a-f]+)$")
 

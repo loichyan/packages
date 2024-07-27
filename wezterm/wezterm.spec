@@ -1,4 +1,4 @@
-%define vtag 20240203-110809-5046fc22
+%define vtag nightly-20240722-7e8fdc118d2d7ceb51c720a966090f6cb65089b7
 %define version 20240203
 %define date 2024-02-03T18:08:09
 %define release %autorelease
@@ -13,7 +13,7 @@ License:       MIT
 URL:           https://wezfurlong.org/wezterm/
 Summary:       Wez's Terminal Emulator.
 Requires:      %{name}-terminfo = %{version}-%{release}
-BuildRequires: cargo >= 1.65
+BuildRequires: cargo >= 1.71
 BuildRequires: make
 BuildRequires: gcc
 BuildRequires: gcc-c++
