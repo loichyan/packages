@@ -7,11 +7,11 @@
 * Sun Feb 11 01:21:49 2024 github-actions[bot] <github-actions[bot]@users.noreply.github.com> - 1.10.0-1
 - Update to 1.10.0
 
-* Mon 18 Sep 09:07:48 2023 github-actions[bot] <github-actions[bot]@users.noreply.github.com> - 1.9.0-2
+* Mon Sep 18 09:07:48 2023 github-actions[bot] <github-actions[bot]@users.noreply.github.com> - 1.9.0-2
 - Add `rime_table_decompiler` to librime-tools
 
 * Sun Sep 17 01:20:23 2023 github-actions[bot] <github-actions[bot]@users.noreply.github.com> - 1.9.0-1
 - Update to 1.9.0
 
-* Fri 25 Aug 06:10:37 2023 Loi Chyan <loichyan@foxmail.com> - 1.8.5-1
+* Fri Aug 25 06:10:37 2023 Loi Chyan <loichyan@foxmail.com> - 1.8.5-1
 - Initial package.

@@ -10,10 +10,10 @@
 * Wed Nov 22 01:24:02 2023 github-actions[bot] <github-actions[bot]@users.noreply.github.com> - 3.1.0-1
 - Update to 3.1.0
 
-* Sat 24 Jun 06:35:00 2023 Loi Chyan <loichyan@foxmail.com> - 3.0.2-3
+* Sat Jun 24 06:35:00 2023 Loi Chyan <loichyan@foxmail.com> - 3.0.2-3
 - Fix copying license/doc after `%autosetup`
 
-* Sat 24 Jun 06:12:30 2023 Loi Chyan <loichyan@foxmail.com> - 3.0.2-2
+* Sat Jun 24 06:12:30 2023 Loi Chyan <loichyan@foxmail.com> - 3.0.2-2
 - Add license and doc files
 
 * Tue Jun  6 00:56:49 2023 github-actions[bot] <github-actions[bot]@users.noreply.github.com> - 3.0.2-1
