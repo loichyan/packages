@@ -4,5 +4,10 @@ set -euxo pipefail
 
 tar -xzf "$SOURCE0" --strip-components=1
 mv LICENSE.md LICENSE
+# Cleanup: https://github.com/wez/wezterm/blob/7e8fdc118d2d/ci/source-archive.sh#L47-L51
+rm -rf \
+    deps/harfbuzz/harfbuzz/test \
+    deps/freetype/libpng/contrib \
+    docs/screenshots
 mkdir -p .cargo
 cargo vendor >>.cargo/config.toml

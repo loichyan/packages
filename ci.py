@@ -76,7 +76,7 @@ class App:
 
 if __name__ == "__main__":
     L.basicConfig(
-        level=L.INFO,
+        level=L.DEBUG,
         format="[%(asctime)s] [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )

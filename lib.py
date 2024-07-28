@@ -1,4 +1,13 @@
+from dataclasses import dataclass
+from datetime import datetime
+from functools import cached_property
+from os.path import join, basename, exists
+from subprocess import run
+from tempfile import mkdtemp, mktemp
+from urllib.parse import urlsplit, urlunsplit, parse_qs
+from xml.etree import ElementTree as ET
 import git
+import git.repo
 import github
 import hashlib
 import itertools
@@ -6,17 +15,10 @@ import logging as L
 import os
 import re
 import requests as R
-import subprocess
 import shutil as sh
+import subprocess
+import tarfile
 import typing as T
-from dataclasses import dataclass
-from datetime import datetime
-from functools import cached_property
-from os.path import join, basename, exists
-from subprocess import run
-from tempfile import mkdtemp
-from urllib.parse import urlparse
-from xml.etree import ElementTree as ET
 
 
 def cmd(
@@ -37,8 +39,53 @@ def cmd(
 
 
 def download(url: str, outfile: str):
-    L.info(f"Downloading {url} to {outfile}")
-    return cmd("curl", "-fsSL", url, f"-o{outfile}")
+    r = urlsplit(url)
+    if r.scheme == "git+https":
+        query = parse_qs(r.query)
+        commit = query["commit"][0]
+        url = urlunsplit(r._replace(scheme="https", query=""))
+
+        L.info(f"Archiving {url} to {outfile}")
+        tmpdir = mkdtemp()
+        repo = git.Repo.clone_from(url, tmpdir)
+
+        # Archive submodules
+        with tarfile.open(outfile, "w:gz") as outarc:
+            git_archive(repo, outarc, commit=commit, prefix=f"wezterm-{commit}")
+
+        sh.rmtree(tmpdir)
+    else:
+        L.info(f"Downloading {url} to {outfile}")
+        cmd("curl", "-fsSL", url, "-o" + outfile)
+
+
+def git_archive(
+    repo: git.Repo,
+    outarc: tarfile.TarFile,
+    *,
+    commit: T.Optional[str] = None,
+    prefix: str = "",
+):
+    prefix += "/"
+    commit = commit or str(repo.head.commit)
+
+    tmpfile = mktemp()
+    repo.git.archive(commit, "--format=tar", "-o", tmpfile, "--prefix", prefix)
+    with tarfile.open(tmpfile, mode="r") as tmparc:
+        for mem in tmparc.getmembers():
+            if mem.isdir():
+                outarc.addfile(mem)
+            else:
+                outarc.addfile(mem, tmparc.extractfile(mem))
+    os.remove(tmpfile)
+
+    # Archive submodules
+    for mod in repo.submodules:
+        L.info("Updating submodule: %s", mod.path)
+        mod.update(init=True)
+
+        L.info("Archiving submodule: %s", mod.path)
+        git_archive(mod.module(), outarc, prefix=prefix + mod.path)
 
 
 def sha256(path: str) -> str:
@@ -237,7 +284,7 @@ class BasePackage:
 
     @cached_property
     def _changelog_path(self):
-        return join(self.name, f"changelog")
+        return join(self.name, "changelog")
 
     @cached_property
     def _spec(self):
@@ -317,7 +364,7 @@ class BasePackage:
         os.makedirs(srcdir, exist_ok=True)
         sources: T.List[str] = []
         for source in self._sources():
-            url = urlparse(source)
+            url = urlsplit(source)
             srcname = basename(url.path)
             srcfile = join(srcdir, url.fragment if url.fragment else srcname)
             sources.append(srcfile)
@@ -371,7 +418,7 @@ class BasePackage:
         Releases updates.
         """
         msg = msg or f"update to {self.version}"
-        L.info(f"Committing changes")
+        L.info("Committing changes")
         G.REPO.git.add(self.name)
         lastcommit = G.REPO.index.commit(f"chore({self.name}): {msg}").hexsha
         L.info("Push commits")

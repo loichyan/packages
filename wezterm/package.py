@@ -26,7 +26,7 @@ class Package(GhPackage):
     def _sources(self) -> T.List[str]:
         nightly = G.PAT_NIGHTLY_VERSION.match(self.vtag)
         if nightly is not None:
-            return [f"https://github.com/{self.repo}/archive/{nightly[2]}.tar.gz"]
+            return [f"git+https://github.com/{self.repo}.git?commit={nightly[2]}"]
 
         return [
             f"https://github.com/{self.repo}/releases/download/{self.vtag}/{self.name}-{self.vtag}-src.tar.gz"

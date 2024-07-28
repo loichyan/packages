@@ -1,41 +1,10 @@
-## File system
-.DS_Store
-desktop.ini
-
-## Editor
-*.iml
-*.swo
-*.swp
-.cproject
-.favorites.json
-.idea
-.project
-.settings
-.vs
-.vscode
-Session.vim
-
-## Evn files
-.direnv
-.env
-.envrc
-
-## Logs
-*.log
-
-## Misc
-foo.*
-
-## Python
+# Python
 __pycache__
 
-## Private keys
+# Private keys
+.private.env
 akmods-keys/*.der
 akmods-keys/*.priv
 
-## RPMs
-*.rpm
-
-## Temp generated files
-.cache
+# Build files
 rpmbuild
