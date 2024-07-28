@@ -338,7 +338,7 @@ class BasePackage:
         version = self._parse_version(vtag)
         self._spec.save(
             vtag=vtag,
-            date=release.date.isoformat(),
+            date=release.date.strftime("%Y-%m-%dT%T"),
             version=version,
             release="%autorelease",
             **self._metadata(),

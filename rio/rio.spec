@@ -1,6 +1,6 @@
 %define vtag nightly
 %define version nightly
-%define date 2024-03-22T12:20:04.333
+%define date 2024-03-22T12:20:04
 %define release %autorelease
 %define source *
 %define checksum *

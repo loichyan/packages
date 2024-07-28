@@ -1,6 +1,6 @@
 %define vtag v40.0.0
 %define version 40.0.0
-%define date 2024-04-27T06:55:00.905
+%define date 2024-04-27T06:55:00
 %define release %autorelease
 
 Name:      mygnome

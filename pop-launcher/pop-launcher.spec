@@ -1,6 +1,6 @@
 %define vtag 1.2.1
 %define version 1.2.1
-%define date 2023-08-24T12:23:08.000
+%define date 2023-08-24T12:23:08
 %define release %autorelease -b 2
 %define source https://github.com/loichyan/packages/releases/download/nightly/pop-launcher-1.2.1.src.tar.xz
 %define checksum sha256:647d060963c3da6be6cf9f7d3f1d881e7f1c783bdd4eb570e92a3602dc462a5d

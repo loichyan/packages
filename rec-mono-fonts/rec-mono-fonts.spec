@@ -1,6 +1,6 @@
 %define vtag v1.085
 %define version 1.085
-%define date 2024-01-17T01:43:58.436
+%define date 2024-01-17T01:43:58
 %define release %autorelease
 %define source https://github.com/loichyan/packages/releases/download/nightly/rec-mono-fonts-1.085.src.tar.xz
 %define checksum sha256:23024dc85664485bc309fe07b3dc2319a558b7ab7c696c099b16011be6d62bd1

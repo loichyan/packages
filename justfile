@@ -12,14 +12,14 @@ _default:
     @command {{ _just }} --list
 
 date:
-    @date -u +"%Y-%m-%dT%T.%3N"
+    @date -u +"%Y-%m-%dT%T"
     @date -u +"%a %b %d %T %Y"
 
 bump package version:
     #!/usr/bin/env bash
     command {{ _setup_bash }}
 
-    date_spec="$(date -u +"%Y-%m-%dT%T.%3N")"
+    date_spec="$(date -u +"%Y-%m-%dT%T")"
     date_chg="$(date -u +"%a %d %b %T %Y")"
     sed -i \
         -e "s/\(%define version\) .*/\1 $version/" \
