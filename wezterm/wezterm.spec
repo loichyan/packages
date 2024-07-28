@@ -12,7 +12,8 @@ Packager:      Loi Chyan <loichyan@foxmail.com>
 License:       MIT
 URL:           https://wezfurlong.org/wezterm/
 Summary:       Wez's Terminal Emulator.
-Requires:      %{name}-terminfo = %{version}-%{release}
+#wezterm-terminfo has been included in ncurses-term
+#Requires:      %{name}-terminfo = %{version}-%{release}
 BuildRequires: cargo >= 1.71
 BuildRequires: make
 BuildRequires: gcc
