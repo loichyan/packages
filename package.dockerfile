@@ -6,9 +6,11 @@ ARG PACKAGE
 COPY $PACKAGE /workspace
 WORKDIR /workspace
 
-RUN dnf builddep -y "$PACKAGE.spec" \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf
+RUN if grep -q '^BuildRequires:' "$PACKAGE.spec"; then \
+        dnf builddep -y "$PACKAGE.spec" \
+        && dnf clean all \
+        && rm -rf /var/cache/dnf \
+    ;fi
 
 FROM builder as package
 ARG PACKAGE
