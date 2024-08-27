@@ -1,6 +1,6 @@
-%define vtag v40.1.0
-%define version 40.1.0
-%define date 2024-05-20T08:48:12
+%define vtag v40.2.0
+%define version 40.2.0
+%define date 2024-07-30T01:54:21
 
 %define release %autorelease
 
@@ -25,6 +25,7 @@ Requires:  podman-compose
 Requires:  podman-docker
 Requires:  rec-mono-fonts
 Requires:  snapper
+Requires:  wezterm
 Requires:  wl-clipboard
 #Requires:  v2raya
 #Requires:  xray
