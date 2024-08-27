@@ -1,6 +1,6 @@
 %define vtag v40.2.0
-%define version 40.2.0
-%define date 2024-07-30T01:54:21
+%define version 40.3.0
+%define date 2024-08-27T03:59:58
 
 %define release %autorelease
 
@@ -16,9 +16,7 @@ Requires:  code
 Requires:  fira-code-fonts
 Requires:  fish
 Requires:  google-noto-serif-cjk-vf-fonts
-Requires:  gstreamer1-plugin-openh264
 Requires:  kitty
-Requires:  mozilla-openh264
 Requires:  nerd-font-symbols
 Requires:  nix-mount
 Requires:  podman-compose
