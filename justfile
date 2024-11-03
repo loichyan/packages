@@ -1,12 +1,10 @@
 set export := true
 set ignore-comments := true
+set positional-arguments := true
 set shell := ["/usr/bin/env", "bash", "-euo", "pipefail", "-c"]
 
-_just := quote(just_executable()) + ' --justfile=' + quote(justfile())
-_setup_bash := 'set -euo pipefail'
-author := 'Loi Chyan <loichyan@foxmail.com>'
-fedora := '40'
-outdir := justfile_directory() / 'rpmbuild/SOURCES'
+_just := quote(just_executable()) + " --justfile=" + quote(justfile())
+_setup_bash := "set -euo pipefail"
 
 _default:
     @command {{ _just }} --list
@@ -29,6 +27,10 @@ bump package version:
         -e "1s/^/* $date_chg $author - $version-1\n\n/" \
         "$package/changelog"
 
+author := "Loi Chyan <loichyan@foxmail.com>"
+fedora := "41"
+outdir := justfile_directory() / "rpmbuild/SOURCES"
+
 build package: build-image
     @set -x; docker build --network=host -f package.dockerfile \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
@@ -44,14 +46,12 @@ clean-rpm:
     rm rpmbuild/RPMS/*/*.rpm
     rm rpmbuild/SRPMS/*.rpm
 
-[positional-arguments]
 run-image *args:
     @set -x; docker run -it --rm --network=host \
         -v "$PWD:/workspace:Z" \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
         "fedora-rpmbuild:$fedora" "${@}"
 
-[positional-arguments]
 ci *args:
     @mkdir -p "$outdir"
     ./ci.py --outdir="$PWD/rpmbuild/SOURCES" "$@"

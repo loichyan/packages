@@ -1,6 +1,6 @@
-ARG FEDORA=40
+ARG FEDORA=41
 
-FROM fedora:${FEDORA} AS base
+FROM fedora:$FEDORA AS base
 
 RUN dnf install -y \
     rpm-build \

@@ -1,6 +1,6 @@
-ARG FEDORA=40
+ARG FEDORA=41
 
-FROM fedora-rpmbuild:${FEDORA} AS builder
+FROM fedora-rpmbuild:$FEDORA AS builder
 ARG PACKAGE
 
 COPY $PACKAGE /workspace
