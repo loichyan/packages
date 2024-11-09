@@ -1,3 +1,6 @@
+* Sat 09 Nov 03:46:30 2024 Loi Chyan <loichyan@foxmail.com> - 41.1.0-1
+- Remove podman-compose
+
 * Wed 30 Oct 14:36:27 2024 Loi Chyan <loichyan@foxmail.com> - 41.0.0-1
 - Upgrade to Fedora 41
 

@@ -1,4 +1,4 @@
-%define vtag v40.0.0
+%define vtag v47.0.0
 %define version 47.0.0
 %define date 2024-10-30T14:36:37
 %define release %autorelease

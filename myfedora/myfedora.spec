@@ -1,6 +1,6 @@
-%define vtag v40.2.0
-%define version 41.0.0
-%define date 2024-10-30T14:36:27
+%define vtag v41.1.0
+%define version 41.1.0
+%define date 2024-11-09T03:46:30
 
 %define release %autorelease
 
@@ -19,7 +19,7 @@ Requires:  kitty
 Requires:  langpacks-zh_CN
 Requires:  nerd-font-symbols
 Requires:  nix-mount
-Requires:  podman-compose
+Requires:  podman
 Requires:  podman-docker
 Requires:  snapper
 Requires:  wezterm
