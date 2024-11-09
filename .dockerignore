@@ -1,5 +1,9 @@
+# Git
+.git
+
 # Python
 __pycache__
+.ruff_cache
 
 # Build files
 rpmbuild
