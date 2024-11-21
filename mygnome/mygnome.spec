@@ -16,7 +16,6 @@ Requires : ibus-typing-booster
 Requires : ibus-rime
 Requires : librime
 Requires : librime-plugin-lua
-#Requires : yaru-theme
 
 %description
 My Gnome setup packages.
