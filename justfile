@@ -5,6 +5,7 @@ set shell := ["/usr/bin/env", "bash", "-euo", "pipefail", "-c"]
 
 _just := quote(just_executable()) + " --justfile=" + quote(justfile())
 _setup_bash := "set -euo pipefail"
+docker := "docker"
 
 _default:
     @command {{ _just }} --list
@@ -20,6 +21,7 @@ bump package version:
     date_spec="$(date -u +"%Y-%m-%dT%T")"
     date_chg="$(date -u +"%a %d %b %T %Y")"
     sed -i \
+        -e "s/\(%define vtag\) .*/\1 v$version/" \
         -e "s/\(%define version\) .*/\1 $version/" \
         -e "s/\(%define date\) .*/\1 $date_spec/" \
         "$package/$package.spec"
@@ -32,13 +34,13 @@ fedora := "41"
 outdir := justfile_directory() / "rpmbuild/SOURCES"
 
 build package: build-image
-    @set -x; docker build --network=host -f package.dockerfile \
+    @set -x; $docker build --network=host -f package.dockerfile \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
         --build-arg FEDORA="$fedora" \
         --build-arg PACKAGE="$package"
 
 build-image:
-    @set -x; docker build --network=host -f fedora.dockerfile \
+    @set -x; $docker build --network=host -f fedora.dockerfile \
         --build-arg FEDORA="$fedora" \
         -t "fedora-rpmbuild:$fedora"
 
@@ -47,7 +49,7 @@ clean-rpm:
     rm rpmbuild/SRPMS/*.rpm
 
 run-image *args:
-    @set -x; docker run -it --rm --network=host \
+    @set -x; $docker run -it --rm --network=host \
         -v "$PWD:/workspace:Z" \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
         "fedora-rpmbuild:$fedora" "${@}"
