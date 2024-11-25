@@ -1,6 +1,6 @@
-%define vtag v47.0.0
-%define version 47.0.0
-%define date 2024-10-30T14:36:37
+%define vtag v47.1.0
+%define version 47.1.0
+%define date 2024-11-25T10:47:03
 %define release %autorelease
 
 Name:      mygnome
@@ -16,6 +16,8 @@ Requires : ibus-typing-booster
 Requires : ibus-rime
 Requires : librime
 Requires : librime-plugin-lua
+# NOTE: Gnome Boxes is not available on Fedora's flatpak repository
+Requires : gnome-boxes
 
 %description
 My Gnome setup packages.
