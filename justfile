@@ -36,6 +36,7 @@ outdir := justfile_directory() / "rpmbuild/SOURCES"
 build package: build-image
     @set -x; $docker build --network=host -f package.dockerfile \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
+        --no-cache \
         --build-arg FEDORA="$fedora" \
         --build-arg PACKAGE="$package"
 
