@@ -1,6 +1,6 @@
-%define vtag v0.1.0
-%define version 0.1.0
-%define date 2023-06-25T15:40:38
+%define vtag v0.2.0
+%define version 0.2.0
+%define date 2024-11-29T13:08:00
 %define release %autorelease
 
 Name:          akmods-keys
@@ -14,10 +14,6 @@ BuildArch:     noarch
 Requires:      akmod-nvidia
 Requires:      xorg-x11-drv-nvidia
 Requires:      xorg-x11-drv-nvidia-cuda
-# Video acceleration support
-Requires:      nvidia-vaapi-driver
-Requires:      libva-utils
-Requires:      vdpauinfo
 Supplements:   akmods
 Source0:       macros.kmodtool
 Source1:       private_key.priv
