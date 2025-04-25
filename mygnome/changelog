@@ -1,3 +1,7 @@
+* Mon 12 May 08:40:31 2025 Loi Chyan <loichyan@foxmail.com> - 48.0.0-1
+- Upgrade to Gnome 48
+- Use Fedora's official librime-lua plugin package
+
 * Mon 25 Nov 10:47:03 2024 Loi Chyan <loichyan@foxmail.com> - 47.1.0-1
 - Add Gnome Boxes
 
