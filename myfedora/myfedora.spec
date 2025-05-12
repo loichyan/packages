@@ -1,6 +1,6 @@
-%define vtag v41.3.0
-%define version 41.3.0
-%define date 2024-11-29T03:31:16
+%define vtag v42.0.0
+%define version 42.0.0
+%define date 2025-05-12T08:39:07
 
 %define release %autorelease
 
@@ -12,6 +12,7 @@ License:   MIT
 URL:       https://github.com/loichyan/packages
 Summary:   My Fedora setup packages.
 BuildArch: noarch
+Requires:  alacritty
 Requires:  code
 Requires:  fish
 Requires:  kitty
