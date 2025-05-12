@@ -1,4 +1,4 @@
-ARG FEDORA=41
+ARG FEDORA=42
 
 FROM fedora-rpmbuild:$FEDORA AS builder
 ARG PACKAGE

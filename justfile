@@ -3,20 +3,18 @@ set ignore-comments := true
 set positional-arguments := true
 set shell := ["/usr/bin/env", "bash", "-euo", "pipefail", "-c"]
 
-_just := quote(just_executable()) + " --justfile=" + quote(justfile())
-_setup_bash := "set -euo pipefail"
+just := quote(just_executable()) + " --justfile=" + quote(justfile())
 docker := "docker"
 
 _default:
-    @command {{ _just }} --list
+    @command {{ just }} --list
 
 date:
     @date -u +"%Y-%m-%dT%T"
     @date -u +"%a %b %d %T %Y"
 
 bump package version:
-    #!/usr/bin/env bash
-    command {{ _setup_bash }}
+    #!/usr/bin/env bash -euo pipefail
 
     date_spec="$(date -u +"%Y-%m-%dT%T")"
     date_chg="$(date -u +"%a %d %b %T %Y")"
@@ -30,7 +28,7 @@ bump package version:
         "$package/changelog"
 
 author := "Loi Chyan <loichyan@foxmail.com>"
-fedora := "41"
+fedora := "42"
 outdir := justfile_directory() / "rpmbuild/SOURCES"
 
 build package: build-image
