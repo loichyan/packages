@@ -14,7 +14,8 @@ date:
     @date -u +"%a %b %d %T %Y"
 
 bump package version:
-    #!/usr/bin/env bash -euo pipefail
+    #!/usr/bin/env bash
+    set -euo pipefail
 
     date_spec="$(date -u +"%Y-%m-%dT%T")"
     date_chg="$(date -u +"%a %d %b %T %Y")"

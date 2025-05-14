@@ -1,36 +1,34 @@
-%define vtag v0.1.1
-%define version 0.1.1
-%define date 2023-05-30T14:21:46
+%define vtag v0.2.0
+%define version 0.2.0
+%define date 2025-05-14T07:54:46
 %define release %autorelease
-%define source https://github.com/loichyan/packages/releases/download/nightly/nix-mount-0.1.1.src.tar.xz
-%define checksum sha256:aa1bc32abeaa4e06cedacdb57c66499d774f13337c41b134b0decdd10df16be5
 
 Name:          nix-mount
 Version:       %{version}
 Release:       %{release}
 Packager:      Loi Chyan <loichyan@foxmail.com>
-License:       MIT OR Apache-2.0
-URL:           https://github.com/dnkmmr69420/nix-installer-scripts
-Summary:       Mount /nix.
+License:       MIT
+URL:           https://github.com/nix-community/nix-installers
+Summary:       Create /nix mount point for OStree
 BuildArch:     noarch
 BuildRequires: systemd-rpm-macros
-#!RemoteAsset: %{checksum}
-Source:        %{source}
+Source0:       nix.mount
+Source1:       nix-setup.service
 
 %description
-Mount /nix for single user nix installation.
+Create /nix mount point for OStree
 
 %prep
-%autosetup -c
+%setup -qcT
 
 %build
 
 %install
-install -Dm644 nix.mount %{name}.service -t %{buildroot}%{_unitdir}
+install -Dm644 %{SOURCE0} %{SOURCE1} -t %{buildroot}%{_unitdir}
 
 %files
-%{_unitdir}/%{name}.service
 %{_unitdir}/nix.mount
+%{_unitdir}/nix-setup.service
 
 %changelog
 %autochangelog

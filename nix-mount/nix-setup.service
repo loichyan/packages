@@ -1,9 +1,9 @@
 [Unit]
-Description=Enable mount points in /nix
-ConditionPathExists=!/nix
+Description=Create /nix mount point for OStree
 DefaultDependencies=no
-Requires=local-fs-pre.target
-After=local-fs-pre.target
+ConditionPathExists=!/nix
+ConditionPathIsReadWrite=/
+After=local-fs.target
 
 [Service]
 Type=oneshot

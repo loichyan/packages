@@ -23,7 +23,7 @@ Source2:       public_key.der
 Akmods ostree keys for signing modules.
 
 %prep
-%setup -q -c -T
+%setup -qcT
 
 %build
 

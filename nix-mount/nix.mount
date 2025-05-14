@@ -1,11 +1,8 @@
 [Unit]
-Description=Mount /nix
 DefaultDependencies=no
-After=nix-mount.service
-Wants=nix-mount.service
-Before=sockets.target
-After=ostree-remount.service
-BindsTo=var.mount
+After=nix-mkdir.service
+Wants=nix-mkdir.service
+Before=systemd-tmpfiles-setup.service
 
 [Mount]
 What=/var/nix
