@@ -1,6 +1,6 @@
-%define vtag v42.0.0
-%define version 42.0.0
-%define date 2025-05-12T08:39:07
+%define vtag v42.1.0
+%define version 42.1.0
+%define date 2025-07-20T06:29:18
 
 %define release %autorelease
 
@@ -15,6 +15,7 @@ BuildArch: noarch
 Requires:  alacritty
 Requires:  code
 Requires:  fish
+Requires:  foot
 Requires:  kitty
 Requires:  langpacks-zh_CN
 Requires:  nerd-font-symbols
