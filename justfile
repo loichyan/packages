@@ -7,7 +7,7 @@ just := quote(just_executable()) + " --justfile=" + quote(justfile())
 docker := "docker"
 
 _default:
-    @command {{ just }} --list
+    @command {{just}} --list
 
 date:
     @date -u +"%Y-%m-%dT%T"
@@ -29,7 +29,7 @@ bump package version:
         "$package/changelog"
 
 author := "Loi Chyan <loichyan@outlook.com>"
-fedora := "42"
+fedora := "43"
 outdir := justfile_directory() / "rpmbuild/SOURCES"
 
 build package: build-image

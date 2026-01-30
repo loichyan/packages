@@ -1,6 +1,6 @@
-%define vtag v42.1.0
-%define version 42.1.0
-%define date 2025-07-20T06:29:18
+%define vtag v43.0.0
+%define version 43.0.0
+%define date 2026-01-30T08:41:57
 
 %define release %autorelease
 
@@ -13,12 +13,9 @@ URL:       https://github.com/loichyan/packages
 Summary:   My Fedora setup packages.
 BuildArch: noarch
 Requires:  alacritty
-Requires:  code
+Requires:  default-fonts-cjk
 Requires:  fish
 Requires:  foot
-Requires:  kitty
-Requires:  langpacks-zh_CN
-Requires:  nerd-font-symbols
 Requires:  podman
 Requires:  podman-docker
 Requires:  snapper
