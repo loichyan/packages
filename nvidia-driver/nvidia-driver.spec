@@ -1,6 +1,6 @@
-%define vtag v0.2.0
-%define version 0.2.0
-%define date 2024-11-29T13:08:00
+%define vtag v0.3.0
+%define version 0.3.0
+%define date 2026-01-30T08:51:16
 %define release %autorelease
 
 Name:        nvidia-driver
@@ -12,6 +12,7 @@ URL:         https://github.com/loichyan/packages
 Summary:     Nvidia driver with secure boot support
 BuildArch:   noarch
 Requires:    akmod-nvidia
+Requires:    nvidia-container-toolkit
 Requires:    xorg-x11-drv-nvidia
 Requires:    xorg-x11-drv-nvidia-cuda
 Supplements: akmods
@@ -30,13 +31,13 @@ Nvidia driver with secure boot support for silverblue.
 %install
 # See <https://github.com/CheariX/silverblue-akmods-keys>
 install -Dm640 %{SOURCE0} -t %{buildroot}%{_sysconfdir}/rpm/
-install -Dm640 %{SOURCE1} -t %{buildroot}%{_sysconfdir}/pki/%{name}/private/
-install -Dm640 %{SOURCE2} -t %{buildroot}%{_sysconfdir}/pki/%{name}/certs/
+install -Dm640 %{SOURCE1} -t %{buildroot}%{_sysconfdir}/pki/akmods-keys/private/
+install -Dm640 %{SOURCE2} -t %{buildroot}%{_sysconfdir}/pki/akmods-keys/certs/
 
 %files
-%attr(0644,root,root) %{_sysconfdir}/pki/%{name}/certs
-%attr(0644,root,root) %{_sysconfdir}/pki/%{name}/private
 %attr(0644,root,root) %{_sysconfdir}/rpm/macros.kmodtool
+%attr(0644,root,root) %{_sysconfdir}/pki/akmods-keys/certs
+%attr(0644,root,root) %{_sysconfdir}/pki/akmods-keys/private
 
 %changelog
 %autochangelog

@@ -1,3 +1,6 @@
+* Fri 30 Jan 08:51:16 2026 Loi Chyan <loichyan@outlook.com> - 0.3.0-1
+- Require nvidia-container-toolkit.
+
 * Fri 29 Nov 13:08:00 2024 Loi Chyan <loichyan@foxmail.com> - 0.2.0-1
 - Remove unused packages
 
