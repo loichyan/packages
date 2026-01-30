@@ -33,26 +33,26 @@ fedora := "43"
 outdir := justfile_directory() / "rpmbuild/SOURCES"
 
 build package: build-image
-    @set -x; $docker build --network=host -f package.dockerfile \
+    {{docker}} build --network=host -f package.dockerfile \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
         --no-cache \
-        --build-arg FEDORA="$fedora" \
-        --build-arg PACKAGE="$package"
+        --build-arg FEDORA={{fedora}} \
+        --build-arg PACKAGE={{package}}
 
 build-image:
-    @set -x; $docker build --network=host -f fedora.dockerfile \
-        --build-arg FEDORA="$fedora" \
-        -t "fedora-rpmbuild:$fedora"
+    {{docker}} build --network=host -f fedora.dockerfile \
+        --build-arg FEDORA={{fedora}} \
+        -t fedora-rpmbuild:{{fedora}}
 
 clean-rpm:
     rm rpmbuild/RPMS/*/*.rpm
     rm rpmbuild/SRPMS/*.rpm
 
 run-image *args:
-    @set -x; $docker run -it --rm --network=host \
+    {{docker}} run -it --rm --network=host \
         -v "$PWD:/workspace:Z" \
         -v "$PWD/rpmbuild:/root/rpmbuild:Z" \
-        "fedora-rpmbuild:$fedora" "${@}"
+        fedora-rpmbuild:{{fedora}} "${@}"
 
 ci *args:
     @mkdir -p "$outdir"

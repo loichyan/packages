@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-RPMBUILD="${RPMBUILD:-~/rpmbuild}"
+RPMBUILD="${RPMBUILD:-$HOME/rpmbuild}"
 SOURCES_DIR="$RPMBUILD/SOURCES"
 
 if grep -q '^BuildRequires:' "$PACKAGE.spec"; then
