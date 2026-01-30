@@ -1,6 +1,6 @@
-%define vtag v48.0.0
-%define version 48.0.0
-%define date 2025-05-12T08:40:31
+%define vtag v49.0.0
+%define version 49.0.0
+%define date 2026-01-30T09:14:52
 %define release %autorelease
 
 Name:      mygnome
@@ -11,11 +11,12 @@ License:   MIT
 URL:       https://github.com/loichyan/packages
 Summary:   My Gnome setup packages.
 BuildArch: noarch
-Requires : ibus
-Requires : ibus-typing-booster
-Requires : ibus-rime
-Requires : librime
-Requires : librime-lua
+Requires:  gnome-tweaks
+Requires:  ibus
+Requires:  ibus-rime
+Requires:  ibus-typing-booster
+Requires:  librime
+Requires:  librime-lua
 
 %description
 My Gnome setup packages.
