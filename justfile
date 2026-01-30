@@ -28,7 +28,7 @@ bump package version:
         -e "1s/^/* $date_chg $author - $version-1\n\n/" \
         "$package/changelog"
 
-author := "Loi Chyan <loichyan@foxmail.com>"
+author := "Loi Chyan <loichyan@outlook.com>"
 fedora := "42"
 outdir := justfile_directory() / "rpmbuild/SOURCES"
 

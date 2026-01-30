@@ -8,7 +8,7 @@
 Name:          pop-launcher
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       MPL-2.0
 URL:           https://github.com/pop-os/launcher/
 Summary:       Library for writing plugins and frontends for pop-launcher

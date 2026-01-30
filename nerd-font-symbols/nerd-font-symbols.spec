@@ -13,7 +13,7 @@
 Name:          %{fontname}
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       MIT AND OFL
 URL:           https://www.nerdfonts.com/
 Summary:       Just the Nerd Font Icons. I.e Symbol font only.

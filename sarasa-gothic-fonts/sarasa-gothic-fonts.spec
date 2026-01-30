@@ -11,7 +11,7 @@
 Name:          %{fontname}-fonts
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       OFL-1.1
 URL:           https://github.com/be5invis/Sarasa-Gothic
 Summary:       Sarasa Gothic / 更纱黑体 / 更紗黑體 / 更紗ゴシック / 사라사 고딕

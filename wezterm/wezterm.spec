@@ -8,7 +8,7 @@
 Name:          wezterm
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       MIT
 URL:           https://wezfurlong.org/wezterm/
 Summary:       Wez's Terminal Emulator.

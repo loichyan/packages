@@ -8,7 +8,7 @@
 Name:          xray
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       MPL-2.0
 Url:           https://xtls.github.io/
 Summary:       Xray, Penetrates Everything.

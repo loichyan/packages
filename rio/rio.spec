@@ -8,7 +8,7 @@
 Name:          rio
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       MIT
 URL:           https://raphamorim.io/rio/
 Summary:       A hardware-accelerated GPU terminal emulator.

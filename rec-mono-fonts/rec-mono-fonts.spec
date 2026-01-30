@@ -11,7 +11,7 @@
 Name:          %{fontname}-fonts
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       OFL
 URL:           https://recursive.design
 Summary:       Recursive Mono & Sans is a variable font family for code & UI

@@ -8,7 +8,7 @@
 Name:          v2raya
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       AGPL-3.0
 Url:           https://github.com/v2rayA/v2rayA
 Summary:       A Linux web GUI client of Project V which supports V2Ray, Xray, SS, SSR, Trojan and Pingtunnel

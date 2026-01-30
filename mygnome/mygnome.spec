@@ -6,7 +6,7 @@
 Name:      mygnome
 Version:   %{version}
 Release:   %{release}
-Packager:  Loi Chyan <loichyan@foxmail.com>
+Packager:  Loi Chyan <loichyan@outlook.com>
 License:   MIT
 URL:       https://github.com/loichyan/packages
 Summary:   My Gnome setup packages.

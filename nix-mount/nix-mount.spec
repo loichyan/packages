@@ -6,7 +6,7 @@
 Name:          nix-mount
 Version:       %{version}
 Release:       %{release}
-Packager:      Loi Chyan <loichyan@foxmail.com>
+Packager:      Loi Chyan <loichyan@outlook.com>
 License:       MIT
 URL:           https://github.com/nix-community/nix-installers
 Summary:       Create /nix mount point for OStree
