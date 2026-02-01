@@ -1,6 +1,6 @@
-%define vtag v0.3.0
-%define version 0.3.0
-%define date 2026-01-30T08:51:16
+%define vtag v0.3.1
+%define version 0.3.1
+%define date 2026-02-01T12:44:05
 %define release %autorelease
 
 Name:        nvidia-driver
@@ -12,9 +12,13 @@ URL:         https://github.com/loichyan/packages
 Summary:     Nvidia driver with secure boot support
 BuildArch:   noarch
 Requires:    akmod-nvidia
-Requires:    nvidia-container-toolkit
 Requires:    xorg-x11-drv-nvidia
 Requires:    xorg-x11-drv-nvidia-cuda
+Requires:    nvidia-container-toolkit
+# See <https://www.if-not-true-then-false.com/2015/fedora-nvidia-guide/#212-vdpauvaapi-support>
+Requires:    vdpauinfo
+Requires:    libva-nvidia-driver
+Requires:    libva-utils
 Supplements: akmods
 Source0:     macros.kmodtool
 Source1:     private_key.priv
